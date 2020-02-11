@@ -5,13 +5,9 @@ import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
-import android.os.Debug;
-import android.service.autofill.Dataset;
-import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -19,8 +15,9 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.navigation.NavigationView;
 import com.muhammedkalender.pocketpassword.Adapters.PasswordAdapter;
-import com.muhammedkalender.pocketpassword.Helpers.CryptHelper;
+import com.muhammedkalender.pocketpassword.Helpers.DatabaseHelper;
 import com.muhammedkalender.pocketpassword.Models.PasswordModel;
+import com.muhammedkalender.pocketpassword.Objects.ResultObject;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -30,7 +27,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.Menu;
-import android.widget.EditText;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -38,8 +34,6 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.crypto.Cipher;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -65,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
@@ -139,6 +134,11 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
+
+        DatabaseHelper databaseHelper = new DatabaseHelper(this);
+        ResultObject resultObject = databaseHelper.cursor("SELECT * FROM 'test'");
+
+        //Log.e("ISAVAB", databaseHelper.isAvailable("SELECT * FROM 'test' LIMIT 1", "bakem");
     }
 
     public static PublicKey keyPublic = null;

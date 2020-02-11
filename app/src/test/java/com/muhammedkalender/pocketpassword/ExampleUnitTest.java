@@ -1,6 +1,9 @@
 package com.muhammedkalender.pocketpassword;
 
+import android.content.Context;
+
 import org.junit.Test;
+import org.mockito.Mock;
 
 import static org.junit.Assert.*;
 
@@ -10,6 +13,9 @@ import static org.junit.Assert.*;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 public class ExampleUnitTest {
+    @Mock
+    Context context;
+
     @Test
     public void addition_isCorrect() {
         assertEquals(4, 2 + 2);
