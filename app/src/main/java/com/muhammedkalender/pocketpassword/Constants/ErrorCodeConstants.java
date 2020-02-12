@@ -14,4 +14,10 @@ public class ErrorCodeConstants {
             SQL_SELECT_SINGLE_COLUMN_EMPTY = 106;
 
     //endregion
+
+    //region PAGE
+
+    public static final int HOME_PAGE_INITIALIZE = 200;
+
+    //endregion
 }
