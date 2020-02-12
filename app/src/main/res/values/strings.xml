@@ -13,4 +13,11 @@
     <string name="menu_tools">Tools</string>
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
+
+    <string name="hint_name">Hesap Adı</string>
+    <string name="input_name">Eklemek istediğiniz hesabın adı</string>
+    <string name="hint_name_example">Banka, Mail, Sunucu</string>
+
+    <string name="input_password">Eklemek istediğiniz hesabın şifresi</string>
+    <string name="hint_password">Hesap Şifresi</string>
 </resources>

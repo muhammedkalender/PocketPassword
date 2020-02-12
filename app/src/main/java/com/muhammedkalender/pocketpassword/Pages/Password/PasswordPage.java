@@ -1,4 +1,4 @@
-package com.muhammedkalender.pocketpassword.Pages;
+package com.muhammedkalender.pocketpassword.Pages.Password;
 
 import android.view.View;
 
@@ -9,7 +9,11 @@ public class PasswordPage extends PageAbstract implements PageInterface{
 
     @Override
     public void initialize(View viewRoot) {
-        
+        this.initialized = true;
+
+        this.viewRoot = viewRoot;
+
+        //todo
     }
 
     @Override
