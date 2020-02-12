@@ -13,7 +13,10 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.muhammedkalender.pocketpassword.Global;
 import com.muhammedkalender.pocketpassword.MainActivity;
+import com.muhammedkalender.pocketpassword.Pages.HomePage;
+import com.muhammedkalender.pocketpassword.Pages.PasswordPage;
 import com.muhammedkalender.pocketpassword.R;
 
 public class PlaceholderFragment extends Fragment {
@@ -40,7 +43,7 @@ public class PlaceholderFragment extends Fragment {
         }
         pageViewModel.setIndex(index);
     }
-public static int a = 0;
+
     @Override
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container,
@@ -49,26 +52,38 @@ public static int a = 0;
 
 
         if(pageViewModel.getIndex() == 2){
+            //Home Page
             root = inflater.inflate(R.layout.fragment_main, container, false);
-        }else{
+
+            HomePage homePage = Global.getPageHome(root);
+
+            return homePage.getView();
+        }else if(pageViewModel.getIndex() == 3){
+            //Password Page
+            root = inflater.inflate(R.layout.fragment_send, container, false);
+
+            PasswordPage passwordPage = new PasswordPage();
+            passwordPage.initialize(root);
+
+            return passwordPage.getView();
+        } else{
         //    root = inflater.inflate(R.layout.activity_main1, container, false);
-            root = inflater.inflate(R.layout.fragment_main, container, false);
-
-
-
+            root = inflater.inflate(R.layout.fragment_gallery, container, false);
         }
 
-        final TextView textView = root.findViewById(R.id.section_label);
 
+        return root;
+//        final TextView textView = root.findViewById(R.id.section_label);
 
-        pageViewModel.getText().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(String.valueOf(a));
-            }
-        });
+//
+//        pageViewModel.getText().observe(this, new Observer<String>() {
+//            @Override
+//            public void onChanged(@Nullable String s) {
+//                textView.setText(String.valueOf(a));
+//            }
+//        });
 
-a++;
+//a++;
 //a+++
 //
 //            pageViewModel.getText().observe(this, new Observer<String>() {
@@ -89,6 +104,6 @@ a++;
 //            });
 //
 
-        return root;
+    //    return root;
     }
 }

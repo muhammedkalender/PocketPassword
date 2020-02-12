@@ -14,6 +14,8 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.tabs.TabLayout;
 import com.muhammedkalender.pocketpassword.Adapters.PasswordAdapter;
+import com.muhammedkalender.pocketpassword.Globals.Helpers;
+import com.muhammedkalender.pocketpassword.Helpers.LogHelpers;
 import com.muhammedkalender.pocketpassword.Models.PasswordModel;
 import com.muhammedkalender.pocketpassword.ui.main.SectionsPagerAdapter;
 
@@ -55,11 +57,18 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        Helpers.logger = new LogHelpers();
+
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
         viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(sectionsPagerAdapter);
         tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
+
+        Global.CONTEXT = this;
+        Global.TAB_LAYOUT = tabs;
+        Global.VIEW_PAGER = viewPager;
         //tabs.getTabAt(1).select();
 //        DrawerLayout drawer = findViewById(R.id.drawer_layout);
 //        NavigationView navigationView = findViewById(R.id.nav_view);

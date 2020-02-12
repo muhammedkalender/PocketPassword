@@ -1,6 +1,7 @@
 package com.muhammedkalender.pocketpassword.Adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.muhammedkalender.pocketpassword.Global;
 import com.muhammedkalender.pocketpassword.Holders.PasswordListHolder;
 import com.muhammedkalender.pocketpassword.Models.PasswordModel;
 import com.muhammedkalender.pocketpassword.R;
@@ -37,6 +39,16 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordListHolder> {
     public void onBindViewHolder(@NonNull PasswordListHolder holder, int position) {
         holder.tvName.setText(listPassword.get(position).getName());
 
+        holder.llContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Global.CURRENT_PASSWORD_MODEL = listPassword.get(position);
+
+                Global.TAB_LAYOUT.getTabAt(2).select();
+                
+                Log.e("asda", "zzz");
+            }
+        });
     }
 
     @Override
