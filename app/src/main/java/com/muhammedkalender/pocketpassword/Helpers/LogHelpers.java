@@ -39,4 +39,22 @@ public class LogHelpers {
     }
 
     //endregion
+
+    //region Info
+
+    public void info(String message){
+        info(-1, message);
+    }
+
+    public void info(int infoCode, String message){
+        try {
+            Log.e("INFO_"+infoCode, message);
+
+            //todo info ?
+        }catch (Exception e){
+            //todo ?
+        }
+    }
+
+    //endregion
 }
