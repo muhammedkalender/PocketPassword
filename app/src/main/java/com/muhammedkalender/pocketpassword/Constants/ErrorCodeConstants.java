@@ -15,9 +15,26 @@ public class ErrorCodeConstants {
 
     //endregion
 
-    //region PAGE
+    //region Page
 
     public static final int HOME_PAGE_INITIALIZE = 200;
+
+    //endregion
+
+    //region Resource
+
+    public static final int
+            RESOURCE_DIMEN = 300,
+            RESOURCE_INT = 301,
+            RESOURCE_STRING = 302,
+            RESOURCE_DIMEN_TO_INTEGER = 303;
+
+    //endregion
+
+    //region Model Password
+
+    public static final int
+            MODEL_PASSWORD_INSERT = 600;
 
     //endregion
 }

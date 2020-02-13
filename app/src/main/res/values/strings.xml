@@ -20,4 +20,6 @@
 
     <string name="input_password">Eklemek istediğiniz hesabın şifresi</string>
     <string name="hint_password">Hesap Şifresi</string>
+    <string name="button_add">Şifreyi Ekle</string>
+    <string name="already_used">%1$s zaten kullanılıyor</string>
 </resources>
