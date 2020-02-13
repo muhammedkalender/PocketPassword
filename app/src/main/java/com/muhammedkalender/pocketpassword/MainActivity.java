@@ -5,6 +5,7 @@ import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import android.util.Log;
 import android.view.View;
 
 import androidx.navigation.NavController;
@@ -14,6 +15,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.tabs.TabLayout;
 import com.muhammedkalender.pocketpassword.Adapters.PasswordAdapter;
+import com.muhammedkalender.pocketpassword.Globals.Config;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
 import com.muhammedkalender.pocketpassword.Helpers.DatabaseHelper;
 import com.muhammedkalender.pocketpassword.Helpers.LogHelpers;
@@ -37,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
 
     private RecyclerView rvPasswordList;
-    private PasswordAdapter adapterPassword;
+    public static PasswordAdapter adapterPassword;
     private RecyclerView.LayoutManager rvlmPasswordList;
 
     public static List<PasswordModel> dsPasswords;
@@ -172,5 +174,14 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_controller_view_tag);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(Global.TAB_LAYOUT.getSelectedTabPosition() == Config.TAB_HOME_INDEX){
+            super.onBackPressed();
+        }else{
+            Global.TAB_LAYOUT.getTabAt(Config.TAB_HOME_INDEX).select();
+        }
     }
 }

@@ -1,18 +1,17 @@
 package com.muhammedkalender.pocketpassword.Pages.Password;
 
-import android.util.Log;
 import android.view.View;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.muhammedkalender.pocketpassword.Abstracts.PageAbstract;
-import com.muhammedkalender.pocketpassword.Controllers.PasswordController;
 import com.muhammedkalender.pocketpassword.Global;
+import com.muhammedkalender.pocketpassword.Globals.Config;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
-import com.muhammedkalender.pocketpassword.Helpers.DatabaseHelper;
 import com.muhammedkalender.pocketpassword.Interfaces.PageInterface;
 import com.muhammedkalender.pocketpassword.Models.PasswordModel;
+import com.muhammedkalender.pocketpassword.Objects.ResultObject;
 import com.muhammedkalender.pocketpassword.R;
 
 public class NewPasswordPage  extends PageAbstract implements PageInterface {
@@ -38,7 +37,7 @@ public class NewPasswordPage  extends PageAbstract implements PageInterface {
         this.etPassword = this.viewRoot.findViewById(R.id.etPassword);
         this.btnAdd = this.viewRoot.findViewById(R.id.btnAdd);
 
-        PasswordController passwordController = new PasswordController();
+        PasswordModel passwordController = new PasswordModel();
 
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,7 +87,16 @@ public class NewPasswordPage  extends PageAbstract implements PageInterface {
                 //todo color
                 PasswordModel passwordModel = new PasswordModel(name, password, "");
 
-                passwordModel.insert();
+                ResultObject insert = passwordModel.insert();
+
+                if(insert.isSuccess()){
+                    Global.TAB_LAYOUT.getTabAt(Config.TAB_HOME_INDEX).select();
+
+                    //todo get synced data
+                    Global.PAGE_HOME.dsPasswords.add(new PasswordModel(name, password, ""));
+                }else{
+                    //todo
+                }
             }
         });
     }

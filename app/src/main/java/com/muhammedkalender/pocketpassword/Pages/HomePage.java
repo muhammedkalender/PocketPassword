@@ -48,6 +48,10 @@ public class HomePage extends PageAbstract implements PageInterface {
             rvPasswordList.setAdapter(adapterPassword);
 
             this.initialized = true;
+
+            PasswordModel passwordModel = new PasswordModel();
+
+            dsPasswords.addAll(passwordModel.selectActive());
         }catch (Exception e){
             this.initialized = false;
 
