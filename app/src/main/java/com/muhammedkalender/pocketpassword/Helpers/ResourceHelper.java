@@ -1,5 +1,7 @@
 package com.muhammedkalender.pocketpassword.Helpers;
 
+import android.graphics.Color;
+
 import com.muhammedkalender.pocketpassword.Constants.ErrorCodeConstants;
 import com.muhammedkalender.pocketpassword.Constants.ValueConstants;
 import com.muhammedkalender.pocketpassword.Global;
@@ -55,6 +57,24 @@ public class ResourceHelper {
             return Global.CONTEXT.getResources().getString(res, params);
         }catch (Exception e){
             Helpers.logger.error(ErrorCodeConstants.RESOURCE_STRING, e);
+
+            return def;
+        }
+    }
+
+    //endregion
+
+    //region Color
+
+    public int getColor(int res){
+        return getColor(res, -1);
+    }
+
+    public int getColor(int res, int def){
+        try{
+            return Global.CONTEXT.getResources().getColor(res);
+        }catch (Exception e){
+            Helpers.logger.error(ErrorCodeConstants.RESOURCE_COLOR, e);
 
             return def;
         }

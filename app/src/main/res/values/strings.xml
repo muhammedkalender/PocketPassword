@@ -36,4 +36,5 @@
     <string name="loading">İşlem Yapılıyor</string>
     <string name="clipboard_title">Şifre</string>
     <string name="password_clipboard">Şifre Kopyalanmıştır</string>
+    <string name="button_copy">Şifreyi Kopyala</string>
 </resources>

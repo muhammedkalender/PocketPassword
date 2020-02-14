@@ -27,7 +27,8 @@ public class ErrorCodeConstants {
             RESOURCE_DIMEN = 300,
             RESOURCE_INT = 301,
             RESOURCE_STRING = 302,
-            RESOURCE_DIMEN_TO_INTEGER = 303;
+            RESOURCE_DIMEN_TO_INTEGER = 303,
+            RESOURCE_COLOR = 304;
 
     //endregion
 
