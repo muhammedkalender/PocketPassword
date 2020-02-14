@@ -9,11 +9,13 @@ import net.sqlcipher.database.SQLiteDatabase;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.muhammedkalender.pocketpassword.Abstracts.ModelAbstract;
 import com.muhammedkalender.pocketpassword.Constants.ErrorCodeConstants;
 import com.muhammedkalender.pocketpassword.Constants.InfoCodeConstants;
 import com.muhammedkalender.pocketpassword.Global;
 import com.muhammedkalender.pocketpassword.Globals.Config;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
+import com.muhammedkalender.pocketpassword.Models.PasswordModel;
 import com.muhammedkalender.pocketpassword.Objects.ResultObject;
 
 import java.io.File;
@@ -45,16 +47,13 @@ public class DatabaseHelper {
             database = SQLiteDatabase.openOrCreateDatabase(databaseFile, "PocketPassword", null);
 
             if (isFirst) {
-                database.execSQL("CREATE TABLE \"passwords\" (\n" +
-                        "\t\"password_id\"\tINTEGER PRIMARY KEY AUTOINCREMENT,\n" +
-                        "\t\"password_name\"\tINTEGER NOT NULL,\n" +
-                        "\t\"password_password\"\tINTEGER NOT NULL,\n" +
-                        "\t\"password_color\"\tINTEGER DEFAULT '',\n" +
-                        "\t\"password_insert\"\tTEXT DEFAULT '',\n" +
-                        "\t\"password_update\"\tTEXT DEFAULT '',\n" +
-                        "\t\"password_active\"\tINTEGER DEFAULT 1\n" +
-                        ");"
-                );
+                ModelAbstract[] models = new ModelAbstract[]{
+                        new PasswordModel()
+                };
+
+                for(ModelAbstract model : models){
+                    this.execute(model.queryTable());
+                }
             }
 
             this.initialized = true;

@@ -5,12 +5,22 @@ public class ColumnObject {
     private boolean primary, notNull, auto_increment;
     private int minLength, maxLength;
 
+    public ColumnObject(){
+
+    }
+
+    public ColumnObject(String name) {
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public ColumnObject setName(String name) {
         this.name = name;
+
+        return this;
     }
 
     public String getType() {
@@ -27,6 +37,14 @@ public class ColumnObject {
         return def;
     }
 
+    public ColumnObject setDef(){
+        if(getType() == "INTEGER"){
+            return setDef("0");
+        }else{
+            return setDef("");
+        }
+    }
+
     public ColumnObject setDef(String def) {
         this.def = def;
 
@@ -35,6 +53,14 @@ public class ColumnObject {
 
     public boolean isNotNull() {
         return notNull;
+    }
+
+    public boolean isAutoIncrement() {
+        return auto_increment;
+    }
+
+    public ColumnObject setNotNull(){
+        return this.setNotNull(true);
     }
 
     public ColumnObject setNotNull(boolean notNull) {
@@ -79,8 +105,10 @@ public class ColumnObject {
         return this;
     }
 
-    public void setAutoIncrement(){
+    public ColumnObject setAutoIncrement(){
         setAutoIncrement(true);
+
+        return this;
     }
 
     public ColumnObject setAutoIncrement(boolean set){

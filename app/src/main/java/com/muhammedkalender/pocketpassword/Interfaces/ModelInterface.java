@@ -8,14 +8,14 @@ import com.muhammedkalender.pocketpassword.Objects.ResultObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public interface ModelInterface {
+public interface ModelInterface<T> {
     public ResultObject initTable();
 
   //todo ? spesifik return lazım
-    public Object insert(Object model);
-    public Object get(int id);
+    public T insert(Object model);
+    public T get(int id);
     public List select();
     public List selectActive();
     public ResultObject delete(int id);
-    public Object update(Object model);
+    public T update(Object model);
 }

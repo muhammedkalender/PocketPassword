@@ -45,8 +45,6 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordListHolder> {
                 Global.CURRENT_PASSWORD_MODEL = listPassword.get(position);
 
                 Global.TAB_LAYOUT.getTabAt(2).select();
-                
-                Log.e("asda", "zzz");
             }
         });
     }
