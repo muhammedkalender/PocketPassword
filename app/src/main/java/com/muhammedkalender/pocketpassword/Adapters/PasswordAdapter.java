@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.muhammedkalender.pocketpassword.Constants.ColorConstants;
 import com.muhammedkalender.pocketpassword.Constants.ErrorCodeConstants;
 import com.muhammedkalender.pocketpassword.Global;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
@@ -59,6 +60,8 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordListHolder> {
                 Global.TAB_LAYOUT.getTabAt(2).select();
             }
         });
+
+        holder.llContainer.setBackgroundColor(ColorConstants.colorItem[position % ColorConstants.colorItem.length]);
 
         holder.ivClipboard.setOnClickListener(new View.OnClickListener() {
             @Override

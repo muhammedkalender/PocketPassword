@@ -1,6 +1,7 @@
 package com.muhammedkalender.pocketpassword;
 
 import android.app.ActionBar;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -18,6 +19,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.muhammedkalender.pocketpassword.Abstracts.ModelAbstract;
 import com.muhammedkalender.pocketpassword.Adapters.PasswordAdapter;
 import com.muhammedkalender.pocketpassword.Components.LoadingComponent;
+import com.muhammedkalender.pocketpassword.Constants.ColorConstants;
 import com.muhammedkalender.pocketpassword.Globals.Config;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
 import com.muhammedkalender.pocketpassword.Helpers.DatabaseHelper;
@@ -65,6 +67,15 @@ public class MainActivity extends AppCompatActivity {
         Helpers.loading = new LoadingComponent(this);
 
         Helpers.loading.show();
+
+        ColorConstants.colorItem =  new int[]{
+                Helpers.resource.getColor(R.color.teal),
+                Helpers.resource.getColor(R.color.purple),
+                Helpers.resource.getColor(R.color.red),
+                Helpers.resource.getColor(R.color.blueGrey),
+                Helpers.resource.getColor(R.color.indigo),
+                Helpers.resource.getColor(R.color.deepOrange)
+        };
 
         Global.SECTION_PAGER_ADAPTER = new SectionsPagerAdapter(this, getSupportFragmentManager());
         Global.VIEW_PAGER = findViewById(R.id.view_pager);
