@@ -10,6 +10,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.muhammedkalender.pocketpassword.Global;
+import com.muhammedkalender.pocketpassword.Globals.Config;
+import com.muhammedkalender.pocketpassword.Globals.Helpers;
 import com.muhammedkalender.pocketpassword.Pages.HomePage;
 import com.muhammedkalender.pocketpassword.Pages.Password.NewPasswordPage;
 import com.muhammedkalender.pocketpassword.Pages.Password.PasswordPage;
@@ -46,21 +48,21 @@ public class PlaceholderFragment extends Fragment {
             Bundle savedInstanceState) {
         View root;
 
-        if(pageViewModel.getIndex() == 1){
+        if (pageViewModel.getIndex() == 1) {
             root = inflater.inflate(R.layout.fragment_new_password, container, false);
 
             NewPasswordPage newPasswordPage = new NewPasswordPage();
             newPasswordPage.initialize(root);
 
             return newPasswordPage.getView();
-        }else if(pageViewModel.getIndex() == 2){
+        } else if (pageViewModel.getIndex() == 2) {
             //Home Page
             root = inflater.inflate(R.layout.fragment_main, container, false);
 
             HomePage homePage = Global.getPageHome(root);
 
             return homePage.getView();
-        }else if(pageViewModel.getIndex() == 3){
+        } else if (pageViewModel.getIndex() == 3) {
             //Password Page
             root = inflater.inflate(R.layout.fragment_password, container, false);
 
@@ -68,8 +70,8 @@ public class PlaceholderFragment extends Fragment {
             passwordPage.initialize(root);
 
             return passwordPage.getView();
-        } else{
-          //TODO
+        } else {
+            //TODO
             return null;
         }
     }

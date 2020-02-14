@@ -37,4 +37,29 @@ public class ErrorCodeConstants {
             MODEL_PASSWORD_INSERT = 600;
 
     //endregion
+
+    //region Model Valid
+
+    public static final int
+            MODEL_VALID = 700;
+
+    //endregion
+
+    //region Loading
+
+    public static final int
+            LOADING_SHOW = 800,
+            LOADING_SHOW_WITH_RESOURCE = 801,
+            LOADING_SHOW_WITH_MESSAGE = 802,
+            LOADING_HIDE = 803;
+
+    //endregion
+
+    //region Clipboard
+
+    public static final int
+            CLIPBOARD_PASSWORD = 1000,
+            CLIPBOARD_PASSWORD_IN_LIST = 1001;
+
+    //endregion
 }

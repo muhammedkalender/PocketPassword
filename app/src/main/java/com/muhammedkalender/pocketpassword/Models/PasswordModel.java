@@ -15,11 +15,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PasswordModel extends ModelAbstract {
-
+    private int id;
 
     private String name;
     private String password;
     private String color;
+
+    private boolean active;
 
     public PasswordModel() {
         initTable();
@@ -32,6 +34,25 @@ public class PasswordModel extends ModelAbstract {
         this.name = name;
         this.password = password;
         this.color = color;
+    }
+
+    public PasswordModel(int id, String name, String password, String color) {
+        initTable();
+
+        this.id = id;
+        this.name = name;
+        this.password = password;
+        this.color = color;
+    }
+
+    public PasswordModel(int id, String name, String password, String color, boolean active) {
+        initTable();
+
+        this.id = id;
+        this.name = name;
+        this.password = password;
+        this.color = color;
+        this.active = active;
     }
 
     public String getName() {
@@ -133,7 +154,7 @@ public class PasswordModel extends ModelAbstract {
     }
 
     @Override
-    public List selectActive() {
+    public List<PasswordModel> selectActive() {
         ResultObject select = Helpers.database.cursor("SELECT * FROM " + table + " WHERE " + prefix + "_active = 1");
 
         if (select.isSuccess()) {
@@ -143,9 +164,12 @@ public class PasswordModel extends ModelAbstract {
 
             if (cursor.moveToNext()) {
                 passwords.add(new PasswordModel(
+                        cursor.getInt(cursor.getColumnIndex(prefix + "_id")),
                         cursor.getString(cursor.getColumnIndex(prefix + "_name")),
                         cursor.getString(cursor.getColumnIndex(prefix + "_password")),
-                        ""
+                        cursor.getString(cursor.getColumnIndex(prefix + "_color")),
+                        cursor.getInt(cursor.getColumnIndex(prefix + "_active")) == 1
+
                 ));
             }
 
@@ -156,5 +180,67 @@ public class PasswordModel extends ModelAbstract {
 
             return new ArrayList();
         }
+    }
+
+    @Override
+    public ResultObject validation() {
+        try {
+            //todo
+            return null;
+        } catch (Exception e) {
+            return new ResultObject(ErrorCodeConstants.MODEL_VALID)
+                    .setError(e);
+        }
+    }
+
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    @Override
+    public ResultObject update() {
+        //todo
+        return super.update();
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    @Override
+    public ResultObject update(Object update) {
+        //todo
+
+        String queryUpdate = String.format(
+                "UPDATE %1$s SET %2$s_name = '%4$s', %2$s_password = '%5$s', %2$s_color = '%6$s', %2$s_active = %7$s WHERE %2$s_id = %3$s",
+                this.table,
+                this.prefix,
+                this.id,
+                this.name,
+                this.password,
+                this.color,
+                this.active
+        );
+
+        Log.e("asda", queryUpdate);
+
+        return super.update(queryUpdate);
+    }
+
+    public int getId() {
+        return id;
     }
 }

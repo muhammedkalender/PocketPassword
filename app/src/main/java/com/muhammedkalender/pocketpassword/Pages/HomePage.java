@@ -20,23 +20,18 @@ import java.util.List;
 
 public class HomePage extends PageAbstract implements PageInterface {
     private RecyclerView rvPasswordList;
-    private PasswordAdapter adapterPassword;
     private RecyclerView.LayoutManager rvlmPasswordList;
-
-    public List<PasswordModel> dsPasswords;
 
     @Override
     public void initialize(View viewRoot) {
-        if (isInitialized()){
+        if (isInitialized()) {
             return;
         }
 
-        try{
-           this.viewRoot = viewRoot;
+        try {
+            this.viewRoot = viewRoot;
 
-            dsPasswords = new ArrayList<>();
-            dsPasswords.add(new PasswordModel("MB", "ASDSAD", "#FFFFFF"));
-            dsPasswords.add(new PasswordModel("ZZ", "HASH ZZ", "#CCCCCC"));
+            Global.LIST_PASSWORDS = new ArrayList<>();
 
             rvPasswordList = viewRoot.findViewById(R.id.rvPasswordList);
             rvPasswordList.setHasFixedSize(true);
@@ -44,15 +39,15 @@ public class HomePage extends PageAbstract implements PageInterface {
             rvlmPasswordList = new LinearLayoutManager(Global.CONTEXT);
             rvPasswordList.setLayoutManager(rvlmPasswordList);
 
-            adapterPassword = new PasswordAdapter(dsPasswords, Global.CONTEXT);
-            rvPasswordList.setAdapter(adapterPassword);
+            Global.PASSWORD_ADAPTER = new PasswordAdapter(Global.CONTEXT);
+            rvPasswordList.setAdapter(Global.PASSWORD_ADAPTER);
 
             this.initialized = true;
 
             PasswordModel passwordModel = new PasswordModel();
 
-            dsPasswords.addAll(passwordModel.selectActive());
-        }catch (Exception e){
+            Global.LIST_PASSWORDS.addAll(passwordModel.selectActive());
+        } catch (Exception e) {
             this.initialized = false;
 
             Helpers.logger.error(ErrorCodeConstants.HOME_PAGE_INITIALIZE, e);

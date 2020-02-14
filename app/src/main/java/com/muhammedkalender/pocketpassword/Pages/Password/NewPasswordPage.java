@@ -14,7 +14,7 @@ import com.muhammedkalender.pocketpassword.Models.PasswordModel;
 import com.muhammedkalender.pocketpassword.Objects.ResultObject;
 import com.muhammedkalender.pocketpassword.R;
 
-public class NewPasswordPage  extends PageAbstract implements PageInterface {
+public class NewPasswordPage extends PageAbstract implements PageInterface {
 
     public MaterialButton btnAdd = null;
 
@@ -37,49 +37,72 @@ public class NewPasswordPage  extends PageAbstract implements PageInterface {
         this.etPassword = this.viewRoot.findViewById(R.id.etPassword);
         this.btnAdd = this.viewRoot.findViewById(R.id.btnAdd);
 
-        PasswordModel passwordController = new PasswordModel();
+        final PasswordModel passwordModel = new PasswordModel();
 
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Helpers.loading.show();
+
                 String name = etName.getText().toString();
                 String password = etPassword.getText().toString();
 
-                if(etName.getText().toString() == null || etName.getText().toString().length() == 0){
+                passwordModel.setName(name);
+                passwordModel.setPassword(password);
+                passwordModel.setColor("");
+
+                ResultObject validation = passwordModel.validation();
+
+                if (etName.getText().toString() == null || etName.getText().toString().length() == 0) {
                     tilName.setError(Helpers.resource.getString(R.string.not_null, "", Helpers.resource.getString(R.string.input_name)));
 
+                    Helpers.loading.hide();
+
                     return;
-                }else{
-                    if(name.length() > Helpers.resource.getInt(R.integer.name_max_length)){
+                } else {
+                    if (name.length() > Helpers.resource.getInt(R.integer.name_max_length)) {
                         tilName.setError(Helpers.resource.getString(R.string.max_length, "", Helpers.resource.getString(R.string.input_name), Helpers.resource.getInt(R.integer.name_max_length)));
 
+                        Helpers.loading.hide();
+
                         return;
-                    }else if(name.length() < Helpers.resource.getInt(R.integer.name_min_length)){
+                    } else if (name.length() < Helpers.resource.getInt(R.integer.name_min_length)) {
                         tilName.setError(Helpers.resource.getString(R.string.min_length, "", Helpers.resource.getString(R.string.input_name), Helpers.resource.getInt(R.integer.name_min_length)));
 
-                        return;
-                    }else if(passwordController.checkDuplicate(name)){
-                        tilName.setError(Helpers.resource.getString(R.string.already_used, "", name));
+                        Helpers.loading.hide();
 
                         return;
-                    }else{
+                    } else if (passwordModel.checkDuplicate(name)) {
+                        tilName.setError(Helpers.resource.getString(R.string.already_used, "", name));
+
+                        Helpers.loading.hide();
+
+                        return;
+                    } else {
                         tilName.setErrorEnabled(false);
                     }
                 }
 
-                if(etPassword.getText().toString() == null || etPassword.getText().toString().length() == 0){
+                if (etPassword.getText().toString() == null || etPassword.getText().toString().length() == 0) {
                     tilPassword.setError(Helpers.resource.getString(R.string.not_null, "", Helpers.resource.getString(R.string.input_password)));
 
+                    Helpers.loading.hide();
+
                     return;
-                }else{
-                    if(password.length() > Helpers.resource.getInt(R.integer.password_max_length)){
+                } else {
+                    if (password.length() > Helpers.resource.getInt(R.integer.password_max_length)) {
                         tilPassword.setError(Helpers.resource.getString(R.string.max_length, "", Helpers.resource.getString(R.string.input_password)));
 
-                    }else if(password.length() < Helpers.resource.getInt(R.integer.password_min_length)){
-                        tilPassword.setError(Helpers.resource.getString(R.string.min_length, "", Helpers.resource.getString(R.string.input_password)));
+                        Helpers.loading.hide();
 
                         return;
-                    }else{
+                    } else if (password.length() < Helpers.resource.getInt(R.integer.password_min_length)) {
+                        tilPassword.setError(Helpers.resource.getString(R.string.min_length, "", Helpers.resource.getString(R.string.input_password)));
+
+                        Helpers.loading.hide();
+
+                        return;
+                    } else {
                         tilPassword.setErrorEnabled(false);
                     }
                 }
@@ -89,14 +112,17 @@ public class NewPasswordPage  extends PageAbstract implements PageInterface {
 
                 ResultObject insert = passwordModel.insert();
 
-                if(insert.isSuccess()){
+                if (insert.isSuccess()) {
                     Global.TAB_LAYOUT.getTabAt(Config.TAB_HOME_INDEX).select();
 
                     //todo get synced data
-                    Global.PAGE_HOME.dsPasswords.add(new PasswordModel(name, password, ""));
-                }else{
+                    //Global.SECTION_PAGER_ADAPTER.add(name);
+                    Global.LIST_PASSWORDS.add(new PasswordModel(name, password, ""));
+                } else {
                     //todo
                 }
+
+                Helpers.loading.hide();
             }
         });
     }
