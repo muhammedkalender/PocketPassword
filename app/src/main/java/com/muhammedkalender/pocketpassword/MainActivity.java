@@ -1,5 +1,6 @@
 package com.muhammedkalender.pocketpassword;
 
+import android.app.ActionBar;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -16,12 +17,14 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.tabs.TabLayout;
 import com.muhammedkalender.pocketpassword.Abstracts.ModelAbstract;
 import com.muhammedkalender.pocketpassword.Adapters.PasswordAdapter;
+import com.muhammedkalender.pocketpassword.Components.LoadingComponent;
 import com.muhammedkalender.pocketpassword.Globals.Config;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
 import com.muhammedkalender.pocketpassword.Helpers.DatabaseHelper;
 import com.muhammedkalender.pocketpassword.Helpers.LogHelpers;
 import com.muhammedkalender.pocketpassword.Helpers.ResourceHelper;
 import com.muhammedkalender.pocketpassword.Models.PasswordModel;
+import com.muhammedkalender.pocketpassword.Objects.ColumnObject;
 import com.muhammedkalender.pocketpassword.ui.main.SectionsPagerAdapter;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -39,15 +42,6 @@ public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
 
-    private RecyclerView rvPasswordList;
-    public static PasswordAdapter adapterPassword;
-    private RecyclerView.LayoutManager rvlmPasswordList;
-
-    public static List<PasswordModel> dsPasswords;
-
-    public static TabLayout tabs;
-    public static ViewPager viewPager;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,19 +57,25 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        });
 
+        Global.CONTEXT = this;
+
         Helpers.logger = new LogHelpers();
         Helpers.resource = new ResourceHelper();
         Helpers.database = new DatabaseHelper(this);
+        Helpers.loading = new LoadingComponent(this);
 
-        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
-        viewPager = findViewById(R.id.view_pager);
-        viewPager.setAdapter(sectionsPagerAdapter);
-        tabs = findViewById(R.id.tabs);
-        tabs.setupWithViewPager(viewPager);
+        Helpers.loading.show();
 
-        Global.CONTEXT = this;
-        Global.TAB_LAYOUT = tabs;
-        Global.VIEW_PAGER = viewPager;
+        Global.SECTION_PAGER_ADAPTER = new SectionsPagerAdapter(this, getSupportFragmentManager());
+        Global.VIEW_PAGER = findViewById(R.id.view_pager);
+        Global.VIEW_PAGER.setAdapter(Global.SECTION_PAGER_ADAPTER);
+        Global.TAB_LAYOUT = findViewById(R.id.tabs);
+        Global.TAB_LAYOUT.setupWithViewPager(Global.VIEW_PAGER);
+
+        Global.TAB_LAYOUT.getTabAt(Config.TAB_HOME_INDEX).select();
+
+        Helpers.loading.hide();
+
         //tabs.getTabAt(1).select();
 //        DrawerLayout drawer = findViewById(R.id.drawer_layout);
 //        NavigationView navigationView = findViewById(R.id.nav_view);
@@ -116,11 +116,11 @@ public class MainActivity extends AppCompatActivity {
 //        alertDialog.setNeutralButton("asda", null);
 //        alertDialog.create().show();
 
-  //      CryptHelper cryptHelper = new CryptHelper();
+        //      CryptHelper cryptHelper = new CryptHelper();
 
 //      String encrypedData =   cryptHelper.encrypt("Test", "TestTestTestTestTest");
 
-     //   Log.e("asda", encrypedData);
+        //   Log.e("asda", encrypedData);
 //
 //        String rawData = "test";
 //
@@ -157,6 +157,10 @@ public class MainActivity extends AppCompatActivity {
 
         //Log.e("ISAVAB", databaseHelper.isAvailable("SELECT * FROM 'test' LIMIT 1", "bakem");
 
+
+        //Global.TAB_LAYOUT.addTab(tab);
+
+
     }
 
     @Override
@@ -175,9 +179,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(Global.TAB_LAYOUT.getSelectedTabPosition() == Config.TAB_HOME_INDEX){
+        if (Global.TAB_LAYOUT.getSelectedTabPosition() == Config.TAB_HOME_INDEX) {
             super.onBackPressed();
-        }else{
+        } else {
             Global.TAB_LAYOUT.getTabAt(Config.TAB_HOME_INDEX).select();
         }
     }

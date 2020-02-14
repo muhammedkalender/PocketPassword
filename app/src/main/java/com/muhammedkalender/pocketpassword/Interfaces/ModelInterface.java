@@ -14,8 +14,9 @@ public interface ModelInterface<T> {
   //todo ? spesifik return lazım
     public T insert(Object model);
     public T get(int id);
-    public List select();
-    public List selectActive();
+    public List<T> select();
+    public List<T> selectActive();
     public ResultObject delete(int id);
-    public T update(Object model);
+    public ResultObject update(Object model);
+    public ResultObject validation();
 }

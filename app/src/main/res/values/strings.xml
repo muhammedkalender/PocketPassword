@@ -30,4 +30,10 @@
     <string name="hint_password_edit">Hesap Şifresi</string>
     <string name="hint_name_edit">Hesap Adı</string>
     <string name="input_name_edit">Düzenlemek istediğiniz hesabın adı</string>
+
+    <string name="tab_add_password">EKLE</string>
+    <string name="tab_list_password">ŞİFRELER</string>
+    <string name="loading">İşlem Yapılıyor</string>
+    <string name="clipboard_title">Şifre</string>
+    <string name="password_clipboard">Şifre Kopyalanmıştır</string>
 </resources>

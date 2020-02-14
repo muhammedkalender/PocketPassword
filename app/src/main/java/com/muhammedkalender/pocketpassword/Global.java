@@ -1,14 +1,19 @@
 package com.muhammedkalender.pocketpassword;
 
 import android.content.Context;
+import android.service.autofill.Dataset;
 import android.view.View;
 import android.widget.TableLayout;
 
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
+import com.muhammedkalender.pocketpassword.Adapters.PasswordAdapter;
 import com.muhammedkalender.pocketpassword.Models.PasswordModel;
 import com.muhammedkalender.pocketpassword.Pages.HomePage;
+import com.muhammedkalender.pocketpassword.ui.main.SectionsPagerAdapter;
+
+import java.util.List;
 
 public class Global {
     //region Basic
@@ -19,7 +24,11 @@ public class Global {
 
     public static TabLayout TAB_LAYOUT = null;
     public static ViewPager VIEW_PAGER = null;
-    public static PasswordModel CURRENT_PASSWORD_MODEL = null;
+    public static int CURRENT_PASSWORD_MODEL_INDEX = 0;
+    public static SectionsPagerAdapter SECTION_PAGER_ADAPTER = null;
+    public static Dataset PASSWORDS = null;
+    public static List<PasswordModel> LIST_PASSWORDS = null;
+    public static PasswordAdapter PASSWORD_ADAPTER = null;
 
     //region Pages
 

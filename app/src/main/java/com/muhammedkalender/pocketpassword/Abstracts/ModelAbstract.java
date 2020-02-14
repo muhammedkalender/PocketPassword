@@ -1,5 +1,6 @@
 package com.muhammedkalender.pocketpassword.Abstracts;
 
+import com.muhammedkalender.pocketpassword.Globals.Helpers;
 import com.muhammedkalender.pocketpassword.Interfaces.ModelInterface;
 import com.muhammedkalender.pocketpassword.Objects.ColumnObject;
 import com.muhammedkalender.pocketpassword.Objects.ResultObject;
@@ -24,9 +25,16 @@ public abstract class ModelAbstract<T> implements ModelInterface {
         return null;
     }
 
-    public T update(Object update) {
+    public ResultObject update(){
+        //OVVERIDE
+        return update(this);
+    }
+
+    public ResultObject update(String query) {
         //todo
-        return null;
+        //OVVERIDE
+
+        return Helpers.database.execute(query);
     }
 
     public String queryTable() {
