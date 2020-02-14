@@ -69,7 +69,8 @@ public class PlaceholderFragment extends Fragment {
 
             return passwordPage.getView();
         } else{
-            return inflater.inflate(R.layout.fragment_gallery, container, false);
+          //TODO
+            return null;
         }
     }
 }

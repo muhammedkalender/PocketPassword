@@ -76,13 +76,54 @@ public class PasswordModel extends ModelAbstract {
         this.prefix = "password";
 
         this.columns = new ColumnObject[]{
-                new ColumnObject("id", SQLConstants.TYPE_INTEGER, "", false, 125)
+                new ColumnObject()
+                        .setName("id")
+                        .setType(SQLConstants.TYPE_INTEGER)
+                        .setAutoIncrement()
+                        .setPrimary(),
+                new ColumnObject()
+                        .setName("name")
+                        .setType(SQLConstants.TYPE_STRING)
+                        .setNotNull()
+                        .setMinLength(1)
+                        .setMaxLength(128),
+                new ColumnObject()
+                        .setName("password")
+                        .setType(SQLConstants.TYPE_STRING)
+                        .setNotNull()
+                        .setMinLength(8)
+                        .setMaxLength(128),
+                new ColumnObject()
+                        .setName("color")
+                        .setType(SQLConstants.TYPE_STRING)
+                        .setDef("")
+                        .setMinLength(0)
+                        .setMaxLength(6),
+                new ColumnObject()
+                        .setName("insert")
+                        .setType(SQLConstants.TYPE_DATE)
+                        .setDef("")
+                        .setMinLength(0)
+                        .setMaxLength(32),
+                new ColumnObject()
+                        .setName("update")
+                        .setType(SQLConstants.TYPE_DATE)
+                        .setDef("")
+                        .setMinLength(0)
+                        .setMaxLength(32),
+                new ColumnObject()
+                        .setName("active")
+                        .setType(SQLConstants.TYPE_BOOLEAN)
+                        .setDef("1")
+                        .setMinLength(0)
+                        .setMaxLength(1)
         };
+
         return null;
     }
 
     @Override
-    public Object insert(Object model) {
+    public PasswordModel insert(Object model) {
         return null;
     }
 

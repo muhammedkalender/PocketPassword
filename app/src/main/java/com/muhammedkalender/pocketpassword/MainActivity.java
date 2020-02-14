@@ -14,6 +14,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.tabs.TabLayout;
+import com.muhammedkalender.pocketpassword.Abstracts.ModelAbstract;
 import com.muhammedkalender.pocketpassword.Adapters.PasswordAdapter;
 import com.muhammedkalender.pocketpassword.Globals.Config;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
@@ -53,14 +54,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+//        FloatingActionButton fab = findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+//            }
+//        });
 
         Helpers.logger = new LogHelpers();
         Helpers.resource = new ResourceHelper();
@@ -156,11 +157,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Log.e("ISAVAB", databaseHelper.isAvailable("SELECT * FROM 'test' LIMIT 1", "bakem");
 
-
     }
-
-    public static PublicKey keyPublic = null;
-    public static PrivateKey keyPrivate = null;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
