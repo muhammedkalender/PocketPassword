@@ -46,6 +46,8 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordListHolder> {
     public void onBindViewHolder(@NonNull PasswordListHolder holder, int position) {
         Helpers.logger.info(String.format("Index %1$d view hazırlanıyor, %2$d indexi bulundu", position, Helpers.list.findIndexFromTempIndex(position)));
 
+        int tintColor = ColorConstants.colorItem[position % ColorConstants.colorItem.length].getTint();
+
         final PasswordModel passwordModel = Global.LIST_PASSWORDS_SOLID.get(Helpers.list.findIndexFromTempIndex(position));
 
         holder.tvName.setText(passwordModel.getName());
@@ -67,12 +69,14 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordListHolder> {
                 Helpers.loading.hide();
 
                 Global.TAB_LAYOUT.getTabAt(2).select();
+                Global.TAB_LAYOUT.getTabAt(2).setText(passwordModel.getName());
+                Global.TAB_LAYOUT.getTabAt(2).setContentDescription(passwordModel.getName());
 
                 Global.PAGE_PASSWORD.load(passwordModel);
             }
         });
 
-        holder.llContainer.setBackgroundColor(ColorConstants.colorItem[position % ColorConstants.colorItem.length]);
+        holder.llContainer.setBackgroundColor(ColorConstants.colorItem[position % ColorConstants.colorItem.length].getColor());
 
         holder.ivClipboard.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,6 +100,10 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordListHolder> {
                 holder.llContainer.callOnClick();
             }
         });
+
+        holder.ivForward.setColorFilter(tintColor);
+        holder.ivClipboard.setColorFilter(tintColor);
+        holder.ivShow.setColorFilter(tintColor);
     }
 
     @Override

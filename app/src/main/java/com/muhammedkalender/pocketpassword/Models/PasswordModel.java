@@ -81,8 +81,12 @@ public class PasswordModel extends ModelAbstract {
         }
     }
 
-    public boolean checkDuplicate(String name) {
-        ResultObject check = Helpers.database.isAvailable("SELECT * FROM passwords WHERE password_name = '" + name + "'", "password_id");
+    public boolean checkDuplicate(String name){
+        return checkDuplicate(name, true);
+    }
+
+    public boolean checkDuplicate(String name, boolean ignoreCamelCase) {
+        ResultObject check = Helpers.database.isAvailable("SELECT * FROM passwords WHERE password_name = '" + name + "'", "password_id", ignoreCamelCase);
 
         if (check.isSuccess()) {
             return (Boolean) check.getData();
