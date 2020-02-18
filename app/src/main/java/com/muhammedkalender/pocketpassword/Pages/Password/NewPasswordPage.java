@@ -6,6 +6,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.muhammedkalender.pocketpassword.Abstracts.PageAbstract;
+import com.muhammedkalender.pocketpassword.Constants.ErrorCodeConstants;
 import com.muhammedkalender.pocketpassword.Global;
 import com.muhammedkalender.pocketpassword.Globals.Config;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
@@ -13,6 +14,8 @@ import com.muhammedkalender.pocketpassword.Interfaces.PageInterface;
 import com.muhammedkalender.pocketpassword.Models.PasswordModel;
 import com.muhammedkalender.pocketpassword.Objects.ResultObject;
 import com.muhammedkalender.pocketpassword.R;
+
+import java.util.logging.Logger;
 
 public class NewPasswordPage extends PageAbstract implements PageInterface {
 
@@ -113,12 +116,17 @@ public class NewPasswordPage extends PageAbstract implements PageInterface {
                 ResultObject insert = passwordModel.insert();
 
                 if (insert.isSuccess()) {
+                    Helpers.logger.info(String.format("%1$d ID ile kayıt girildi", (int)insert.getData()));
+
                     Global.TAB_LAYOUT.getTabAt(Config.TAB_HOME_INDEX).select();
 
                     //todo get synced data
                     //Global.SECTION_PAGER_ADAPTER.add(name);
-                    Global.LIST_PASSWORDS.add(new PasswordModel(name, password, ""));
+                    Global.LIST_PASSWORDS.add(new PasswordModel((int)insert.getData(), name, password, ""));
+                    Global.LIST_PASSWORDS_SOLID.add(new PasswordModel((int)insert.getData(), name, password, ""));
+                    Global.PASSWORD_ADAPTER.notifyDataSetChanged();
                 } else {
+                    Helpers.logger.error(ErrorCodeConstants.MODEL_PASSWORD_INSERT, (Exception) insert.getData());
                     //todo
                 }
 

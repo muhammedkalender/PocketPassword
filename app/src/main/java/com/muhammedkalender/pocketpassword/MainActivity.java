@@ -23,6 +23,7 @@ import com.muhammedkalender.pocketpassword.Constants.ColorConstants;
 import com.muhammedkalender.pocketpassword.Globals.Config;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
 import com.muhammedkalender.pocketpassword.Helpers.DatabaseHelper;
+import com.muhammedkalender.pocketpassword.Helpers.ListHelper;
 import com.muhammedkalender.pocketpassword.Helpers.LogHelpers;
 import com.muhammedkalender.pocketpassword.Helpers.ResourceHelper;
 import com.muhammedkalender.pocketpassword.Models.PasswordModel;
@@ -65,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
         Helpers.resource = new ResourceHelper();
         Helpers.database = new DatabaseHelper(this);
         Helpers.loading = new LoadingComponent(this);
+        Helpers.list = new ListHelper();
 
         Helpers.loading.show();
 

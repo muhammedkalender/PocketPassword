@@ -74,7 +74,7 @@ public class PasswordModel extends ModelAbstract {
 
     public ResultObject insert() {
         try {
-            return Helpers.database.execute("INSERT INTO passwords (password_name, password_password, password_color) VALUES ('" + name + "', '" + password + "', '')");
+            return Helpers.database.insert("INSERT INTO passwords (password_name, password_password, password_color) VALUES ('" + name + "', '" + password + "', '')");
         } catch (Exception e) {
             return new ResultObject(ErrorCodeConstants.MODEL_PASSWORD_INSERT)
                     .setError(e);
@@ -160,9 +160,11 @@ public class PasswordModel extends ModelAbstract {
         if (select.isSuccess()) {
             Cursor cursor = (Cursor) select.getData();
 
+            Helpers.logger.info(String.format("Selected %1$s password", cursor.getCount()));
+
             List passwords = new ArrayList();
 
-            if (cursor.moveToNext()) {
+            while(cursor.moveToNext()) {
                 passwords.add(new PasswordModel(
                         cursor.getInt(cursor.getColumnIndex(prefix + "_id")),
                         cursor.getString(cursor.getColumnIndex(prefix + "_name")),

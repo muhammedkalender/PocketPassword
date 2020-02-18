@@ -11,6 +11,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.muhammedkalender.pocketpassword.Adapters.PasswordAdapter;
 import com.muhammedkalender.pocketpassword.Models.PasswordModel;
 import com.muhammedkalender.pocketpassword.Pages.HomePage;
+import com.muhammedkalender.pocketpassword.Pages.Password.PasswordPage;
 import com.muhammedkalender.pocketpassword.ui.main.SectionsPagerAdapter;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class Global {
     public static int CURRENT_PASSWORD_MODEL_INDEX = 0;
     public static SectionsPagerAdapter SECTION_PAGER_ADAPTER = null;
     public static Dataset PASSWORDS = null;
+    public static List<PasswordModel> LIST_PASSWORDS_SOLID = null;
     public static List<PasswordModel> LIST_PASSWORDS = null;
     public static PasswordAdapter PASSWORD_ADAPTER = null;
 
@@ -45,6 +47,33 @@ public class Global {
                 PAGE_HOME.initialize(root);
 
                 return getPageHome(root);
+            }
+
+            return null;
+        }
+    }
+
+    //endregion
+
+    //region Password
+
+    public static PasswordPage PAGE_PASSWORD = null;
+
+    public static PasswordPage getPagePassword(View root){
+        return Global.getPagePassword(root, null);
+    }
+
+    public static PasswordPage getPagePassword(View root, PasswordModel passwordModel){
+        if(PAGE_PASSWORD != null && PAGE_PASSWORD.isInitialized()){
+            PAGE_PASSWORD.load(passwordModel);
+
+            return PAGE_PASSWORD;
+        }else{
+            if(PAGE_PASSWORD == null){
+                PAGE_PASSWORD = new PasswordPage();
+                PAGE_PASSWORD.initialize(root);
+
+                return PAGE_PASSWORD;
             }
 
             return null;
