@@ -37,4 +37,6 @@
     <string name="clipboard_title">Şifre</string>
     <string name="password_clipboard">Şifre Kopyalanmıştır</string>
     <string name="button_copy">Şifreyi Kopyala</string>
+    <string name="hint_text">TODO</string>
+    <string name="hint_search">Filtrelemek için yazın</string>
 </resources>

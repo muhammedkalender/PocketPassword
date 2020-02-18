@@ -12,6 +12,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.muhammedkalender.pocketpassword.Abstracts.PageAbstract;
 import com.muhammedkalender.pocketpassword.Constants.ErrorCodeConstants;
+import com.muhammedkalender.pocketpassword.Constants.InfoCodeConstants;
 import com.muhammedkalender.pocketpassword.Global;
 import com.muhammedkalender.pocketpassword.Globals.Config;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
@@ -43,10 +44,23 @@ public class PasswordPage extends PageAbstract implements PageInterface {
         this.btnSave = this.viewRoot.findViewById(R.id.btnSave);
         this.btnClipboard = this.viewRoot.findViewById(R.id.btnClipboard);
 
-        this.etName.setText(Global.LIST_PASSWORDS.get(Global.CURRENT_PASSWORD_MODEL_INDEX).getName());
-        this.etPassword.setText(Global.LIST_PASSWORDS.get(Global.CURRENT_PASSWORD_MODEL_INDEX).getPassword());
+        Helpers.logger.info("Yükle");
 
-        PasswordModel passwordModel = Global.LIST_PASSWORDS.get(Global.CURRENT_PASSWORD_MODEL_INDEX);
+        PasswordModel passwordModel = Helpers.list.findByGlobal();
+
+        Helpers.logger.info(InfoCodeConstants.PASSWORD_FILL_VIEW, passwordModel.getName());
+
+        load(passwordModel);
+    }
+
+    @Override
+    public View getView() {
+        return this.viewRoot;
+    }
+
+    public void load(PasswordModel passwordModel){
+        this.etName.setText(passwordModel.getName());
+        this.etPassword.setText(passwordModel.getPassword());
 
         this.btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,6 +129,8 @@ public class PasswordPage extends PageAbstract implements PageInterface {
 
                 if (insert.isSuccess()) {
                     Global.LIST_PASSWORDS.set(Global.CURRENT_PASSWORD_MODEL_INDEX, passwordModel);
+                    Helpers.list.findAndUpdate(passwordModel);
+                    Global.LIST_PASSWORDS_SOLID.set(Helpers.list.findIndexFromSolid(passwordModel), passwordModel); //todo
                     Global.PASSWORD_ADAPTER.notifyDataSetChanged();
                     Global.TAB_LAYOUT.getTabAt(Config.TAB_HOME_INDEX + 1).setText(passwordModel.getName());
                     Global.TAB_LAYOUT.getTabAt(Config.TAB_HOME_INDEX + 1).setContentDescription(passwordModel.getName());
@@ -141,10 +157,5 @@ public class PasswordPage extends PageAbstract implements PageInterface {
                 }
             }
         });
-    }
-
-    @Override
-    public View getView() {
-        return this.viewRoot;
     }
 }

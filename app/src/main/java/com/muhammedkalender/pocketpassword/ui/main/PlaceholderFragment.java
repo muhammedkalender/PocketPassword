@@ -6,9 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.muhammedkalender.pocketpassword.Constants.InfoCodeConstants;
 import com.muhammedkalender.pocketpassword.Global;
 import com.muhammedkalender.pocketpassword.Globals.Config;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
@@ -66,8 +68,9 @@ public class PlaceholderFragment extends Fragment {
             //Password Page
             root = inflater.inflate(R.layout.fragment_password, container, false);
 
-            PasswordPage passwordPage = new PasswordPage();
-            passwordPage.initialize(root);
+            PasswordPage passwordPage = Global.getPagePassword(root);
+
+            Helpers.logger.info(InfoCodeConstants.PAGE_CHANGE, "Password");
 
             return passwordPage.getView();
         } else {

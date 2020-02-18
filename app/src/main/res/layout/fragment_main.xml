@@ -7,13 +7,38 @@
     android:layout_height="match_parent"
     tools:context=".ui.main.PlaceholderFragment">
 
-        <RelativeLayout
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/rlSearchBar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvPasswordList"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilSearch"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scrollbars="vertical" />
-        </RelativeLayout>
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_search"
+                app:startIconDrawable="@drawable/ic_search_24dp"
+                app:startIconTint="@color/colorPrimary">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etSearch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvPasswordList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/rlSearchBar"
+            android:scrollbars="vertical" />
+    </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

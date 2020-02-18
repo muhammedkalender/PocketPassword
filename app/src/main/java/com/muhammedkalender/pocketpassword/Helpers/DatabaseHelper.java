@@ -51,7 +51,7 @@ public class DatabaseHelper {
                         new PasswordModel()
                 };
 
-                for(ModelAbstract model : models){
+                for (ModelAbstract model : models) {
                     this.execute(model.queryTable());
                 }
             }
@@ -81,7 +81,7 @@ public class DatabaseHelper {
     //region Execute
 
     public ResultObject execute(String query) {
-        if(Config.LOG_SQL_EXECUTE){
+        if (Config.LOG_SQL_EXECUTE) {
             Helpers.logger.info(InfoCodeConstants.SQL_EXECUTE, query);
         }
 
@@ -114,7 +114,7 @@ public class DatabaseHelper {
             }
 
             while (cursor.moveToNext()) {
-                if (cursor.getColumnIndex(column) <= 0) {
+                if (cursor.getColumnIndex(column) < 0) {
                     return new ResultObject(true, "", false);
                 }
 
@@ -170,7 +170,7 @@ public class DatabaseHelper {
     //region Cursor
 
     public ResultObject cursor(String query) {
-        if(Config.LOG_SQL_EXECUTE){
+        if (Config.LOG_SQL_EXECUTE) {
             Helpers.logger.info(InfoCodeConstants.SQL_CURSOR, query);
         }
 
@@ -198,6 +198,35 @@ public class DatabaseHelper {
                     .setData(cursor);
         } catch (Exception e) {
             return new ResultObject(ErrorCodeConstants.SQL_SELECT_WITH_DATA)
+                    .setError(e);
+        }
+    }
+
+    //endregion
+
+    //region Insert
+
+    public ResultObject insert(String query) {
+        if (Config.LOG_SQL_EXECUTE) {
+            Helpers.logger.info(InfoCodeConstants.SQL_CURSOR, query);
+        }
+
+        try {
+            database.execSQL(query);
+
+            Cursor cursor = (Cursor) database.query("SELECT last_insert_rowid();");
+
+            if (cursor.moveToFirst()) {
+                return new ResultObject()
+                        .setData(cursor.getInt(0));
+            } else {
+                return new ResultObject()
+                        .setData(-1)
+                        .setError(new Exception("TODO"));
+            }
+        } catch (Exception e) {
+            return new ResultObject(ErrorCodeConstants.SQL_EXECUTE)
+                    .setData(-1)
                     .setError(e);
         }
     }
