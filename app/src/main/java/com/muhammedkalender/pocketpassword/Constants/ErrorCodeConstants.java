@@ -63,4 +63,22 @@ public class ErrorCodeConstants {
             CLIPBOARD_PASSWORD_IN_LIST = 1001;
 
     //endregion
+
+    //region Shared Preferences
+
+    public static final int
+            SHARED_PREFERENCES_INTEGER_WRITE = 2000,
+            SHARED_PREFERENCES_STRING_WRITE = 2001,
+            SHARED_PREFERENCES_BOOLEAN_WRITE = 2002,
+            SHARED_PREFERENCES_FLOAT_WRITE = 2003,
+            SHARED_PREFERENCES_DOUBLE_WRITE = 2004,
+            SHARED_PREFERENCES_LONG_WRITE = 2005,
+            SHARED_PREFERENCES_INTEGER_READ = 2010,
+            SHARED_PREFERENCES_STRING_READ = 2011,
+            SHARED_PREFERENCES_BOOLEAN_READ = 2012,
+            SHARED_PREFERENCES_FLOAT_READ = 2013,
+            SHARED_PREFERENCES_DOUBLE_READ = 2014,
+            SHARED_PREFERENCES_LONG_READ = 2015;
+
+    //endregion
 }

@@ -33,10 +33,24 @@
 
     <string name="tab_add_password">EKLE</string>
     <string name="tab_list_password">ŞİFRELER</string>
+    <string name="tab_settings">AYARLAR</string>
     <string name="loading">İşlem Yapılıyor</string>
     <string name="clipboard_title">Şifre</string>
     <string name="password_clipboard">Şifre Kopyalanmıştır</string>
     <string name="button_copy">Şifreyi Kopyala</string>
     <string name="hint_text">TODO</string>
     <string name="hint_search">Filtrelemek için yazın</string>
+    <string name="success_add_password">Yeni şifre başarıyla kayıt edildi</string>
+    <string name="action_ok">OK</string>
+    <string name="switch_remember">Sadece Girişte Şifre Sor</string>
+    <string name="switch_hide_view">Şifreyi doğrudan görüntülemeyi engelle</string>
+    <string name="title_activity_login">Sign in</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
 </resources>

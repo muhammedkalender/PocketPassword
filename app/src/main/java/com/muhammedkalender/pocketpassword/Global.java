@@ -83,4 +83,6 @@ public class Global {
     //endregion
 
     //endregion
+
+    public static boolean LOCK_PASSWORD_PAGE = true;
 }
