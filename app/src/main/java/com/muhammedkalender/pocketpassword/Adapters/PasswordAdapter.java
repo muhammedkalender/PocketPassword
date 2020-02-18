@@ -18,6 +18,7 @@ import com.muhammedkalender.pocketpassword.Constants.ColorConstants;
 import com.muhammedkalender.pocketpassword.Constants.ErrorCodeConstants;
 import com.muhammedkalender.pocketpassword.Constants.InfoCodeConstants;
 import com.muhammedkalender.pocketpassword.Global;
+import com.muhammedkalender.pocketpassword.Globals.Config;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
 import com.muhammedkalender.pocketpassword.Holders.PasswordListHolder;
 import com.muhammedkalender.pocketpassword.Models.PasswordModel;
@@ -44,8 +45,6 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordListHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull PasswordListHolder holder, int position) {
-        Helpers.logger.info(String.format("Index %1$d view hazırlanıyor, %2$d indexi bulundu", position, Helpers.list.findIndexFromTempIndex(position)));
-
         int tintColor = ColorConstants.colorItem[position % ColorConstants.colorItem.length].getTint();
 
         final PasswordModel passwordModel = Global.LIST_PASSWORDS_SOLID.get(Helpers.list.findIndexFromTempIndex(position));
@@ -55,24 +54,30 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordListHolder> {
         holder.llContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Global.LOCK_PASSWORD_PAGE = false;
+
                 Helpers.logger.info(InfoCodeConstants.PASSWORD_HOLDER_CLICK, String.format("Index : %1$d", position));
 
                 Helpers.loading.show();
 
                 Global.CURRENT_PASSWORD_MODEL_INDEX = position;
 
-                if(Global.SECTION_PAGER_ADAPTER.getCount() < 3){
+                Helpers.logger.info(String.format("Şuan %1$d adet sayfa var", Global.SECTION_PAGER_ADAPTER.getCount()));
+
+                if(Global.SECTION_PAGER_ADAPTER.getCount() < Config.TAB_HOME_INDEX + 2) {
                     Global.SECTION_PAGER_ADAPTER.add(Global.LIST_PASSWORDS.get(Global.CURRENT_PASSWORD_MODEL_INDEX).getName());
                     Global.SECTION_PAGER_ADAPTER.notifyDataSetChanged();
                 }
 
                 Helpers.loading.hide();
 
-                Global.TAB_LAYOUT.getTabAt(2).select();
-                Global.TAB_LAYOUT.getTabAt(2).setText(passwordModel.getName());
-                Global.TAB_LAYOUT.getTabAt(2).setContentDescription(passwordModel.getName());
+                Global.TAB_LAYOUT.getTabAt(Config.TAB_PASSWORD_INDEX).select();
+                Global.TAB_LAYOUT.getTabAt(Config.TAB_PASSWORD_INDEX).setText(passwordModel.getName());
+                Global.TAB_LAYOUT.getTabAt(Config.TAB_PASSWORD_INDEX).setContentDescription(passwordModel.getName());
 
                 Global.PAGE_PASSWORD.load(passwordModel);
+
+                holder.ivClipboard.callOnClick();
             }
         });
 
@@ -104,6 +109,12 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordListHolder> {
         holder.ivForward.setColorFilter(tintColor);
         holder.ivClipboard.setColorFilter(tintColor);
         holder.ivShow.setColorFilter(tintColor);
+
+        if(Config.CONFIG_HIDE_VIEW){
+            holder.ivShow.setClickable(false);
+        }else{
+            holder.ivShow.setClickable(true);
+        }
     }
 
     @Override

@@ -1,11 +1,14 @@
 package com.muhammedkalender.pocketpassword.Pages.Password;
 
+import android.graphics.Color;
 import android.view.View;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.muhammedkalender.pocketpassword.Abstracts.PageAbstract;
+import com.muhammedkalender.pocketpassword.Components.SnackbarComponent;
 import com.muhammedkalender.pocketpassword.Constants.ErrorCodeConstants;
 import com.muhammedkalender.pocketpassword.Global;
 import com.muhammedkalender.pocketpassword.Globals.Config;
@@ -116,15 +119,18 @@ public class NewPasswordPage extends PageAbstract implements PageInterface {
                 ResultObject insert = passwordModel.insert();
 
                 if (insert.isSuccess()) {
-                    Helpers.logger.info(String.format("%1$d ID ile kayıt girildi", (int)insert.getData()));
+                    Helpers.logger.info(String.format("%1$d ID ile kayıt girildi", (int) insert.getData()));
 
                     Global.TAB_LAYOUT.getTabAt(Config.TAB_HOME_INDEX).select();
 
                     //todo get synced data
                     //Global.SECTION_PAGER_ADAPTER.add(name);
-                    Global.LIST_PASSWORDS.add(new PasswordModel((int)insert.getData(), name, password, ""));
-                    Global.LIST_PASSWORDS_SOLID.add(new PasswordModel((int)insert.getData(), name, password, ""));
+                    Global.LIST_PASSWORDS.add(new PasswordModel((int) insert.getData(), name, password, ""));
+                    Global.LIST_PASSWORDS_SOLID.add(new PasswordModel((int) insert.getData(), name, password, ""));
                     Global.PASSWORD_ADAPTER.notifyDataSetChanged();
+
+                    SnackbarComponent snackbarComponent = new SnackbarComponent(viewRoot, R.string.success_add_password, R.string.action_ok);
+                    snackbarComponent.show();
                 } else {
                     Helpers.logger.error(ErrorCodeConstants.MODEL_PASSWORD_INSERT, (Exception) insert.getData());
                     //todo

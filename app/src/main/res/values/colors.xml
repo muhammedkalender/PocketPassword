@@ -21,4 +21,8 @@
     <color name="tintRed">#FFF</color>
     <color name="tintPurple">#FFF</color>
     <color name="tintDeepOrange">#FFF</color>
+
+    <color name="snackbarBackground">#000</color>
+    <color name="snackbarText">#FFF</color>
+    <color name="snackbarActionText">#FFF</color>
 </resources>

@@ -17,6 +17,7 @@ import com.muhammedkalender.pocketpassword.Globals.Helpers;
 import com.muhammedkalender.pocketpassword.Pages.HomePage;
 import com.muhammedkalender.pocketpassword.Pages.Password.NewPasswordPage;
 import com.muhammedkalender.pocketpassword.Pages.Password.PasswordPage;
+import com.muhammedkalender.pocketpassword.Pages.SettingsPage;
 import com.muhammedkalender.pocketpassword.R;
 
 public class PlaceholderFragment extends Fragment {
@@ -50,22 +51,35 @@ public class PlaceholderFragment extends Fragment {
             Bundle savedInstanceState) {
         View root;
 
-        if (pageViewModel.getIndex() == 1) {
+        Helpers.logger.info("İndex" + pageViewModel.getIndex());
+
+        if(pageViewModel.getIndex() == Config.TAB_SETTINGS_INDEX + 1){
+            root = inflater.inflate(R.layout.fragment_settings, container, false);
+
+            SettingsPage settingsPage = new SettingsPage();
+            settingsPage.initialize(root);
+
+            return settingsPage.getView();
+        } else if (pageViewModel.getIndex() == Config.TAB_ADD_INDEX + 1) {
             root = inflater.inflate(R.layout.fragment_new_password, container, false);
 
             NewPasswordPage newPasswordPage = new NewPasswordPage();
             newPasswordPage.initialize(root);
 
             return newPasswordPage.getView();
-        } else if (pageViewModel.getIndex() == 2) {
+        } else if (pageViewModel.getIndex() == Config.TAB_HOME_INDEX + 1) {
             //Home Page
             root = inflater.inflate(R.layout.fragment_main, container, false);
 
             HomePage homePage = Global.getPageHome(root);
 
             return homePage.getView();
-        } else if (pageViewModel.getIndex() == 3) {
+        } else if (pageViewModel.getIndex() == Config.TAB_PASSWORD_INDEX + 1) {
             //Password Page
+            if(Global.LOCK_PASSWORD_PAGE){
+                return inflater.inflate(R.layout.fragment_password, container, false);
+            }
+
             root = inflater.inflate(R.layout.fragment_password, container, false);
 
             PasswordPage passwordPage = Global.getPagePassword(root, Helpers.list.findByGlobal());

@@ -28,6 +28,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         super(fm);
         mContext = context;
 
+        TAB_TITLES.add(Helpers.resource.getString(R.string.tab_settings));
         TAB_TITLES.add(Helpers.resource.getString(R.string.tab_add_password));
         TAB_TITLES.add(Helpers.resource.getString(R.string.tab_list_password));
     }

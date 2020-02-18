@@ -3,6 +3,7 @@ package com.muhammedkalender.pocketpassword.Pages.Password;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -61,6 +62,7 @@ public class PasswordPage extends PageAbstract implements PageInterface {
     public void load(PasswordModel passwordModel){
         this.etName.setText(passwordModel.getName());
         this.etPassword.setText(passwordModel.getPassword());
+        this.tilPassword.setPasswordVisibilityToggleEnabled(!Config.CONFIG_HIDE_VIEW);
 
         this.btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,8 +134,8 @@ public class PasswordPage extends PageAbstract implements PageInterface {
                     Helpers.list.findAndUpdate(passwordModel);
                     Global.LIST_PASSWORDS_SOLID.set(Helpers.list.findIndexFromSolid(passwordModel), passwordModel); //todo
                     Global.PASSWORD_ADAPTER.notifyDataSetChanged();
-                    Global.TAB_LAYOUT.getTabAt(Config.TAB_HOME_INDEX + 1).setText(passwordModel.getName());
-                    Global.TAB_LAYOUT.getTabAt(Config.TAB_HOME_INDEX + 1).setContentDescription(passwordModel.getName());
+                    Global.TAB_LAYOUT.getTabAt(Config.TAB_PASSWORD_INDEX).setText(passwordModel.getName());
+                    Global.TAB_LAYOUT.getTabAt(Config.TAB_PASSWORD_INDEX).setContentDescription(passwordModel.getName());
                 } else {
                     //todo
                 }
@@ -157,7 +159,5 @@ public class PasswordPage extends PageAbstract implements PageInterface {
                 }
             }
         });
-
-        btnClipboard.callOnClick();
     }
 }

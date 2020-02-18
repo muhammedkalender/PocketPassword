@@ -37,6 +37,7 @@ dependencies {
     implementation 'net.zetetic:android-database-sqlcipher:4.3.0'
     implementation "androidx.sqlite:sqlite:2.0.1"
 
+    implementation 'androidx.annotation:annotation:1.0.2'
     androidTestImplementation "androidx.room:room-testing:$rootProject.roomVersion"
 
     testImplementation 'org.mockito:mockito-core:2.7.22'
