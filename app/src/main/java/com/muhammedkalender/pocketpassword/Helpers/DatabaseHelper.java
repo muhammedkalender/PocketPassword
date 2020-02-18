@@ -99,8 +99,16 @@ public class DatabaseHelper {
 
     //region Available
 
-    public ResultObject isAvailable(String query, String column) {
+    public ResultObject isAvailable(String query, String column){
+        return isAvailable(query, column, false);
+    }
+
+    public ResultObject isAvailable(String query, String column, boolean ignoreCamelCase) {
         try {
+            if(ignoreCamelCase){
+                query += "  COLLATE NOCASE";
+            }
+
             ResultObject select = this.cursor(query);
 
             if (select.isFailure()) {

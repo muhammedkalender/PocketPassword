@@ -157,5 +157,7 @@ public class PasswordPage extends PageAbstract implements PageInterface {
                 }
             }
         });
+
+        btnClipboard.callOnClick();
     }
 }

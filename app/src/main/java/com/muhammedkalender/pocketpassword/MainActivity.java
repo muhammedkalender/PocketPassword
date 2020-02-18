@@ -27,6 +27,7 @@ import com.muhammedkalender.pocketpassword.Helpers.ListHelper;
 import com.muhammedkalender.pocketpassword.Helpers.LogHelpers;
 import com.muhammedkalender.pocketpassword.Helpers.ResourceHelper;
 import com.muhammedkalender.pocketpassword.Models.PasswordModel;
+import com.muhammedkalender.pocketpassword.Objects.ColorObject;
 import com.muhammedkalender.pocketpassword.Objects.ColumnObject;
 import com.muhammedkalender.pocketpassword.ui.main.SectionsPagerAdapter;
 
@@ -70,13 +71,13 @@ public class MainActivity extends AppCompatActivity {
 
         Helpers.loading.show();
 
-        ColorConstants.colorItem =  new int[]{
-                Helpers.resource.getColor(R.color.teal),
-                Helpers.resource.getColor(R.color.purple),
-                Helpers.resource.getColor(R.color.red),
-                Helpers.resource.getColor(R.color.blueGrey),
-                Helpers.resource.getColor(R.color.indigo),
-                Helpers.resource.getColor(R.color.deepOrange)
+        ColorConstants.colorItem = new ColorObject[]{
+                new ColorObject(Helpers.resource.getColor(R.color.pink), Helpers.resource.getColor(R.color.tintPink)),
+                new ColorObject(Helpers.resource.getColor(R.color.lightBlue), Helpers.resource.getColor(R.color.tintLightBlue)),
+                new ColorObject(Helpers.resource.getColor(R.color.amber), Helpers.resource.getColor(R.color.tintAmber)),
+                new ColorObject(Helpers.resource.getColor(R.color.red), Helpers.resource.getColor(R.color.tintRed)),
+                new ColorObject(Helpers.resource.getColor(R.color.purple), Helpers.resource.getColor(R.color.tintPurple)),
+                new ColorObject(Helpers.resource.getColor(R.color.deepOrange), Helpers.resource.getColor(R.color.tintDeepOrange))
         };
 
         Global.SECTION_PAGER_ADAPTER = new SectionsPagerAdapter(this, getSupportFragmentManager());

@@ -68,7 +68,7 @@ public class PlaceholderFragment extends Fragment {
             //Password Page
             root = inflater.inflate(R.layout.fragment_password, container, false);
 
-            PasswordPage passwordPage = Global.getPagePassword(root);
+            PasswordPage passwordPage = Global.getPagePassword(root, Helpers.list.findByGlobal());
 
             Helpers.logger.info(InfoCodeConstants.PAGE_CHANGE, "Password");
 

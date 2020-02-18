@@ -2,6 +2,8 @@ package com.muhammedkalender.pocketpassword.Constants;
 
 import android.graphics.Color;
 
+import com.muhammedkalender.pocketpassword.Objects.ColorObject;
+
 public class ColorConstants {
-    public static int[] colorItem = new int[6];
+    public static ColorObject[] colorItem = new ColorObject[6];
 }
