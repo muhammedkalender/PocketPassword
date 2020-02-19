@@ -24,12 +24,96 @@ import java.util.Arrays;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
+import javax.xml.transform.Result;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 //RSA
 public class CryptHelper {
+    //region Variables
+
+    private PublicKey publicKey;
+    private PrivateKey privateKey;
+
+    //endregion
+
+    //region Quick Encrypt
+
+    public String quickEncrypt(@NonNull String pureData) {
+        return quickEncrypt(pureData, privateKey);
+    }
+
+    public String quickEncrypt(@NonNull String pureData, @NonNull String base64PrivateKey) {
+        try {
+            ResultObject resultGeneratePrivateKeyFromString = privateKeyFromString(base64PrivateKey);
+
+            if (resultGeneratePrivateKeyFromString.isSuccess()) {
+                return quickEncrypt(pureData, (PrivateKey) resultGeneratePrivateKeyFromString.getData());
+            } else {
+                return Config.DEFAULT_STRING;
+            }
+        } catch (Exception e) {
+            Helpers.logger.error(ErrorCodeConstants.CRYPT_QUICK_ENCRYPT_WITH_BASE64, e);
+
+            return pureData;
+        }
+    }
+
+    public String quickEncrypt(@NonNull String pureData, @NonNull PrivateKey privateKey) {
+        try {
+            Cipher cipher = Cipher.getInstance("RSA");
+            cipher.init(Cipher.ENCRYPT_MODE, privateKey);
+
+            return new String(Base64.encode(cipher.doFinal(pureData.getBytes(UTF_8)), Base64.DEFAULT));
+        } catch (Exception e) {
+            Helpers.logger.error(ErrorCodeConstants.CRYPT_QUICK_ENCRYPT, e);
+
+            return pureData;
+        }
+    }
+
+    //endregion
+
+    //region Quick Decrypt
+
+    public String quickDecrypt(@NonNull String encryptedData) {
+        return quickDecrypt(encryptedData, publicKey);
+    }
+
+    public String quickDecrypt(@NonNull String encryptedData, @NonNull String base64PublicKey) {
+        try {
+            ResultObject resultGeneratePublicKeyFromString = publicKeyFromString(base64PublicKey);
+
+            if (resultGeneratePublicKeyFromString.isSuccess()) {
+                return quickDecrypt(encryptedData, (PublicKey) resultGeneratePublicKeyFromString.getData());
+            } else {
+                throw new Exception();
+            }
+        } catch (Exception e) {
+            Helpers.logger.error(ErrorCodeConstants.CRYPT_QUICK_DECRYPT_WITH_BASE64, e);
+
+            return encryptedData;
+        }
+    }
+
+    public String quickDecrypt(@NonNull String encryptedData, @NonNull PublicKey publicKey) {
+        try {
+            Cipher cipherD = Cipher.getInstance("RSA");
+            cipherD.init(Cipher.DECRYPT_MODE, publicKey);
+
+            return new String(cipherD.doFinal(Base64.decode(encryptedData, Base64.DEFAULT)));
+        } catch (Exception e) {
+            Helpers.logger.error(ErrorCodeConstants.CRYPT_QUICK_DECRYPT, e);
+
+            return encryptedData;
+        }
+    }
+
+    //endregion
+
     //region Encrypt
 
-    public String encrypt(@NonNull String pureData, @NonNull String base64PrivateKey) {
+    public ResultObject encrypt(@NonNull String pureData, @NonNull String base64PrivateKey) {
         try {
             ResultObject resultGeneratePrivateKeyFromString = privateKeyFromString(base64PrivateKey);
 
@@ -39,21 +123,21 @@ public class CryptHelper {
                 throw new Exception();
             }
         } catch (Exception e) {
-            Helpers.logger.error(ErrorCodeConstants.CRYPT_ENCRYPT_WITH_BASE64, e);
-
-            return ""; //todo
+            return new ResultObject(ErrorCodeConstants.CRYPT_ENCRYPT_WITH_BASE64)
+                    .setError(e);
         }
     }
 
-    public String encrypt(@NonNull String pureData, @NonNull PrivateKey privateKey) {
+    public ResultObject encrypt(@NonNull String pureData, @NonNull PrivateKey privateKey) {
         try {
             Cipher cipher = Cipher.getInstance("RSA");
             cipher.init(Cipher.ENCRYPT_MODE, privateKey);
-            return Base64.encodeToString(cipher.doFinal(pureData.getBytes()), Base64.DEFAULT);
-        } catch (Exception e) {
-            Helpers.logger.error(ErrorCodeConstants.CRYPT_ENCRYPT, e);
 
-            return ""; //todo
+            return new ResultObject()
+                    .setData(Base64.encodeToString(cipher.doFinal(pureData.getBytes(UTF_8)), Base64.DEFAULT));
+        } catch (Exception e) {
+            return new ResultObject(ErrorCodeConstants.CRYPT_ENCRYPT)
+                    .setError(e);
         }
     }
 
@@ -61,7 +145,7 @@ public class CryptHelper {
 
     //region Decrypt
 
-    public String decrypt(@NonNull String encryptedData, @NonNull String base64PublicKey) {
+    public ResultObject decrypt(@NonNull String encryptedData, @NonNull String base64PublicKey) {
         try {
             ResultObject resultGeneratePublicKeyFromString = publicKeyFromString(base64PublicKey);
 
@@ -71,20 +155,21 @@ public class CryptHelper {
                 throw new Exception();
             }
         } catch (Exception e) {
-            Helpers.logger.error(ErrorCodeConstants.CRYPT_DECRYPT_WITH_BASE64, e);
-            return ""; //todo
+            return new ResultObject(ErrorCodeConstants.CRYPT_DECRYPT_WITH_BASE64)
+                    .setError(e);
         }
     }
 
-    public String decrypt(@NonNull String encryptedData, @NonNull PublicKey publicKey) {
+    public ResultObject decrypt(@NonNull String encryptedData, @NonNull PublicKey publicKey) {
         try {
             Cipher cipherD = Cipher.getInstance("RSA");
             cipherD.init(Cipher.DECRYPT_MODE, publicKey);
 
-            return new String(cipherD.doFinal(Base64.decode(encryptedData, Base64.DEFAULT)));
+            return new ResultObject()
+                    .setData(new String(cipherD.doFinal(Base64.decode(encryptedData, Base64.DEFAULT))));
         } catch (Exception e) {
-            Helpers.logger.error(ErrorCodeConstants.CRYPT_DECRYPT, e);
-            return ""; //todo
+            return new ResultObject(ErrorCodeConstants.CRYPT_DECRYPT)
+                    .setError(e);
         }
     }
 
@@ -92,12 +177,15 @@ public class CryptHelper {
 
     //region Generate
 
-    public ResultObject generateKey() {
+    public ResultObject generateKeys() {
         try {
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
             keyPairGenerator.initialize(Config.RSA_KEY_SIZE);
 
             KeyPair keyPair = keyPairGenerator.generateKeyPair();
+
+            this.publicKey = keyPair.getPublic();
+            this.privateKey = keyPair.getPrivate();
 
             return new ResultObject()
                     .setData(keyPair);
@@ -115,6 +203,16 @@ public class CryptHelper {
         try {
             return new ResultObject()
                     .setData(Base64.encodeToString(publicKey.getEncoded(), Base64.DEFAULT));
+        } catch (Exception e) {
+            return new ResultObject(ErrorCodeConstants.CRYPT_KEY_TO_STRING)
+                    .setError(e);
+        }
+    }
+
+    public ResultObject keyToString(@NonNull PrivateKey privateKey) {
+        try {
+            return new ResultObject()
+                    .setData(Base64.encodeToString(privateKey.getEncoded(), Base64.DEFAULT));
         } catch (Exception e) {
             return new ResultObject(ErrorCodeConstants.CRYPT_KEY_TO_STRING)
                     .setError(e);
@@ -151,6 +249,73 @@ public class CryptHelper {
             return new ResultObject(ErrorCodeConstants.PRIVATE_KEY_FROM_STRING)
                     .setError(e);
         }
+    }
+
+    //endregion
+
+    //region Public Key Getters & Setters
+
+    public PublicKey getPublicKey() {
+        return publicKey;
+    }
+
+    public void setPublicKey(PublicKey publicKey) {
+        this.publicKey = publicKey;
+    }
+
+    public void setPublicKey(String base64PublicKey) {
+        ResultObject resultPublicKeyFromString = publicKeyFromString(base64PublicKey);
+
+        if (resultPublicKeyFromString.isSuccess()) {
+            this.publicKey = (PublicKey) resultPublicKeyFromString.getData();
+        }
+    }
+
+    //endregion
+
+    //region Private Key Getters & Setters
+
+    public PrivateKey getPrivateKey() {
+        return privateKey;
+    }
+
+    public void setPrivateKey(PrivateKey privateKey) {
+        this.privateKey = privateKey;
+    }
+
+    public void setPrivateKey(String base64PrivateKey) {
+        ResultObject resultPrivateKeyFromString = privateKeyFromString(base64PrivateKey);
+
+        if (resultPrivateKeyFromString.isSuccess()) {
+            this.privateKey = (PrivateKey) resultPrivateKeyFromString.getData();
+        }
+    }
+
+    //endregion
+
+    //region Loaders
+
+    public static CryptHelper buildDefault() {
+        CryptHelper cryptHelper = new CryptHelper();
+
+        return cryptHelper.loadDefaultKeys() ? cryptHelper : null;
+    }
+
+    public boolean loadDefaultKeys() {
+        String privateKey = Helpers.config.getString("private_key");
+        String publicKey = Helpers.config.getString("public_key");
+
+        ResultObject resultPrivateKeyFromString = privateKeyFromString(privateKey);
+        ResultObject resultPublicKeyFromString = publicKeyFromString(publicKey);
+
+        if (resultPrivateKeyFromString.isFailure() || resultPublicKeyFromString.isFailure()) {
+            return false;
+        }
+
+        this.setPrivateKey((PrivateKey) resultPrivateKeyFromString.getData());
+        this.setPublicKey((PublicKey) resultPublicKeyFromString.getData());
+
+        return true;
     }
 
     //endregion

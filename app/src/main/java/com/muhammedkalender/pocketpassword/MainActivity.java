@@ -25,6 +25,7 @@ import com.muhammedkalender.pocketpassword.Components.LoadingComponent;
 import com.muhammedkalender.pocketpassword.Constants.ColorConstants;
 import com.muhammedkalender.pocketpassword.Globals.Config;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
+import com.muhammedkalender.pocketpassword.Helpers.AESHelper;
 import com.muhammedkalender.pocketpassword.Helpers.CryptHelper;
 import com.muhammedkalender.pocketpassword.Helpers.DatabaseHelper;
 import com.muhammedkalender.pocketpassword.Helpers.ListHelper;
@@ -48,15 +49,19 @@ import java.security.Key;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.MessageDigest;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.RSAPublicKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.logging.Logger;
 
 import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -132,27 +137,51 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean firstOpen(){
         if(!Helpers.config.getBoolean("first_open", true)){
+            Helpers.logger.info("girdi");
             return true;
         }
 
         CryptHelper cryptHelper = new CryptHelper();
 
-        ResultObject resultGenerateKey = cryptHelper.generateKey();
-        KeyPair keyPair = null;
+        ResultObject resultGenerateKeys = cryptHelper.generateKeys();
 
-        if(resultGenerateKey.isSuccess()){
-            keyPair = (KeyPair) resultGenerateKey.getData();
-        }else{
+        if(resultGenerateKeys.isFailure()){
             //todo
+
+            return false;
         }
 
-        String enc = cryptHelper.encrypt("test", keyPair.getPrivate());
+        KeyPair keyPair = (KeyPair) resultGenerateKeys.getData();
 
-        Helpers.logger.info(enc);
+        ResultObject resultPrivateKeyToString = cryptHelper.keyToString(keyPair.getPrivate());
+        ResultObject resultPublicKeyToString = cryptHelper.keyToString(keyPair.getPublic());
 
-        String dec = cryptHelper.decrypt(enc, Base64.encode(keyPair.getPrivate().getEncoded(), Base64.DEFAULT).toString());
+        if(resultPrivateKeyToString.isFailure() || resultPublicKeyToString.isFailure()){
+            //todo
 
-        Helpers.logger.info(dec);
+            return false;
+        }
+
+        boolean setPrivateKey = Helpers.config.setString("private_key", String.valueOf(resultPrivateKeyToString.getData()));
+        boolean setPublicKey = Helpers.config.setString("public_key", String.valueOf(resultPublicKeyToString.getData()));
+
+        if(!(setPrivateKey && setPublicKey)){
+            //todo
+
+            return false;
+        }
+
+        String name = cryptHelper.quickEncrypt("test");
+        String password = cryptHelper.quickEncrypt("password");
+
+        Helpers.logger.info(1111, name);
+
+        PasswordModel passwordModel = new PasswordModel(name, password, "");
+        ResultObject resultInsert = passwordModel.insert();
+
+        if(resultInsert.isSuccess()){
+            Helpers.config.setBoolean("first_open", false);
+        }
 
         return true;
 
@@ -160,8 +189,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void login(){
-
-
         if(!etMainPassword.getText().toString().equals("1111")){
             etMainPassword.setError("Olmadı");
 
@@ -169,8 +196,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-
         findViewById(R.id.appBar).setVisibility(View.VISIBLE);
+        findViewById(R.id.llMainPassword).setVisibility(View.INVISIBLE);
 
         Helpers.loading.show();
 

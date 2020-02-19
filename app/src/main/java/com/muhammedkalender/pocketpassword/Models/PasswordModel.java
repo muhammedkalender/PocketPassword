@@ -7,6 +7,7 @@ import com.muhammedkalender.pocketpassword.Abstracts.ModelAbstract;
 import com.muhammedkalender.pocketpassword.Constants.ErrorCodeConstants;
 import com.muhammedkalender.pocketpassword.Constants.SQLConstants;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
+import com.muhammedkalender.pocketpassword.Helpers.CryptHelper;
 import com.muhammedkalender.pocketpassword.Interfaces.ModelInterface;
 import com.muhammedkalender.pocketpassword.Objects.ColumnObject;
 import com.muhammedkalender.pocketpassword.Objects.ResultObject;
@@ -20,6 +21,8 @@ public class PasswordModel extends ModelAbstract {
     private String name;
     private String password;
     private String color;
+
+    private boolean nameEncrypted = true;
 
     private boolean active;
 
@@ -248,5 +251,21 @@ public class PasswordModel extends ModelAbstract {
 
     public int getId() {
         return id;
+    }
+
+    public boolean isNameEncrypted() {
+        return nameEncrypted;
+    }
+
+    public void setNameEncrypted(boolean nameEncrypted) {
+        this.nameEncrypted = nameEncrypted;
+    }
+
+    public void decryptName(CryptHelper cryptHelper){
+        if(isNameEncrypted()){
+            this.name = cryptHelper.quickDecrypt(this.name);
+
+            setNameEncrypted(false);
+        }
     }
 }
