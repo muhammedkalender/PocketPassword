@@ -1,5 +1,7 @@
 package com.muhammedkalender.pocketpassword.Objects;
 
+import com.muhammedkalender.pocketpassword.Globals.Helpers;
+
 public class ResultObject {
     //region Variables
 
@@ -68,6 +70,10 @@ public class ResultObject {
         this.success = false;
         this.data = e;
 
+        if(this.errorCode > 0){
+            Helpers.logger.error(this.errorCode, e);
+        }
+
         return this;
     }
 
@@ -75,6 +81,10 @@ public class ResultObject {
         this.success = false;
         this.data = e;
         this.message = message;
+
+        if(this.errorCode > 0){
+            Helpers.logger.error(this.errorCode, e);
+        }
 
         return this;
     }

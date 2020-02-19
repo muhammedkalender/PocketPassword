@@ -17,6 +17,7 @@ import com.muhammedkalender.pocketpassword.Constants.InfoCodeConstants;
 import com.muhammedkalender.pocketpassword.Global;
 import com.muhammedkalender.pocketpassword.Globals.Config;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
+import com.muhammedkalender.pocketpassword.Helpers.CryptHelper;
 import com.muhammedkalender.pocketpassword.Interfaces.PageInterface;
 import com.muhammedkalender.pocketpassword.Models.PasswordModel;
 import com.muhammedkalender.pocketpassword.Objects.ResultObject;
@@ -61,7 +62,7 @@ public class PasswordPage extends PageAbstract implements PageInterface {
 
     public void load(PasswordModel passwordModel){
         this.etName.setText(passwordModel.getName());
-        this.etPassword.setText(passwordModel.getPassword());
+        this.etPassword.setText(CryptHelper.buildDefault().quickDecrypt(passwordModel.getPassword()));
         this.tilPassword.setPasswordVisibilityToggleEnabled(!Config.CONFIG_HIDE_VIEW);
 
         this.btnSave.setOnClickListener(new View.OnClickListener() {
@@ -149,7 +150,7 @@ public class PasswordPage extends PageAbstract implements PageInterface {
             public void onClick(View v) {
                 try{
                     ClipboardManager clipboard = (ClipboardManager) Global.CONTEXT.getSystemService(Context.CLIPBOARD_SERVICE);
-                    ClipData clip = ClipData.newPlainText(Helpers.resource.getString(R.string.clipboard_title), passwordModel.getPassword());
+                    ClipData clip = ClipData.newPlainText(Helpers.resource.getString(R.string.clipboard_title), CryptHelper.buildDefault().quickDecrypt(passwordModel.getPassword()));
                     clipboard.setPrimaryClip(clip);
 
                     Toast.makeText(Global.CONTEXT,R.string.password_clipboard, Toast.LENGTH_SHORT).show();

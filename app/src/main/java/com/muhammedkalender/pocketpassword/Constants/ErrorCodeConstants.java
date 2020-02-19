@@ -92,7 +92,21 @@ public class ErrorCodeConstants {
             CRYPT_ENCRYPT_WITH_BASE64 = 3004,
             CRYPT_ENCRYPT = 3005,
             CRYPT_DECRYPT_WITH_BASE64 = 3006,
-            CRYPT_DECRYPT = 3007;
+            CRYPT_DECRYPT = 3007,
+            CRYPT_QUICK_DECRYPT = 3008,
+            CRYPT_QUICK_DECRYPT_WITH_BASE64 = 3009,
+            CRYPT_QUICK_ENCRYPT = 3010,
+            CRYPT_QUICK_ENCRYPT_WITH_BASE64 = 3011;
+
+    //endregion
+
+
+    //region AES
+
+    public static final int
+            AES_DECRYPT = 3100,
+            AES_ENCRYPT = 3101,
+            AES_SECRET_TO_KEY = 30102;
 
     //endregion
 }

@@ -17,7 +17,7 @@ public class Config {
     public static final float DEFAULT_FLOAT = 0;
     public static final double DEFAULT_DOUBLE = 0;
 
-    public static final int RSA_KEY_SIZE = 2048;
+    public static final int RSA_KEY_SIZE = 1024; //TODO
 
     public static boolean CONFIG_ONLY_LOGIN = true;
     public static boolean CONFIG_HIDE_VIEW = true;

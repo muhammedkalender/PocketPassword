@@ -20,6 +20,7 @@ import com.muhammedkalender.pocketpassword.Constants.InfoCodeConstants;
 import com.muhammedkalender.pocketpassword.Global;
 import com.muhammedkalender.pocketpassword.Globals.Config;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
+import com.muhammedkalender.pocketpassword.Helpers.CryptHelper;
 import com.muhammedkalender.pocketpassword.Holders.PasswordListHolder;
 import com.muhammedkalender.pocketpassword.Models.PasswordModel;
 import com.muhammedkalender.pocketpassword.R;
@@ -28,6 +29,8 @@ import java.util.List;
 
 public class PasswordAdapter extends RecyclerView.Adapter<PasswordListHolder> {
     private Context context;
+
+    private static CryptHelper defCryptHelper;
 
     public PasswordAdapter(Context context) {
         this.context = context;
@@ -45,9 +48,16 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordListHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull PasswordListHolder holder, int position) {
+        if(defCryptHelper == null){
+            defCryptHelper = CryptHelper.buildDefault();
+        }
+
         int tintColor = ColorConstants.colorItem[position % ColorConstants.colorItem.length].getTint();
 
-        final PasswordModel passwordModel = Global.LIST_PASSWORDS_SOLID.get(Helpers.list.findIndexFromTempIndex(position));
+        PasswordModel passwordModel = Global.LIST_PASSWORDS_SOLID.get(Helpers.list.findIndexFromTempIndex(position));
+
+//        passwordModel.setName(defCryptHelper.quickDecrypt(passwordModel.getName()));
+        passwordModel.decryptName(defCryptHelper);
 
         holder.tvName.setText(passwordModel.getName());
 
@@ -88,7 +98,7 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordListHolder> {
             public void onClick(View v) {
                 try{
                     ClipboardManager clipboard = (ClipboardManager) Global.CONTEXT.getSystemService(Context.CLIPBOARD_SERVICE);
-                    ClipData clip = ClipData.newPlainText(Helpers.resource.getString(R.string.clipboard_title), passwordModel.getPassword());
+                    ClipData clip = ClipData.newPlainText(Helpers.resource.getString(R.string.clipboard_title), CryptHelper.buildDefault().quickDecrypt(passwordModel.getPassword()));
                     clipboard.setPrimaryClip(clip);
 
                     Toast.makeText(Global.CONTEXT,R.string.password_clipboard, Toast.LENGTH_SHORT).show();
