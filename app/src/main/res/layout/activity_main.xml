@@ -31,14 +31,14 @@
 
 
     <LinearLayout
-android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
         android:background="?attr/panelBackground"
         android:backgroundTint="@color/design_default_color_on_secondary"
         android:clickable="true"
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="vertical">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilMainPassword"
