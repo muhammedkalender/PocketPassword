@@ -81,4 +81,18 @@ public class ErrorCodeConstants {
             SHARED_PREFERENCES_LONG_READ = 2015;
 
     //endregion
+
+    //region Crypt
+
+    public static final int
+            CRYPT_GENERATE_KEY = 3000,
+            PUBLIC_KEY_FROM_STRING = 3001,
+            PRIVATE_KEY_FROM_STRING = 3002,
+            CRYPT_KEY_TO_STRING = 3003,
+            CRYPT_ENCRYPT_WITH_BASE64 = 3004,
+            CRYPT_ENCRYPT = 3005,
+            CRYPT_DECRYPT_WITH_BASE64 = 3006,
+            CRYPT_DECRYPT = 3007;
+
+    //endregion
 }
