@@ -4,9 +4,11 @@ import android.app.ActionBar;
 import android.graphics.Color;
 import android.os.Bundle;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import android.provider.Settings;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -32,6 +34,7 @@ import com.muhammedkalender.pocketpassword.Helpers.ListHelper;
 import com.muhammedkalender.pocketpassword.Helpers.LogHelpers;
 import com.muhammedkalender.pocketpassword.Helpers.ResourceHelper;
 import com.muhammedkalender.pocketpassword.Helpers.SharedPreferencesHelper;
+import com.muhammedkalender.pocketpassword.Helpers.ValidationHelper;
 import com.muhammedkalender.pocketpassword.Models.PasswordModel;
 import com.muhammedkalender.pocketpassword.Objects.ColorObject;
 import com.muhammedkalender.pocketpassword.Objects.ColumnObject;
@@ -69,14 +72,14 @@ public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
 
-    TextInputLayout tilMainPassword;
-    TextInputEditText etMainPassword;
+    TextInputLayout tilMainPassword, tilMainPasswordRepeat;
+    TextInputEditText etMainPassword, etMainPasswordRepeat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-       // Toolbar toolbar = findViewById(R.id.toolbar);
+        // Toolbar toolbar = findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
 //        FloatingActionButton fab = findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
@@ -87,28 +90,16 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        });
 
-        Global.CONTEXT = this;
-
-        Helpers.logger = new LogHelpers();
-        Helpers.resource = new ResourceHelper();
-        Helpers.database = new DatabaseHelper(this);
-        Helpers.loading = new LoadingComponent(this);
-        Helpers.list = new ListHelper();
-        Helpers.config = new SharedPreferencesHelper(this);
+        buildHelpers();
 
         Config.initConfig();
 
+        loadComponents();
+
         firstOpen();
 
-        tilMainPassword = findViewById(R.id.tilMainPassword);
-        etMainPassword = findViewById(R.id.etMainPassword);
+        registered();
 
-        findViewById(R.id.btnLogin).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                login();
-            }
-        });
     }
 
     @Override
@@ -135,8 +126,32 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public boolean firstOpen(){
-        if(!Helpers.config.getBoolean("first_open", true)){
+    public boolean buildHelpers() {
+        Global.CONTEXT = this;
+
+        Helpers.logger = new LogHelpers();
+        Helpers.resource = new ResourceHelper();
+        Helpers.database = new DatabaseHelper(this);
+        Helpers.loading = new LoadingComponent(this);
+        Helpers.list = new ListHelper();
+        Helpers.config = new SharedPreferencesHelper(this);
+        Helpers.validation = new ValidationHelper();
+        Helpers.aes = new AESHelper();
+
+        return true;
+    }
+
+    public boolean loadComponents() {
+        tilMainPassword = findViewById(R.id.tilMainPassword);
+        etMainPassword = findViewById(R.id.etMainPassword);
+        tilMainPasswordRepeat = findViewById(R.id.tilMainPasswordRepeat);
+        etMainPasswordRepeat = findViewById(R.id.etMainPasswordRepeat);
+
+        return true;
+    }
+
+    public boolean firstOpen() {
+        if (!Helpers.config.getBoolean("first_open", true)) {
             Helpers.logger.info("girdi");
             return true;
         }
@@ -145,9 +160,9 @@ public class MainActivity extends AppCompatActivity {
 
         ResultObject resultGenerateKeys = cryptHelper.generateKeys();
 
-        if(resultGenerateKeys.isFailure()){
+        if (resultGenerateKeys.isFailure()) {
             //todo
-
+            Helpers.logger.info("Key üretilemedi");
             return false;
         }
 
@@ -156,45 +171,48 @@ public class MainActivity extends AppCompatActivity {
         ResultObject resultPrivateKeyToString = cryptHelper.keyToString(keyPair.getPrivate());
         ResultObject resultPublicKeyToString = cryptHelper.keyToString(keyPair.getPublic());
 
-        if(resultPrivateKeyToString.isFailure() || resultPublicKeyToString.isFailure()){
+        if (resultPrivateKeyToString.isFailure() || resultPublicKeyToString.isFailure()) {
             //todo
-
+            Helpers.logger.info("Keyler base64e atanamadı");
             return false;
         }
 
         boolean setPrivateKey = Helpers.config.setString("private_key", String.valueOf(resultPrivateKeyToString.getData()));
         boolean setPublicKey = Helpers.config.setString("public_key", String.valueOf(resultPublicKeyToString.getData()));
 
-        if(!(setPrivateKey && setPublicKey)){
+        if (!(setPrivateKey && setPublicKey)) {
             //todo
-
+            Helpers.logger.info("keyler shared prefe aktarılamadı");
             return false;
         }
 
         String name = cryptHelper.quickEncrypt("test");
         String password = cryptHelper.quickEncrypt("password");
 
-        Helpers.logger.info(1111, name);
-
         PasswordModel passwordModel = new PasswordModel(name, password, "");
         ResultObject resultInsert = passwordModel.insert();
 
-        if(resultInsert.isSuccess()){
+        if (resultInsert.isSuccess()) {
             Helpers.config.setBoolean("first_open", false);
         }
+
+        Helpers.config.setString("device_id", Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID));
 
         return true;
 
         //todo şifre alma kaydetme
     }
 
-    public void login(){
-        if(!etMainPassword.getText().toString().equals("1111")){
+    public void login() {
+
+
+        if (!etMainPassword.getText().toString().equals("1111")) {
             etMainPassword.setError("Olmadı");
 
             return;
         }
 
+        Global.PASSWORD = etMainPassword.getText().toString();
 
         findViewById(R.id.appBar).setVisibility(View.VISIBLE);
         findViewById(R.id.llMainPassword).setVisibility(View.INVISIBLE);
@@ -219,5 +237,143 @@ public class MainActivity extends AppCompatActivity {
         Global.TAB_LAYOUT.getTabAt(Config.TAB_HOME_INDEX).select();
 
         Helpers.loading.hide();
+    }
+
+    private void registered() {
+        etMainPasswordRepeat.setText("");
+        tilMainPasswordRepeat.setErrorEnabled(false);
+        etMainPassword.setText("");
+        tilMainPassword.setErrorEnabled(false);
+
+        if (Helpers.config.getBoolean("registered", false)) {
+            tilMainPasswordRepeat.setVisibility(View.INVISIBLE);
+
+            ((MaterialButton) findViewById(R.id.btnLogin)).setText(R.string.login_failed);
+            ((MaterialButton) findViewById(R.id.btnLogin)).setIcon(Helpers.resource.getDrawable(R.drawable.ic_person_24dp));
+
+            tilMainPassword.setHelperText(Helpers.resource.getString(R.string.input_password_edit));
+            tilMainPassword.setHint(Helpers.resource.getString(R.string.hint_password_edit));
+
+            findViewById(R.id.btnLogin).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    login();
+                }
+            });
+        } else {
+            ((MaterialButton) findViewById(R.id.btnLogin)).setText(R.string.button_confirm);
+
+            tilMainPassword.setHelperText(Helpers.resource.getString(R.string.input_password_register_edit));
+            tilMainPassword.setHint(Helpers.resource.getString(R.string.hint_password_register_edit));
+
+            findViewById(R.id.btnLogin).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (etMainPassword.getText() == null || etMainPassword.getText().toString().equals("")) {
+                        tilMainPassword.setError(Helpers.resource.getString(R.string.not_null, "", Helpers.resource.getString(R.string.password)));
+
+                        return;
+                    }
+
+                    String password = etMainPassword.getText().toString();
+
+                    if (password.length() < 8) {
+                        tilMainPassword.setError(Helpers.resource.getString(R.string.min_length, "", Helpers.resource.getString(R.string.password), 8));
+
+                        return;
+                    } else if (password.length() > 32) {
+                        tilMainPassword.setError(Helpers.resource.getString(R.string.max_length, "", Helpers.resource.getString(R.string.password), 32));
+
+                        return;
+                    } else if (!Helpers.validation.checkPassword(password, ValidationHelper.PASSWORD_STRONG)) {
+                        tilMainPassword.setError(Helpers.resource.getString(R.string.password_must_strong));
+
+                        return;
+                    } else {
+                        tilMainPassword.setErrorEnabled(false);
+
+                        if (etMainPasswordRepeat.getText() == null || etMainPasswordRepeat.getText().toString().equals("")) {
+                            tilMainPasswordRepeat.setError(Helpers.resource.getString(R.string.not_null, "", Helpers.resource.getString(R.string.password)));
+
+                            return;
+                        }
+
+                        String passwordRepeat = etMainPasswordRepeat.getText().toString();
+
+                        if (password.equals(passwordRepeat)) {
+                            tilMainPasswordRepeat.setErrorEnabled(false);
+                        } else {
+                            tilMainPasswordRepeat.setError(Helpers.resource.getString(R.string.password_not_match));
+
+                            return;
+                        }
+                    }
+
+
+                    if (Helpers.config.getBoolean("first_open")) {
+                        //todo
+                    } else {
+                        Global.PASSWORD = etMainPassword.getText().toString();
+
+                        String base64PrivateKey = Helpers.config.getString("private_key");
+                        String base64PublicKey = Helpers.config.getString("public_key");
+
+                        Helpers.logger.info(base64PrivateKey);
+
+                        ResultObject resultEncryptBase64PrivateKey = Helpers.aes.encrypt(base64PrivateKey, Global.PASSWORD);
+                        ResultObject resultEncryptBase64PublicKey = Helpers.aes.encrypt(base64PublicKey, Global.PASSWORD);
+
+                        if (resultEncryptBase64PrivateKey.isFailure() || resultEncryptBase64PublicKey.isFailure()) {
+                            //todo
+
+                            return;
+                        }
+
+                        String encryptedBase64PrivateKey = String.valueOf(resultEncryptBase64PrivateKey.getData());
+                        String encryptedBase64PublicKey = String.valueOf(resultEncryptBase64PublicKey.getData());
+
+                        boolean setBase64PrivateKey = Helpers.config.setString("private_key", encryptedBase64PrivateKey);
+                        boolean setBase64PublicKey = Helpers.config.setString("public_key", encryptedBase64PublicKey);
+
+                        if (setBase64PrivateKey && setBase64PublicKey) {
+                            //TODO HERŞEY OKEY
+
+                            Helpers.logger.info("Kayıt Oldu");
+
+                            CryptHelper cryptHelper = new CryptHelper();
+                            cryptHelper.setPrivateKey((String) Helpers.aes.decrypt(encryptedBase64PrivateKey, Global.PASSWORD).getData());
+                            cryptHelper.setPublicKey((String) Helpers.aes.decrypt(encryptedBase64PublicKey, Global.PASSWORD).getData());
+
+                            String confirmText = cryptHelper.generateValidationText();
+                            Helpers.logger.info(1, "step");
+                            ResultObject resultRSAEncrypt = cryptHelper.encrypt(confirmText, cryptHelper.getPrivateKey());
+
+                            if (resultRSAEncrypt.isFailure()) {
+                                //todo
+                                Helpers.logger.info("HATA RSA");
+                            }
+                            Helpers.logger.info(2, "step");
+                            ResultObject resultAESEncrypt = Helpers.aes.encrypt((String) resultRSAEncrypt.getData(), Global.PASSWORD);
+
+                            if (resultAESEncrypt.isFailure()){
+                                Helpers.logger.info("HATA AES");
+                                //todo
+                            }
+                            Helpers.logger.info(3, "step");
+                            Helpers.config.setString("confirm_password", (String) resultAESEncrypt.getData());
+                            Helpers.config.setBoolean("registered", true);
+
+                            registered();
+                        } else {
+
+                        }
+
+                    }
+
+
+//todo                    login();
+                }
+            });
+        }
     }
 }

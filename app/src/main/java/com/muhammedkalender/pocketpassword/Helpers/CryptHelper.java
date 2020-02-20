@@ -6,6 +6,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.muhammedkalender.pocketpassword.Constants.ErrorCodeConstants;
+import com.muhammedkalender.pocketpassword.Global;
 import com.muhammedkalender.pocketpassword.Globals.Config;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
 import com.muhammedkalender.pocketpassword.MainActivity;
@@ -195,6 +196,18 @@ public class CryptHelper {
         }
     }
 
+    public String generateValidationText() {
+        byte[] bytes = new byte[1024];
+
+        byte[] deviceID = Helpers.config.getString("device_id").getBytes(UTF_8);
+
+        for (int i = 0; i < 1024; i++) {
+            bytes[i] = deviceID[i % deviceID.length];
+        }
+
+        return new String(bytes);
+    }
+
     //endregion
 
     //region Key Encryption
@@ -304,6 +317,16 @@ public class CryptHelper {
     public boolean loadDefaultKeys() {
         String privateKey = Helpers.config.getString("private_key");
         String publicKey = Helpers.config.getString("public_key");
+
+        ResultObject resultDecryptPrivateKey = Helpers.aes.decrypt(privateKey, Global.PASSWORD);
+        ResultObject resultDecryptPublicKey = Helpers.aes.decrypt(publicKey, Global.PASSWORD);
+
+        if (resultDecryptPrivateKey.isFailure() || resultDecryptPublicKey.isFailure()) {
+            return false;
+        }
+
+        privateKey = (String) resultDecryptPrivateKey.getData();
+        publicKey = (String) resultDecryptPublicKey.getData();
 
         ResultObject resultPrivateKeyFromString = privateKeyFromString(privateKey);
         ResultObject resultPublicKeyFromString = publicKeyFromString(publicKey);

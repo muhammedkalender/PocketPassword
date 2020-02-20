@@ -53,4 +53,17 @@
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
+    <string name="input_password_repeat_edit">Şifrenizi onaylamak için tekrar girin</string>
+
+    <string name="hint_password_repeat_edit">Hesap Şifresi Onayı</string>
+
+    <string name="button_login">Giriş Yap</string>
+
+    <string name="button_confirm">Onayla</string>
+
+    <string name="hint_password_register_edit">Hssap Şifresi</string>
+    <string name="input_password_register_edit">Unutmanız durumunda şifrelere erişemeyebilirsiniz</string>
+    <string name="password">Şifre</string>
+    <string name="password_must_strong"><![CDATA[Şifrenizde büyük - küçük harf, sayı ve bir özel işaret olmalı. ($-_+=)]]></string>
+    <string name="password_not_match">Şifreler Uyuşmuyor</string>
 </resources>
