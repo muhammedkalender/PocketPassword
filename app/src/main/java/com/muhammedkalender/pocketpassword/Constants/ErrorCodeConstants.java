@@ -28,7 +28,8 @@ public class ErrorCodeConstants {
             RESOURCE_INT = 301,
             RESOURCE_STRING = 302,
             RESOURCE_DIMEN_TO_INTEGER = 303,
-            RESOURCE_COLOR = 304;
+            RESOURCE_COLOR = 304,
+            RESOURCE_DRAWABLE = 305;
 
     //endregion
 
@@ -106,7 +107,7 @@ public class ErrorCodeConstants {
     public static final int
             AES_DECRYPT = 3100,
             AES_ENCRYPT = 3101,
-            AES_SECRET_TO_KEY = 30102;
+            AES_SECRET_TO_KEY = 3102;
 
     //endregion
 }

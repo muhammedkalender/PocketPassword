@@ -85,4 +85,6 @@ public class Global {
     //endregion
 
     public static boolean LOCK_PASSWORD_PAGE = true;
+
+    public static String PASSWORD = null;
 }

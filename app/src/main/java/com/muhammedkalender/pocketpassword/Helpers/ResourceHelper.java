@@ -1,6 +1,7 @@
 package com.muhammedkalender.pocketpassword.Helpers;
 
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 
 import com.muhammedkalender.pocketpassword.Constants.ErrorCodeConstants;
 import com.muhammedkalender.pocketpassword.Constants.ValueConstants;
@@ -79,6 +80,25 @@ public class ResourceHelper {
             return def;
         }
     }
+
+    //endregion
+
+    //region Drawable
+
+    public Drawable getDrawable(int res){
+        return getDrawable(res, null);
+    }
+
+    public Drawable getDrawable(int res, Drawable def){
+        try{
+            return Global.CONTEXT.getResources().getDrawable(res);
+        }catch (Exception e){
+            Helpers.logger.error(ErrorCodeConstants.RESOURCE_DRAWABLE, e);
+
+            return def;
+        }
+    }
+
 
     //endregion
 }

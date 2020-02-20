@@ -47,16 +47,37 @@
             style="@style/FormInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/hint_password_edit"
+            android:hint="@string/hint_password_register_edit"
             app:errorEnabled="false"
-            app:helperText="@string/input_password_edit"
+            app:helperText="@string/input_password_register_edit"
             app:helperTextEnabled="true"
             app:passwordToggleDrawable="@drawable/ic_remove_red_eye_white_24dp"
             app:passwordToggleEnabled="true">
 
-            <!--        android:hint="@string/hint_name_example"-->
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etMainPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:maxLength="@integer/password_max_length"
+                android:maxLines="1" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilMainPasswordRepeat"
+            style="@style/FormInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_password_repeat_edit"
+            app:errorEnabled="false"
+            app:helperText="@string/input_password_repeat_edit"
+            app:helperTextEnabled="true"
+            app:passwordToggleDrawable="@drawable/ic_remove_red_eye_white_24dp"
+            app:passwordToggleEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etMainPasswordRepeat"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
@@ -70,8 +91,8 @@
             style="@style/FormButton"
             android:layout_width="match_parent"
             android:layout_height="64dp"
-            android:text="@string/button_add"
-            app:icon="@drawable/ic_add_white_24dp" />
+            android:text="@string/button_confirm"
+            app:icon="@drawable/ic_check_circle_24dp" />
 
     </LinearLayout>
 </RelativeLayout>
