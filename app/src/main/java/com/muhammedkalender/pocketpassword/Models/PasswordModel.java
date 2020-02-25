@@ -77,7 +77,7 @@ public class PasswordModel extends ModelAbstract {
 
     public ResultObject insert() {
         try {
-            return Helpers.database.insert("INSERT INTO passwords (password_name, password_password, password_color) VALUES ('" + name + "', '" + password + "', '')");
+            return Helpers.database.insert("INSERT INTO passwords (password_name, password_password, password_color) VALUES ('" + Helpers.crypt.quickEncrypt(name) + "', '" + Helpers.crypt.quickEncrypt(password) + "', '')");
         } catch (Exception e) {
             return new ResultObject(ErrorCodeConstants.MODEL_PASSWORD_INSERT)
                     .setError(e);
