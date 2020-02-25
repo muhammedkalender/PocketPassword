@@ -24,6 +24,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.muhammedkalender.pocketpassword.Abstracts.ModelAbstract;
 import com.muhammedkalender.pocketpassword.Adapters.PasswordAdapter;
 import com.muhammedkalender.pocketpassword.Components.LoadingComponent;
+import com.muhammedkalender.pocketpassword.Components.SnackbarComponent;
 import com.muhammedkalender.pocketpassword.Constants.ColorConstants;
 import com.muhammedkalender.pocketpassword.Globals.Config;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
@@ -34,6 +35,7 @@ import com.muhammedkalender.pocketpassword.Helpers.ListHelper;
 import com.muhammedkalender.pocketpassword.Helpers.LogHelpers;
 import com.muhammedkalender.pocketpassword.Helpers.ResourceHelper;
 import com.muhammedkalender.pocketpassword.Helpers.SharedPreferencesHelper;
+import com.muhammedkalender.pocketpassword.Helpers.SystemHelper;
 import com.muhammedkalender.pocketpassword.Helpers.ValidationHelper;
 import com.muhammedkalender.pocketpassword.Models.PasswordModel;
 import com.muhammedkalender.pocketpassword.Objects.ColorObject;
@@ -81,14 +83,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         // Toolbar toolbar = findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
-//        FloatingActionButton fab = findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
 
         buildHelpers();
 
@@ -137,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
         Helpers.config = new SharedPreferencesHelper(this);
         Helpers.validation = new ValidationHelper();
         Helpers.aes = new AESHelper();
+        Helpers.system = new SystemHelper();
 
         return true;
     }
@@ -150,9 +145,11 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    //region Initializer
+
     public boolean firstOpen() {
         if (!Helpers.config.getBoolean("first_open", true)) {
-            Helpers.logger.info("girdi");
+            Helpers.logger.info("İlk giriş daha önce yapılmış");
             return true;
         }
 
@@ -163,8 +160,9 @@ public class MainActivity extends AppCompatActivity {
         ResultObject resultGenerateKeys = cryptHelper.generateKeys();
 
         if (resultGenerateKeys.isFailure()) {
-            //todo
-            Helpers.logger.info("Key üretilemedi");
+            SnackbarComponent snackbarComponent = new SnackbarComponent(getWindow().getDecorView().getRootView(), R.string.first_open_error, R.string.action_ok);
+            snackbarComponent.show();
+
             return false;
         }
 
@@ -176,8 +174,10 @@ public class MainActivity extends AppCompatActivity {
         ResultObject resultPublicKeyToString = cryptHelper.keyToString(keyPair.getPublic());
 
         if (resultPrivateKeyToString.isFailure() || resultPublicKeyToString.isFailure()) {
-            //todo
             Helpers.logger.info("Keyler base64e atanamadı");
+
+            SnackbarComponent snackbarComponent = new SnackbarComponent(getWindow().getDecorView().getRootView(), R.string.success_update_password, R.string.action_ok);
+            snackbarComponent.show();
             return false;
         }
 
@@ -185,68 +185,18 @@ public class MainActivity extends AppCompatActivity {
         boolean setPublicKey = Helpers.config.setString("public_key", String.valueOf(resultPublicKeyToString.getData()));
 
         if (!(setPrivateKey && setPublicKey)) {
-            //todo
+            SnackbarComponent snackbarComponent = new SnackbarComponent(getWindow().getDecorView().getRootView(), R.string.first_open_error, R.string.action_ok);
+            snackbarComponent.show();
+
             Helpers.logger.info("keyler shared prefe aktarılamadı");
             return false;
         }
 
-            Helpers.config.setBoolean("first_open", false);
+        Helpers.config.setBoolean("first_open", false);
 
         Helpers.config.setString("device_id", Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID));
 
         return true;
-
-        //todo şifre alma kaydetme
-    }
-
-    public void login() {
-        Global.PASSWORD = etMainPassword.getText().toString();
-
-        String confirmString = Helpers.config.getString("confirm_password");
-
-        ResultObject resultDecryptConfirmString = Helpers.aes.decrypt(confirmString, Global.PASSWORD);
-
-        if(resultDecryptConfirmString.isFailure()){
-            etMainPassword.setError(Helpers.resource.getString(R.string.password_wrong)); //todo
-            etMainPassword.setText(null);
-
-            return;
-        }
-
-        Helpers.crypt = CryptHelper.buildDefault();
-
-        ResultObject resultDecryptRSAConfirmString = Helpers.crypt.decrypt((String) resultDecryptConfirmString.getData(), Helpers.crypt.getPublicKey());
-
-        if(resultDecryptRSAConfirmString.isFailure()){
-            etMainPassword.setError(Helpers.resource.getString(R.string.password_wrong)); //todo
-            etMainPassword.setText(null);
-
-            return;
-        }
-
-        findViewById(R.id.appBar).setVisibility(View.VISIBLE);
-        findViewById(R.id.llMainPassword).setVisibility(View.INVISIBLE);
-
-        Helpers.loading.show();
-
-        ColorConstants.colorItem = new ColorObject[]{
-                new ColorObject(Helpers.resource.getColor(R.color.pink), Helpers.resource.getColor(R.color.tintPink)),
-                new ColorObject(Helpers.resource.getColor(R.color.lightBlue), Helpers.resource.getColor(R.color.tintLightBlue)),
-                new ColorObject(Helpers.resource.getColor(R.color.amber), Helpers.resource.getColor(R.color.tintAmber)),
-                new ColorObject(Helpers.resource.getColor(R.color.red), Helpers.resource.getColor(R.color.tintRed)),
-                new ColorObject(Helpers.resource.getColor(R.color.purple), Helpers.resource.getColor(R.color.tintPurple)),
-                new ColorObject(Helpers.resource.getColor(R.color.deepOrange), Helpers.resource.getColor(R.color.tintDeepOrange))
-        };
-
-        Global.SECTION_PAGER_ADAPTER = new SectionsPagerAdapter(this, getSupportFragmentManager());
-        Global.VIEW_PAGER = findViewById(R.id.view_pager);
-        Global.VIEW_PAGER.setAdapter(Global.SECTION_PAGER_ADAPTER);
-        Global.TAB_LAYOUT = findViewById(R.id.tabs);
-        Global.TAB_LAYOUT.setupWithViewPager(Global.VIEW_PAGER);
-
-        Global.TAB_LAYOUT.getTabAt(Config.TAB_HOME_INDEX).select();
-
-        Helpers.loading.hide();
     }
 
     private void registered() {
@@ -254,9 +204,6 @@ public class MainActivity extends AppCompatActivity {
         tilMainPasswordRepeat.setErrorEnabled(false);
         etMainPassword.setText("");
         tilMainPassword.setErrorEnabled(false);
-
-        etMainPassword.setText("123456aA_"); //todo
-        etMainPasswordRepeat.setText("123456aA_"); //todo
 
         if (Helpers.config.getBoolean("registered", false)) {
             tilMainPasswordRepeat.setVisibility(View.GONE);
@@ -337,7 +284,7 @@ public class MainActivity extends AppCompatActivity {
                         ResultObject resultEncryptBase64PublicKey = Helpers.aes.encrypt(base64PublicKey, Global.PASSWORD);
 
                         if (resultEncryptBase64PrivateKey.isFailure() || resultEncryptBase64PublicKey.isFailure()) {
-                            //todo
+                            SnackbarComponent snackbarComponent = new SnackbarComponent(getWindow().getDecorView().getRootView(), R.string.register_failure_3, R.string.action_ok);                            snackbarComponent.show();
 
                             return;
                         }
@@ -349,35 +296,33 @@ public class MainActivity extends AppCompatActivity {
                         boolean setBase64PublicKey = Helpers.config.setString("public_key", encryptedBase64PublicKey);
 
                         if (setBase64PrivateKey && setBase64PublicKey) {
-                            //TODO HERŞEY OKEY
-
-                            Helpers.logger.info("Kayıt Oldu");
-
                             CryptHelper cryptHelper = new CryptHelper();
                             cryptHelper.setPrivateKey((String) Helpers.aes.decrypt(encryptedBase64PrivateKey, Global.PASSWORD).getData());
                             cryptHelper.setPublicKey((String) Helpers.aes.decrypt(encryptedBase64PublicKey, Global.PASSWORD).getData());
 
                             String confirmText = cryptHelper.generateValidationText();
-                            Helpers.logger.info(1, "step");
+
                             ResultObject resultRSAEncrypt = cryptHelper.encrypt(confirmText, cryptHelper.getPrivateKey());
 
                             if (resultRSAEncrypt.isFailure()) {
-                                //todo
                                 Helpers.logger.info("HATA RSA");
+
+                                SnackbarComponent snackbarComponent = new SnackbarComponent(getWindow().getDecorView().getRootView(), R.string.register_failure, R.string.action_ok);
+                                snackbarComponent.show();
                             }
-                            Helpers.logger.info(2, "step");
+
                             ResultObject resultAESEncrypt = Helpers.aes.encrypt((String) resultRSAEncrypt.getData(), Global.PASSWORD);
 
-                            if (resultAESEncrypt.isFailure()){
+                            if (resultAESEncrypt.isFailure()) {
                                 Helpers.logger.info("HATA AES");
-                                //todo
+
+                                SnackbarComponent snackbarComponent = new SnackbarComponent(getWindow().getDecorView().getRootView(), R.string.register_failure_1, R.string.action_ok);
+                                snackbarComponent.show();
                             }
+
                             Helpers.logger.info(3, "step");
                             Helpers.config.setString("confirm_password", (String) resultAESEncrypt.getData());
                             Helpers.config.setBoolean("registered", true);
-
-                            Helpers.logger.info("GELECEKKMİİ");
-
 
                             Helpers.crypt = cryptHelper;
 
@@ -390,15 +335,64 @@ public class MainActivity extends AppCompatActivity {
 
                             registered();
                         } else {
-
+                            SnackbarComponent snackbarComponent = new SnackbarComponent(getWindow().getDecorView().getRootView(), R.string.register_failure_2, R.string.action_ok);
+                            snackbarComponent.show();
                         }
-
                     }
-
-
-//todo                    login();
                 }
             });
         }
     }
+
+    public void login() {
+        Global.PASSWORD = etMainPassword.getText().toString();
+
+        String confirmString = Helpers.config.getString("confirm_password");
+
+        ResultObject resultDecryptConfirmString = Helpers.aes.decrypt(confirmString, Global.PASSWORD);
+
+        if (resultDecryptConfirmString.isFailure()) {
+            etMainPassword.setError(Helpers.resource.getString(R.string.password_wrong_1));
+            etMainPassword.setText(null);
+
+            return;
+        }
+
+        Helpers.crypt = CryptHelper.buildDefault();
+
+        ResultObject resultDecryptRSAConfirmString = Helpers.crypt.decrypt((String) resultDecryptConfirmString.getData(), Helpers.crypt.getPublicKey());
+
+        if (resultDecryptRSAConfirmString.isFailure()) {
+            etMainPassword.setError(Helpers.resource.getString(R.string.password_wrong));
+            etMainPassword.setText(null);
+
+            return;
+        }
+
+        findViewById(R.id.appBar).setVisibility(View.VISIBLE);
+        findViewById(R.id.llMainPassword).setVisibility(View.INVISIBLE);
+
+        Helpers.loading.show();
+
+        ColorConstants.colorItem = new ColorObject[]{
+                new ColorObject(Helpers.resource.getColor(R.color.pink), Helpers.resource.getColor(R.color.tintPink)),
+                new ColorObject(Helpers.resource.getColor(R.color.lightBlue), Helpers.resource.getColor(R.color.tintLightBlue)),
+                new ColorObject(Helpers.resource.getColor(R.color.amber), Helpers.resource.getColor(R.color.tintAmber)),
+                new ColorObject(Helpers.resource.getColor(R.color.red), Helpers.resource.getColor(R.color.tintRed)),
+                new ColorObject(Helpers.resource.getColor(R.color.purple), Helpers.resource.getColor(R.color.tintPurple)),
+                new ColorObject(Helpers.resource.getColor(R.color.deepOrange), Helpers.resource.getColor(R.color.tintDeepOrange))
+        };
+
+        Global.SECTION_PAGER_ADAPTER = new SectionsPagerAdapter(this, getSupportFragmentManager());
+        Global.VIEW_PAGER = findViewById(R.id.view_pager);
+        Global.VIEW_PAGER.setAdapter(Global.SECTION_PAGER_ADAPTER);
+        Global.TAB_LAYOUT = findViewById(R.id.tabs);
+        Global.TAB_LAYOUT.setupWithViewPager(Global.VIEW_PAGER);
+
+        Global.TAB_LAYOUT.getTabAt(Config.TAB_HOME_INDEX).select();
+
+        Helpers.loading.hide();
+    }
+
+    //endregion
 }

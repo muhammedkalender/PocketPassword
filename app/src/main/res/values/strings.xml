@@ -70,4 +70,17 @@
     <string name="password_wrong">Lütfen şifrenizi kontrol edin,</string>
     <string name="example_name">Örnek Hesap</string>
     <string name="example_password">Ornek_Sifre</string>
+    <string name="failure_update_password">Şifre güncellenirken sorun oluştu</string>
+    <string name="success_update_password">Şifre başarıyla güncellendi</string>
+    <string name="first_open_error">Uygulama ayarları yapılamadı. Lütfen kaldırıp tekrar deneyin.</string>
+    <string name="register_failure">Şifreler kaydedilemedi</string>
+    <string name="register_failure_1">Kayıt şifresi kaydedilemedi.</string>
+    <string name="register_failure_2">Şifreler kaydedilirken sorun oluştu.</string>
+    <string name="register_failure_3">Kayıt esnasında problem oluştu.</string>
+    <string name="password_wrong_1">Şifrenizde bir yanlışlık olabilir</string>
+    <string name="view_null">Sayfa yüklenirken sorun oluştu</string>
+    <string name="failure_password_clipboard">Şifre kopyalanamadı</string>
+    <string name="failure_load_list">Liste yüklenirken sorun oluştu</string>
+    <string name="switch_disable_error_log">Hata loglarını kapat</string>
+    <string name="switch_disable_info_log">Bilgilendirme loglarını kapat</string>
 </resources>

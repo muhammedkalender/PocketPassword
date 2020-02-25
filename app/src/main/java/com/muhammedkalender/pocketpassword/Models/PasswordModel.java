@@ -1,21 +1,23 @@
 package com.muhammedkalender.pocketpassword.Models;
 
 import android.database.Cursor;
-import android.util.Log;
+import android.widget.Toast;
 
 import com.muhammedkalender.pocketpassword.Abstracts.ModelAbstract;
 import com.muhammedkalender.pocketpassword.Constants.ErrorCodeConstants;
 import com.muhammedkalender.pocketpassword.Constants.SQLConstants;
+import com.muhammedkalender.pocketpassword.Global;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
 import com.muhammedkalender.pocketpassword.Helpers.CryptHelper;
 import com.muhammedkalender.pocketpassword.Interfaces.ModelInterface;
 import com.muhammedkalender.pocketpassword.Objects.ColumnObject;
 import com.muhammedkalender.pocketpassword.Objects.ResultObject;
+import com.muhammedkalender.pocketpassword.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PasswordModel extends ModelAbstract {
+public class PasswordModel extends ModelAbstract implements ModelInterface {
     //region Variables
 
     private int id;
@@ -35,7 +37,6 @@ public class PasswordModel extends ModelAbstract {
 
     public PasswordModel() {
         initTable();
-        //todo
     }
 
     public PasswordModel(String name, String password, String color) {
@@ -130,6 +131,11 @@ public class PasswordModel extends ModelAbstract {
         return null;
     }
 
+    @Override
+    public Object get(int id) {
+        return null;
+    }
+
     public ResultObject insert() {
         try {
             return Helpers.database.insert("INSERT INTO passwords (password_name, password_password, password_color) VALUES ('" + Helpers.crypt.quickEncrypt(name) + "', '" + Helpers.crypt.quickEncrypt(password) + "', '')");
@@ -168,8 +174,7 @@ public class PasswordModel extends ModelAbstract {
 
             return passwords;
         } else {
-            //todo
-            Log.e("asdas", ((Exception) select.getData()).getMessage());
+            Toast.makeText(Global.CONTEXT, R.string.failure_load_list, Toast.LENGTH_SHORT).show();
 
             return new ArrayList();
         }
@@ -188,14 +193,6 @@ public class PasswordModel extends ModelAbstract {
 
     @Override
     public ResultObject update() {
-        //todo
-        return super.update();
-    }
-
-    @Override
-    public ResultObject update(Object update) {
-        //todo
-
         String queryUpdate = String.format(
                 "UPDATE %1$s SET %2$s_name = '%4$s', %2$s_password = '%5$s', %2$s_color = '%6$s', %2$s_active = %7$s WHERE %2$s_id = %3$s",
                 this.table,
@@ -207,7 +204,23 @@ public class PasswordModel extends ModelAbstract {
                 this.active
         );
 
-        Log.e("asda", queryUpdate);
+        return super.update(queryUpdate);
+    }
+
+    @Override
+    public ResultObject update(Object obj) {
+        PasswordModel model = (PasswordModel) obj;
+
+        String queryUpdate = String.format(
+                "UPDATE %1$s SET %2$s_name = '%4$s', %2$s_password = '%5$s', %2$s_color = '%6$s', %2$s_active = %7$s WHERE %2$s_id = %3$s",
+                model.table,
+                model.prefix,
+                model.id,
+                model.name,
+                model.password,
+                model.color,
+                model.active
+        );
 
         return super.update(queryUpdate);
     }
@@ -239,8 +252,11 @@ public class PasswordModel extends ModelAbstract {
     }
 
     public String getEncryptedPassword() {
-        //todo
-        return password;
+        if(isDecrypted()){
+            return Helpers.crypt.quickEncrypt(this.password);
+        }else{
+            return password;
+        }
     }
 
     public String getColor() {
@@ -335,7 +351,7 @@ public class PasswordModel extends ModelAbstract {
         }
 
         this.name = Helpers.crypt.quickEncrypt(this.name);
-        this.password = Helpers.crypt.quickDecrypt(this.password);
+        this.password = Helpers.crypt.quickEncrypt(this.password);
         this.decrypted = false;
     }
 

@@ -9,9 +9,11 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.muhammedkalender.pocketpassword.Abstracts.PageAbstract;
+import com.muhammedkalender.pocketpassword.Components.SnackbarComponent;
 import com.muhammedkalender.pocketpassword.Constants.ErrorCodeConstants;
 import com.muhammedkalender.pocketpassword.Constants.InfoCodeConstants;
 import com.muhammedkalender.pocketpassword.Global;
@@ -133,18 +135,26 @@ public class PasswordPage extends PageAbstract implements PageInterface {
 
                 passwordModel.encrypt();
 
-                ResultObject insert = passwordModel.update();
+                ResultObject update = passwordModel.update();
 
-                if (insert.isSuccess()) {
+                passwordModel.decrypt();
+
+                if (update.isSuccess()) {
                     Global.LIST_PASSWORDS.set(Global.CURRENT_PASSWORD_MODEL_INDEX, passwordModel);
                     Helpers.list.findAndUpdate(passwordModel);
-                    Global.LIST_PASSWORDS_SOLID.set(Helpers.list.findIndexFromSolid(passwordModel), passwordModel); //todo
+                    Global.LIST_PASSWORDS_SOLID.set(Helpers.list.findIndexFromSolid(passwordModel), passwordModel);
                     Global.PASSWORD_ADAPTER.notifyDataSetChanged();
                     Global.TAB_LAYOUT.getTabAt(Config.TAB_PASSWORD_INDEX).setText(passwordModel.getName());
                     Global.TAB_LAYOUT.getTabAt(Config.TAB_PASSWORD_INDEX).setContentDescription(passwordModel.getName());
+
+                    SnackbarComponent snackbarComponent = new SnackbarComponent(viewRoot, R.string.success_update_password, R.string.action_ok);
+                    snackbarComponent.show();
                 } else {
-                    //todo
+                    SnackbarComponent snackbarComponent = new SnackbarComponent(viewRoot, R.string.failure_update_password, R.string.action_ok);
+                    snackbarComponent.show();
                 }
+
+                Helpers.system.hideSoftKeyboard();
 
                 Helpers.loading.hide();
             }
@@ -160,8 +170,9 @@ public class PasswordPage extends PageAbstract implements PageInterface {
 
                     Toast.makeText(Global.CONTEXT,R.string.password_clipboard, Toast.LENGTH_SHORT).show();
                 }catch (Exception e){
-                    //todo
                     Helpers.logger.error(ErrorCodeConstants.CLIPBOARD_PASSWORD, e);
+
+                    Toast.makeText(Global.CONTEXT, R.string.failure_password_clipboard, Toast.LENGTH_SHORT).show();
                 }
             }
         });

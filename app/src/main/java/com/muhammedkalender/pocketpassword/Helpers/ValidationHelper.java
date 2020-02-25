@@ -6,7 +6,6 @@ import com.muhammedkalender.pocketpassword.Objects.ResultObject;
 public class ValidationHelper {
     public static int PASSWORD_STRONG = 1, PASSWORD_NORMAL = 2, PASSWORD_WEAK = 3;
 
-    //TODO UNIT TEST
     //https://stackoverflow.com/a/3802238
     public boolean checkPassword(String password, int type) {
         if (type == PASSWORD_STRONG) {

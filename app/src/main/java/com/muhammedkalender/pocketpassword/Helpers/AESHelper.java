@@ -25,7 +25,6 @@ public class AESHelper {
             String caesar = Helpers.config.getString("caesar_pattern", "");
             int[] steps = new int[8];
 
-
             if (caesar.equals("")) {
                 Random random = new Random();
 

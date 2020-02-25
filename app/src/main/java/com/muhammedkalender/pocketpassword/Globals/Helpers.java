@@ -8,6 +8,7 @@ import com.muhammedkalender.pocketpassword.Helpers.ListHelper;
 import com.muhammedkalender.pocketpassword.Helpers.LogHelpers;
 import com.muhammedkalender.pocketpassword.Helpers.ResourceHelper;
 import com.muhammedkalender.pocketpassword.Helpers.SharedPreferencesHelper;
+import com.muhammedkalender.pocketpassword.Helpers.SystemHelper;
 import com.muhammedkalender.pocketpassword.Helpers.ValidationHelper;
 
 public class Helpers {
@@ -20,4 +21,5 @@ public class Helpers {
     public static ValidationHelper validation;
     public static AESHelper aes;
     public static CryptHelper crypt;
+    public static SystemHelper system;
 }
