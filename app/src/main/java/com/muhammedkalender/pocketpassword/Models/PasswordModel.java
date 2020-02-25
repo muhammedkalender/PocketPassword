@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.widget.Toast;
 
 import com.muhammedkalender.pocketpassword.Abstracts.ModelAbstract;
+import com.muhammedkalender.pocketpassword.Constants.ColorConstants;
 import com.muhammedkalender.pocketpassword.Constants.ErrorCodeConstants;
 import com.muhammedkalender.pocketpassword.Constants.SQLConstants;
 import com.muhammedkalender.pocketpassword.Global;
@@ -24,7 +25,7 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
 
     private String name;
     private String password;
-    private String color;
+    private int color;
 
     private boolean active;
 
@@ -39,7 +40,7 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
         initTable();
     }
 
-    public PasswordModel(String name, String password, String color) {
+    public PasswordModel(String name, String password, int color) {
         initTable();
 
         this.name = name;
@@ -47,7 +48,7 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
         this.color = color;
     }
 
-    public PasswordModel(int id, String name, String password, String color) {
+    public PasswordModel(int id, String name, String password, int color) {
         initTable();
 
         this.id = id;
@@ -56,7 +57,7 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
         this.color = color;
     }
 
-    public PasswordModel(int id, String name, String password, String color, boolean active) {
+    public PasswordModel(int id, String name, String password, int color, boolean active) {
         initTable();
 
         this.id = id;
@@ -161,12 +162,16 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
 
             List passwords = new ArrayList();
 
+            int index = 0;
+
             while (cursor.moveToNext()) {
+                int color = ColorConstants.colorItem[index++ % ColorConstants.colorItem.length].getColor();
+
                 passwords.add(new PasswordModel(
                         cursor.getInt(cursor.getColumnIndex(prefix + "_id")),
                         cursor.getString(cursor.getColumnIndex(prefix + "_name")),
                         cursor.getString(cursor.getColumnIndex(prefix + "_password")),
-                        cursor.getString(cursor.getColumnIndex(prefix + "_color")),
+                        color, //todo cursor.getInt(cursor.getColumnIndex(prefix + "_color")),
                         cursor.getInt(cursor.getColumnIndex(prefix + "_active")) == 1
 
                 ));
@@ -259,7 +264,7 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
         }
     }
 
-    public String getColor() {
+    public int getColor() {
         return color;
     }
 
@@ -291,7 +296,7 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
         this.password = password;
     }
 
-    public void setColor(String color) {
+    public void setColor(int color) {
         this.color = color;
     }
 
