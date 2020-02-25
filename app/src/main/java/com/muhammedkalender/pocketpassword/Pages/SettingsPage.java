@@ -12,9 +12,7 @@ import com.muhammedkalender.pocketpassword.Interfaces.PageInterface;
 import com.muhammedkalender.pocketpassword.R;
 
 public class SettingsPage extends PageAbstract implements PageInterface {
-
-    private SwitchMaterial switchOnlyLogin, switchHideView;
-
+    private SwitchMaterial switchOnlyLogin, switchHideView, switchDisableErrorLog, switchDisableInfoLog;
 
     @Override
     public void initialize(View viewRoot) {
@@ -43,6 +41,38 @@ public class SettingsPage extends PageAbstract implements PageInterface {
                 if(Helpers.config.setBoolean("hide_view", isChecked)){
 
                     Config.CONFIG_HIDE_VIEW = isChecked;
+
+                    buttonView.setChecked(isChecked);
+                }else{
+                    buttonView.setChecked(!isChecked);
+                }
+            }
+        });
+
+        switchDisableErrorLog = this.viewRoot.findViewById(R.id.switchDisableErrorLog);
+        switchDisableErrorLog.setChecked(Config.CONFIG_ENABLE_ERROR_LOG);
+        switchDisableErrorLog.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(Helpers.config.setBoolean("enable_error_log", isChecked)){
+
+                    Config.CONFIG_ENABLE_ERROR_LOG = isChecked;
+
+                    buttonView.setChecked(isChecked);
+                }else{
+                    buttonView.setChecked(!isChecked);
+                }
+            }
+        });
+
+        switchDisableInfoLog = this.viewRoot.findViewById(R.id.switchDisableInfoLog);
+        switchDisableInfoLog.setChecked(Config.CONFIG_ENABLE_INFO_LOG);
+        switchDisableInfoLog.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(Helpers.config.setBoolean("enable_info_log", isChecked)){
+
+                    Config.CONFIG_ENABLE_INFO_LOG = isChecked;
 
                     buttonView.setChecked(isChecked);
                 }else{

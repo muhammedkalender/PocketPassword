@@ -15,10 +15,10 @@
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabs"
             android:layout_width="match_parent"
-
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
             android:visibility="visible"
+            android:theme="@style/TabWithHeader"
             app:tabSelectedTextColor="#fff"
             app:tabTextColor="#B3E5FC" />
     </com.google.android.material.appbar.AppBarLayout>
@@ -60,7 +60,9 @@
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
                 android:maxLength="@integer/password_max_length"
-                android:maxLines="1" />
+                android:maxLines="1"
+                android:imeOptions="actionDone"
+                />
 
         </com.google.android.material.textfield.TextInputLayout>
 

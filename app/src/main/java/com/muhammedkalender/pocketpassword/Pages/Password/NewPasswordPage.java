@@ -33,8 +33,6 @@ public class NewPasswordPage extends PageAbstract implements PageInterface {
 
     @Override
     public void initialize(View viewRoot) {
-        //todo
-
         this.viewRoot = viewRoot;
         this.initialized = true;
 
@@ -123,23 +121,23 @@ public class NewPasswordPage extends PageAbstract implements PageInterface {
                     Helpers.logger.info(String.format("%1$d ID ile kayıt girildi", (int) insert.getData()));
 
                     Global.TAB_LAYOUT.getTabAt(Config.TAB_HOME_INDEX).select();
-
-                    //todo get synced data
-                    //Global.SECTION_PAGER_ADAPTER.add(name);
                     PasswordModel addedPasswordModel = new PasswordModel((int) insert.getData(), name, password, "");
                     addedPasswordModel.setDecrypted(true);
 
                     Global.LIST_PASSWORDS.add(addedPasswordModel);
                     Global.LIST_PASSWORDS_SOLID.add(addedPasswordModel);
                     Global.PASSWORD_ADAPTER.notifyDataSetChanged();
-Helpers.logger.info("Oluştu" + name);
+
                     SnackbarComponent snackbarComponent = new SnackbarComponent(viewRoot, R.string.success_add_password, R.string.action_ok);
                     snackbarComponent.show();
+
+                    etName.setText(null);
+                    etPassword.setText(null);
                 } else {
                     Helpers.logger.error(ErrorCodeConstants.MODEL_PASSWORD_INSERT, (Exception) insert.getData());
-                    //todo
                 }
 
+                Helpers.system.hideSoftKeyboard();
                 Helpers.loading.hide();
             }
         });

@@ -87,7 +87,12 @@ public class HomePage extends PageAbstract implements PageInterface {
     }
 
     public void filter(String keyword){
+        if(keyword.trim().length() == 0){
+            keyword = "";
+        }
+
         Helpers.logger.info(keyword + " Arandı");
+
         List<PasswordModel> tempPasswords = new ArrayList<>();
 
         for(int i = 0; i < Global.LIST_PASSWORDS_SOLID.size(); i++){

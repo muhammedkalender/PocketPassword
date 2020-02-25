@@ -110,4 +110,18 @@ public class ErrorCodeConstants {
             AES_SECRET_TO_KEY = 3102;
 
     //endregion
+
+    //region System Service
+
+    public static final int
+            SYSTEM_SERVICE_HIDE_SOFT_KEYBOARD = 4000;
+
+    //endregion
+
+    //region Logger
+
+    public static final int
+            LOGGER_INFO_WITH_MESSAGE = 5000;
+
+    //endregion
 }

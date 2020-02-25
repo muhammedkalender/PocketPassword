@@ -2,6 +2,7 @@ package com.muhammedkalender.pocketpassword.Helpers;
 
 import android.util.Log;
 
+import com.muhammedkalender.pocketpassword.Constants.ErrorCodeConstants;
 import com.muhammedkalender.pocketpassword.Globals.Config;
 
 public class LogHelpers {
@@ -18,7 +19,7 @@ public class LogHelpers {
 
     public void error(int errorCode, Exception e, String message){
         try{
-            if(!Config.LOG_ENABLE){
+            if(!Config.CONFIG_ENABLE_ERROR_LOG){
                 return;
             }
 
@@ -34,7 +35,6 @@ public class LogHelpers {
 
             Log.e("ERROR_" + errorCode, message);
         }catch (Exception ignored){
-            //TODO ?
         }
     }
 
@@ -47,12 +47,14 @@ public class LogHelpers {
     }
 
     public void info(int infoCode, String message){
+        if(!Config.CONFIG_ENABLE_INFO_LOG){
+            return;
+        }
+
         try {
             Log.e("INFO_"+infoCode, message);
-
-            //todo info ?
         }catch (Exception e){
-            //todo ?
+            error(ErrorCodeConstants.LOGGER_INFO_WITH_MESSAGE, e);
         }
     }
 

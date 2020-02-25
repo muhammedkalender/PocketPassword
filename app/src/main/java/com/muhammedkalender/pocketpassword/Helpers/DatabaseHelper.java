@@ -43,7 +43,6 @@ public class DatabaseHelper {
                 isFirst = false;
             }
 
-            //todo Password must be from a variable or changed any time etc...
             database = SQLiteDatabase.openOrCreateDatabase(databaseFile, "PocketPassword", null);
 
             if (isFirst) {
@@ -199,7 +198,7 @@ public class DatabaseHelper {
 
             if (cursor == null || cursor.getCount() <= 0) {
                 return new ResultObject(ErrorCodeConstants.SQL_SELECT_WITH_DATA_EMPTY)
-                        .setError(new Exception("QUERY BOŞ DÖNDÜ")); //todo
+                        .setError(new Exception("QUERY IS EMPTT"));
             }
 
             return new ResultObject()

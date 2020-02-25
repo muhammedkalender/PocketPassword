@@ -4,9 +4,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -88,7 +88,8 @@ public class PlaceholderFragment extends Fragment {
 
             return passwordPage.getView();
         } else {
-            //TODO
+            Toast.makeText(Global.CONTEXT, R.string.view_null, Toast.LENGTH_SHORT).show();
+
             return null;
         }
     }

@@ -56,7 +56,6 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordListHolder> {
 
         PasswordModel passwordModel = Global.LIST_PASSWORDS_SOLID.get(Helpers.list.findIndexFromTempIndex(position));
 
-//        passwordModel.setName(defCryptHelper.quickDecrypt(passwordModel.getName()));
         if(!passwordModel.isDecrypted()){
             passwordModel.decrypt();
         }
@@ -111,7 +110,6 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordListHolder> {
 
                     Toast.makeText(Global.CONTEXT,R.string.password_clipboard, Toast.LENGTH_SHORT).show();
                 }catch (Exception e){
-                    //todo
                     Helpers.logger.error(ErrorCodeConstants.CLIPBOARD_PASSWORD_IN_LIST, e);
                 }
             }
