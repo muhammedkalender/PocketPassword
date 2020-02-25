@@ -158,6 +158,8 @@ public class MainActivity extends AppCompatActivity {
 
         CryptHelper cryptHelper = new CryptHelper();
 
+        Helpers.loading.show();
+
         ResultObject resultGenerateKeys = cryptHelper.generateKeys();
 
         if (resultGenerateKeys.isFailure()) {
@@ -165,6 +167,8 @@ public class MainActivity extends AppCompatActivity {
             Helpers.logger.info("Key üretilemedi");
             return false;
         }
+
+        Helpers.loading.hide();
 
         KeyPair keyPair = (KeyPair) resultGenerateKeys.getData();
 
@@ -186,15 +190,7 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
 
-        String name = cryptHelper.quickEncrypt("test");
-        String password = cryptHelper.quickEncrypt("password");
-
-        PasswordModel passwordModel = new PasswordModel(name, password, "");
-        ResultObject resultInsert = passwordModel.insert();
-
-        if (resultInsert.isSuccess()) {
             Helpers.config.setBoolean("first_open", false);
-        }
 
         Helpers.config.setString("device_id", Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID));
 
@@ -204,16 +200,34 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void login() {
+        Global.PASSWORD = etMainPassword.getText().toString();
 
+        String confirmString = Helpers.config.getString("confirm_password");
 
-        if (!etMainPassword.getText().toString().equals("1111")) {
-            etMainPassword.setError("Olmadı");
+        ResultObject resultDecryptConfirmString = Helpers.aes.decrypt(confirmString, Global.PASSWORD);
+        Helpers.logger.info(-1, "Step 5");
+        if(resultDecryptConfirmString.isFailure()){
+            etMainPassword.setError(Helpers.resource.getString(R.string.password_wrong)); //todo
+            etMainPassword.setText(null);
 
             return;
         }
 
-        Global.PASSWORD = etMainPassword.getText().toString();
+        Helpers.crypt = CryptHelper.buildDefault();
 
+        Helpers.logger.info(-1, "Step 2");
+
+        ResultObject resultDecryptRSAConfirmString = Helpers.crypt.decrypt((String) resultDecryptConfirmString.getData(), Helpers.crypt.getPublicKey());
+
+        if(resultDecryptRSAConfirmString.isFailure()){
+            etMainPassword.setError(Helpers.resource.getString(R.string.password_wrong)); //todo
+            etMainPassword.setText(null);
+
+            return;
+        }
+        Helpers.logger.info(-1, "Step 3");
+        Helpers.logger.info(999, (String) resultDecryptRSAConfirmString.getData());
+        Helpers.logger.info(-1, "Step 4");
         findViewById(R.id.appBar).setVisibility(View.VISIBLE);
         findViewById(R.id.llMainPassword).setVisibility(View.INVISIBLE);
 
@@ -245,13 +259,16 @@ public class MainActivity extends AppCompatActivity {
         etMainPassword.setText("");
         tilMainPassword.setErrorEnabled(false);
 
-        if (Helpers.config.getBoolean("registered", false)) {
-            tilMainPasswordRepeat.setVisibility(View.INVISIBLE);
+        etMainPassword.setText("123456aA_"); //todo
+        etMainPasswordRepeat.setText("123456aA_"); //todo
 
-            ((MaterialButton) findViewById(R.id.btnLogin)).setText(R.string.login_failed);
+        if (Helpers.config.getBoolean("registered", false)) {
+            tilMainPasswordRepeat.setVisibility(View.GONE);
+
+            ((MaterialButton) findViewById(R.id.btnLogin)).setText(R.string.button_login);
             ((MaterialButton) findViewById(R.id.btnLogin)).setIcon(Helpers.resource.getDrawable(R.drawable.ic_person_24dp));
 
-            tilMainPassword.setHelperText(Helpers.resource.getString(R.string.input_password_edit));
+            tilMainPassword.setHelperText(Helpers.resource.getString(R.string.input_login_password));
             tilMainPassword.setHint(Helpers.resource.getString(R.string.hint_password_edit));
 
             findViewById(R.id.btnLogin).setOnClickListener(new View.OnClickListener() {
@@ -362,6 +379,18 @@ public class MainActivity extends AppCompatActivity {
                             Helpers.logger.info(3, "step");
                             Helpers.config.setString("confirm_password", (String) resultAESEncrypt.getData());
                             Helpers.config.setBoolean("registered", true);
+
+                            Helpers.logger.info("GELECEKKMİİ");
+
+
+                            Helpers.crypt = cryptHelper;
+
+                            PasswordModel passwordModel = new PasswordModel(Helpers.resource.getString(R.string.example_name, "Example Account"), Helpers.resource.getString(R.string.example_password, "Example_Password"), "");
+                            ResultObject resultInsert = passwordModel.insert();
+
+                            if (resultInsert.isSuccess()) {
+                                Helpers.config.setBoolean("first_open", false);
+                            }
 
                             registered();
                         } else {

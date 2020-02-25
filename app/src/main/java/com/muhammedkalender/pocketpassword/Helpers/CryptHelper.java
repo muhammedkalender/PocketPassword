@@ -134,6 +134,8 @@ public class CryptHelper {
             Cipher cipher = Cipher.getInstance("RSA");
             cipher.init(Cipher.ENCRYPT_MODE, privateKey);
 
+            Helpers.logger.info(pureData);
+
             return new ResultObject()
                     .setData(Base64.encodeToString(cipher.doFinal(pureData.getBytes(UTF_8)), Base64.DEFAULT));
         } catch (Exception e) {
@@ -197,11 +199,11 @@ public class CryptHelper {
     }
 
     public String generateValidationText() {
-        byte[] bytes = new byte[1024];
+        byte[] bytes = new byte[512];
 
         byte[] deviceID = Helpers.config.getString("device_id").getBytes(UTF_8);
 
-        for (int i = 0; i < 1024; i++) {
+        for (int i = 0; i < bytes.length; i++) {
             bytes[i] = deviceID[i % deviceID.length];
         }
 
@@ -320,8 +322,10 @@ public class CryptHelper {
 
         ResultObject resultDecryptPrivateKey = Helpers.aes.decrypt(privateKey, Global.PASSWORD);
         ResultObject resultDecryptPublicKey = Helpers.aes.decrypt(publicKey, Global.PASSWORD);
-
+Helpers.logger.info("asdsad");
         if (resultDecryptPrivateKey.isFailure() || resultDecryptPublicKey.isFailure()) {
+            Helpers.logger.error(-1, "Keyler aes ile çözülemedi");
+
             return false;
         }
 
@@ -332,11 +336,18 @@ public class CryptHelper {
         ResultObject resultPublicKeyFromString = publicKeyFromString(publicKey);
 
         if (resultPrivateKeyFromString.isFailure() || resultPublicKeyFromString.isFailure()) {
+            Helpers.logger.error(-1, "Keyler RSA Keyine Dönüştürülürken Patladı");
+
             return false;
         }
 
         this.setPrivateKey((PrivateKey) resultPrivateKeyFromString.getData());
         this.setPublicKey((PublicKey) resultPublicKeyFromString.getData());
+
+        String a = this.quickEncrypt("test");
+
+        Helpers.logger.info(777,a);
+        Helpers.logger.info(888, this.quickDecrypt(a));
 
         return true;
     }
