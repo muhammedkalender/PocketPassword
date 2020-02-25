@@ -205,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
         String confirmString = Helpers.config.getString("confirm_password");
 
         ResultObject resultDecryptConfirmString = Helpers.aes.decrypt(confirmString, Global.PASSWORD);
-        Helpers.logger.info(-1, "Step 5");
+
         if(resultDecryptConfirmString.isFailure()){
             etMainPassword.setError(Helpers.resource.getString(R.string.password_wrong)); //todo
             etMainPassword.setText(null);
@@ -215,8 +215,6 @@ public class MainActivity extends AppCompatActivity {
 
         Helpers.crypt = CryptHelper.buildDefault();
 
-        Helpers.logger.info(-1, "Step 2");
-
         ResultObject resultDecryptRSAConfirmString = Helpers.crypt.decrypt((String) resultDecryptConfirmString.getData(), Helpers.crypt.getPublicKey());
 
         if(resultDecryptRSAConfirmString.isFailure()){
@@ -225,9 +223,7 @@ public class MainActivity extends AppCompatActivity {
 
             return;
         }
-        Helpers.logger.info(-1, "Step 3");
-        Helpers.logger.info(999, (String) resultDecryptRSAConfirmString.getData());
-        Helpers.logger.info(-1, "Step 4");
+
         findViewById(R.id.appBar).setVisibility(View.VISIBLE);
         findViewById(R.id.llMainPassword).setVisibility(View.INVISIBLE);
 

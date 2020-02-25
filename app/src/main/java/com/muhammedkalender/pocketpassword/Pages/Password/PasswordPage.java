@@ -61,8 +61,11 @@ public class PasswordPage extends PageAbstract implements PageInterface {
     }
 
     public void load(PasswordModel passwordModel){
+
+        passwordModel.decrypt();
+
         this.etName.setText(passwordModel.getName());
-        this.etPassword.setText(CryptHelper.buildDefault().quickDecrypt(passwordModel.getPassword()));
+        this.etPassword.setText(passwordModel.getPassword());
         this.tilPassword.setPasswordVisibilityToggleEnabled(!Config.CONFIG_HIDE_VIEW);
 
         this.btnSave.setOnClickListener(new View.OnClickListener() {
@@ -127,6 +130,8 @@ public class PasswordPage extends PageAbstract implements PageInterface {
                 //todo color
                 passwordModel.setName(name);
                 passwordModel.setPassword(password);
+
+                passwordModel.encrypt();
 
                 ResultObject insert = passwordModel.update();
 
