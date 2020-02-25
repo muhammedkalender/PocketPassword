@@ -92,7 +92,7 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordListHolder> {
             }
         });
 
-        holder.llContainer.setBackgroundColor(ColorConstants.colorItem[position % ColorConstants.colorItem.length].getColor());
+        holder.llContainer.setBackgroundColor(passwordModel.getColor());
 
         holder.ivClipboard.setOnClickListener(new View.OnClickListener() {
             @Override

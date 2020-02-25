@@ -54,7 +54,7 @@ public class NewPasswordPage extends PageAbstract implements PageInterface {
 
                 passwordModel.setName(name);
                 passwordModel.setPassword(password);
-                passwordModel.setColor("");
+                passwordModel.setColor(-1);
 
                 ResultObject validation = passwordModel.validation();
 
@@ -113,7 +113,7 @@ public class NewPasswordPage extends PageAbstract implements PageInterface {
                 }
 
                 //todo color
-                PasswordModel passwordModel = new PasswordModel(name, password, "");
+                PasswordModel passwordModel = new PasswordModel(name, password, -1);
 
                 ResultObject insert = passwordModel.insert();
 
@@ -121,7 +121,7 @@ public class NewPasswordPage extends PageAbstract implements PageInterface {
                     Helpers.logger.info(String.format("%1$d ID ile kayıt girildi", (int) insert.getData()));
 
                     Global.TAB_LAYOUT.getTabAt(Config.TAB_HOME_INDEX).select();
-                    PasswordModel addedPasswordModel = new PasswordModel((int) insert.getData(), name, password, "");
+                    PasswordModel addedPasswordModel = new PasswordModel((int) insert.getData(), name, password, -1);
                     addedPasswordModel.setDecrypted(true);
 
                     Global.LIST_PASSWORDS.add(addedPasswordModel);

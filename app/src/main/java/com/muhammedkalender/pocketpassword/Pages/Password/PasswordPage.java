@@ -80,7 +80,7 @@ public class PasswordPage extends PageAbstract implements PageInterface {
 
                 passwordModel.setName(name);
                 passwordModel.setPassword(password);
-                passwordModel.setColor("");
+                passwordModel.setColor(-1);
 
                 if (etName.getText().toString() == null || etName.getText().toString().length() == 0) {
                     tilName.setError(Helpers.resource.getString(R.string.not_null, "", Helpers.resource.getString(R.string.input_name)));

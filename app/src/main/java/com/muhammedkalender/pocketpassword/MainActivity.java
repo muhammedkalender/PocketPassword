@@ -326,7 +326,9 @@ public class MainActivity extends AppCompatActivity {
 
                             Helpers.crypt = cryptHelper;
 
-                            PasswordModel passwordModel = new PasswordModel(Helpers.resource.getString(R.string.example_name, "Example Account"), Helpers.resource.getString(R.string.example_password, "Example_Password"), "");
+                            int color = ColorConstants.colorItem[Global.LIST_PASSWORDS_SOLID.size() % ColorConstants.colorItem.length].getColor();
+
+                            PasswordModel passwordModel = new PasswordModel(Helpers.resource.getString(R.string.example_name, "Example Account"), Helpers.resource.getString(R.string.example_password, "Example_Password"), color);
                             ResultObject resultInsert = passwordModel.insert();
 
                             if (resultInsert.isSuccess()) {
