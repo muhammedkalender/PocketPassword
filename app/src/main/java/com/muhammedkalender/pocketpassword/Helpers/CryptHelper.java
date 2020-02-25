@@ -322,7 +322,7 @@ public class CryptHelper {
 
         ResultObject resultDecryptPrivateKey = Helpers.aes.decrypt(privateKey, Global.PASSWORD);
         ResultObject resultDecryptPublicKey = Helpers.aes.decrypt(publicKey, Global.PASSWORD);
-Helpers.logger.info("asdsad");
+
         if (resultDecryptPrivateKey.isFailure() || resultDecryptPublicKey.isFailure()) {
             Helpers.logger.error(-1, "Keyler aes ile çözülemedi");
 
@@ -343,11 +343,6 @@ Helpers.logger.info("asdsad");
 
         this.setPrivateKey((PrivateKey) resultPrivateKeyFromString.getData());
         this.setPublicKey((PublicKey) resultPublicKeyFromString.getData());
-
-        String a = this.quickEncrypt("test");
-
-        Helpers.logger.info(777,a);
-        Helpers.logger.info(888, this.quickDecrypt(a));
 
         return true;
     }

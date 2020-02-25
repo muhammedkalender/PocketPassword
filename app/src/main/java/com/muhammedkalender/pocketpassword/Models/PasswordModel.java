@@ -16,15 +16,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PasswordModel extends ModelAbstract {
+    //region Variables
+
     private int id;
 
     private String name;
     private String password;
     private String color;
 
-    private boolean nameEncrypted = true;
-
     private boolean active;
+
+    private boolean nameEncrypted = true;
+    private boolean decrypted = false;
+
+    //endregion
+
+    //region Constructors
 
     public PasswordModel() {
         initTable();
@@ -58,45 +65,9 @@ public class PasswordModel extends ModelAbstract {
         this.active = active;
     }
 
-    public String getName() {
-        return name;
-    }
+    //endregion
 
-    public String getPassword() {
-        return password;
-    }
-
-    public String getEncryptedPassword() {
-        //todo
-        return password;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public ResultObject insert() {
-        try {
-            return Helpers.database.insert("INSERT INTO passwords (password_name, password_password, password_color) VALUES ('" + Helpers.crypt.quickEncrypt(name) + "', '" + Helpers.crypt.quickEncrypt(password) + "', '')");
-        } catch (Exception e) {
-            return new ResultObject(ErrorCodeConstants.MODEL_PASSWORD_INSERT)
-                    .setError(e);
-        }
-    }
-
-    public boolean checkDuplicate(String name){
-        return checkDuplicate(name, true);
-    }
-
-    public boolean checkDuplicate(String name, boolean ignoreCamelCase) {
-        ResultObject check = Helpers.database.isAvailable("SELECT * FROM passwords WHERE password_name = '" + name + "'", "password_id", ignoreCamelCase);
-
-        if (check.isSuccess()) {
-            return (Boolean) check.getData();
-        } else {
-            return false;
-        }
-    }
+    //region Initializer
 
     @Override
     public ResultObject initTable() {
@@ -150,9 +121,22 @@ public class PasswordModel extends ModelAbstract {
         return null;
     }
 
+    //endregion
+
+    //region Database Functions
+
     @Override
     public PasswordModel insert(Object model) {
         return null;
+    }
+
+    public ResultObject insert() {
+        try {
+            return Helpers.database.insert("INSERT INTO passwords (password_name, password_password, password_color) VALUES ('" + Helpers.crypt.quickEncrypt(name) + "', '" + Helpers.crypt.quickEncrypt(password) + "', '')");
+        } catch (Exception e) {
+            return new ResultObject(ErrorCodeConstants.MODEL_PASSWORD_INSERT)
+                    .setError(e);
+        }
     }
 
     @Override
@@ -171,7 +155,7 @@ public class PasswordModel extends ModelAbstract {
 
             List passwords = new ArrayList();
 
-            while(cursor.moveToNext()) {
+            while (cursor.moveToNext()) {
                 passwords.add(new PasswordModel(
                         cursor.getInt(cursor.getColumnIndex(prefix + "_id")),
                         cursor.getString(cursor.getColumnIndex(prefix + "_name")),
@@ -202,31 +186,10 @@ public class PasswordModel extends ModelAbstract {
         }
     }
 
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
-    }
-
     @Override
     public ResultObject update() {
         //todo
         return super.update();
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
     }
 
     @Override
@@ -249,6 +212,12 @@ public class PasswordModel extends ModelAbstract {
         return super.update(queryUpdate);
     }
 
+    //endregion
+
+    //region Getters & Setters
+
+    //region Getters
+
     public int getId() {
         return id;
     }
@@ -257,9 +226,68 @@ public class PasswordModel extends ModelAbstract {
         return nameEncrypted;
     }
 
+    public boolean isDecrypted() {
+        return decrypted;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getEncryptedPassword() {
+        //todo
+        return password;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    //endregion
+
+    //region Setters
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public void setNameEncrypted(boolean nameEncrypted) {
         this.nameEncrypted = nameEncrypted;
     }
+
+    public void setDecrypted(boolean decrypted) {
+        this.decrypted = decrypted;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    //endregion
+
+    //endregion
+
+    //region Secondary Functions
 
     public void decryptName(CryptHelper cryptHelper){
         if(isNameEncrypted()){
@@ -268,4 +296,48 @@ public class PasswordModel extends ModelAbstract {
             setNameEncrypted(false);
         }
     }
+
+    //endregion
+
+    //region Check Duplicate
+
+    public boolean checkDuplicate(String name) {
+        return checkDuplicate(name, true);
+    }
+
+    public boolean checkDuplicate(String name, boolean ignoreCamelCase) {
+        ResultObject check = Helpers.database.isAvailable("SELECT * FROM passwords WHERE password_name = '" + name + "'", "password_id", ignoreCamelCase);
+
+        if (check.isSuccess()) {
+            return (Boolean) check.getData();
+        } else {
+            return false;
+        }
+    }
+
+    //endregion
+
+    //region Quick Encrypt & Decrypt
+
+    public void decrypt() {
+        if (isDecrypted()) {
+            return;
+        }
+
+        this.name = Helpers.crypt.quickDecrypt(this.name);
+        this.password = Helpers.crypt.quickDecrypt(this.password);
+        this.decrypted = true;
+    }
+
+    public void encrypt() {
+        if (!isDecrypted()) {
+            return;
+        }
+
+        this.name = Helpers.crypt.quickEncrypt(this.name);
+        this.password = Helpers.crypt.quickDecrypt(this.password);
+        this.decrypted = false;
+    }
+
+    //endregion
 }

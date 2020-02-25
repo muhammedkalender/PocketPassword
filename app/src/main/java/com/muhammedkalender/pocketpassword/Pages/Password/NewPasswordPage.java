@@ -126,10 +126,13 @@ public class NewPasswordPage extends PageAbstract implements PageInterface {
 
                     //todo get synced data
                     //Global.SECTION_PAGER_ADAPTER.add(name);
-                    Global.LIST_PASSWORDS.add(new PasswordModel((int) insert.getData(), name, password, ""));
-                    Global.LIST_PASSWORDS_SOLID.add(new PasswordModel((int) insert.getData(), name, password, ""));
-                    Global.PASSWORD_ADAPTER.notifyDataSetChanged();
+                    PasswordModel addedPasswordModel = new PasswordModel((int) insert.getData(), name, password, "");
+                    addedPasswordModel.setDecrypted(true);
 
+                    Global.LIST_PASSWORDS.add(addedPasswordModel);
+                    Global.LIST_PASSWORDS_SOLID.add(addedPasswordModel);
+                    Global.PASSWORD_ADAPTER.notifyDataSetChanged();
+Helpers.logger.info("Oluştu" + name);
                     SnackbarComponent snackbarComponent = new SnackbarComponent(viewRoot, R.string.success_add_password, R.string.action_ok);
                     snackbarComponent.show();
                 } else {

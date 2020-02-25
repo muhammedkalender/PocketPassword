@@ -57,7 +57,9 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordListHolder> {
         PasswordModel passwordModel = Global.LIST_PASSWORDS_SOLID.get(Helpers.list.findIndexFromTempIndex(position));
 
 //        passwordModel.setName(defCryptHelper.quickDecrypt(passwordModel.getName()));
-        passwordModel.decryptName(defCryptHelper);
+        if(!passwordModel.isDecrypted()){
+            passwordModel.decrypt();
+        }
 
         holder.tvName.setText(passwordModel.getName());
 
@@ -97,8 +99,14 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordListHolder> {
             @Override
             public void onClick(View v) {
                 try{
+                    String password = passwordModel.getPassword();
+
+                    if(!passwordModel.isDecrypted()){
+                        passwordModel.decrypt();
+                    }
+
                     ClipboardManager clipboard = (ClipboardManager) Global.CONTEXT.getSystemService(Context.CLIPBOARD_SERVICE);
-                    ClipData clip = ClipData.newPlainText(Helpers.resource.getString(R.string.clipboard_title), CryptHelper.buildDefault().quickDecrypt(passwordModel.getPassword()));
+                    ClipData clip = ClipData.newPlainText(Helpers.resource.getString(R.string.clipboard_title), password);
                     clipboard.setPrimaryClip(clip);
 
                     Toast.makeText(Global.CONTEXT,R.string.password_clipboard, Toast.LENGTH_SHORT).show();
