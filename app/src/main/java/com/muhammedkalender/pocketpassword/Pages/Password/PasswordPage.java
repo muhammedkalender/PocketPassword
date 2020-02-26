@@ -6,6 +6,8 @@ import android.content.Context;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.widget.HorizontalScrollView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
@@ -13,6 +15,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.muhammedkalender.pocketpassword.Abstracts.PageAbstract;
+import com.muhammedkalender.pocketpassword.Components.ColorPickerComponent;
 import com.muhammedkalender.pocketpassword.Components.SnackbarComponent;
 import com.muhammedkalender.pocketpassword.Constants.ErrorCodeConstants;
 import com.muhammedkalender.pocketpassword.Constants.InfoCodeConstants;
@@ -31,10 +34,18 @@ public class PasswordPage extends PageAbstract implements PageInterface {
     public TextInputLayout tilName = null;
     public TextInputEditText etName = null;
 
+    public TextInputLayout tilAccount = null;
+    public TextInputEditText etAccount = null;
+
     public TextInputLayout tilPassword = null;
     public TextInputEditText etPassword = null;
 
     public MaterialButton btnClipboard = null;
+
+    private HorizontalScrollView hsvColors = null;
+    private LinearLayout llColors = null;
+
+    private ColorPickerComponent colorPickerComponent;
 
     @Override
     public void initialize(View viewRoot) {
@@ -43,16 +54,22 @@ public class PasswordPage extends PageAbstract implements PageInterface {
 
         this.tilName = this.viewRoot.findViewById(R.id.tilName);
         this.etName = this.viewRoot.findViewById(R.id.etName);
+        this.tilAccount = this.viewRoot.findViewById(R.id.tilAccount);
+        this.etAccount = this.viewRoot.findViewById(R.id.etAccount);
         this.tilPassword = this.viewRoot.findViewById(R.id.tilPassword);
         this.etPassword = this.viewRoot.findViewById(R.id.etPassword);
         this.btnSave = this.viewRoot.findViewById(R.id.btnSave);
         this.btnClipboard = this.viewRoot.findViewById(R.id.btnClipboard);
-
-        Helpers.logger.info("Yükle");
+        this.hsvColors = this.viewRoot.findViewById(R.id.hsvColors);
+        this.llColors = this.viewRoot.findViewById(R.id.llColors);
 
         PasswordModel passwordModel = Helpers.list.findByGlobal();
 
         Helpers.logger.info(InfoCodeConstants.PASSWORD_FILL_VIEW, passwordModel.getName());
+
+        colorPickerComponent = new ColorPickerComponent(Global.VIEW_GROUP, passwordModel.getColor());
+
+        colorPickerComponent.fillLayout(viewRoot.findViewById(R.id.llColors));
 
         load(passwordModel);
     }
@@ -67,8 +84,11 @@ public class PasswordPage extends PageAbstract implements PageInterface {
         passwordModel.decrypt();
 
         this.etName.setText(passwordModel.getName());
+        this.etAccount.setText(passwordModel.getAccount());
         this.etPassword.setText(passwordModel.getPassword());
         this.tilPassword.setPasswordVisibilityToggleEnabled(!Config.CONFIG_HIDE_VIEW);
+
+        this.colorPickerComponent.refresh(passwordModel.getColor());
 
         this.btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,9 +96,13 @@ public class PasswordPage extends PageAbstract implements PageInterface {
                 Helpers.loading.show();
 
                 String name = etName.getText().toString();
+                String account = etAccount.getText().toString();
                 String password = etPassword.getText().toString();
 
+                String oldName = passwordModel.getName();
+
                 passwordModel.setName(name);
+                passwordModel.setAccount(account);
                 passwordModel.setPassword(password);
                 passwordModel.setColor(-1);
 
@@ -98,13 +122,34 @@ public class PasswordPage extends PageAbstract implements PageInterface {
 
                         Helpers.loading.hide();
                         return;
-                    } else if (passwordModel.checkDuplicate(name)) {
+                    } else if (!oldName.equals(name) && passwordModel.checkDuplicate(name)) {
                         tilName.setError(Helpers.resource.getString(R.string.already_used, "", name));
 
                         Helpers.loading.hide();
                         return;
                     } else {
                         tilName.setErrorEnabled(false);
+                    }
+                }
+
+                if (etAccount.getText().toString() == null || etAccount.getText().toString().length() == 0) {
+                    tilAccount.setError(Helpers.resource.getString(R.string.not_null, "", Helpers.resource.getString(R.string.input_account)));
+
+                    Helpers.loading.hide();
+                    return;
+                } else {
+                    if (name.length() > Helpers.resource.getInt(R.integer.account_max_length)) {
+                        tilAccount.setError(Helpers.resource.getString(R.string.max_length, "", Helpers.resource.getString(R.string.account_name), Helpers.resource.getInt(R.integer.account_max_length)));
+
+                        Helpers.loading.hide();
+                        return;
+                    } else if (name.length() < Helpers.resource.getInt(R.integer.account_min_length)) {
+                        tilAccount.setError(Helpers.resource.getString(R.string.min_length, "", Helpers.resource.getString(R.string.account_name), Helpers.resource.getInt(R.integer.account_min_length)));
+
+                        Helpers.loading.hide();
+                        return;
+                    } else {
+                        tilAccount.setErrorEnabled(false);
                     }
                 }
 
@@ -131,7 +176,9 @@ public class PasswordPage extends PageAbstract implements PageInterface {
 
                 //todo color
                 passwordModel.setName(name);
+                passwordModel.setAccount(account);
                 passwordModel.setPassword(password);
+                passwordModel.setColor(colorPickerComponent.getColor());
 
                 passwordModel.encrypt();
 

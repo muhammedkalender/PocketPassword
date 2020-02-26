@@ -1,11 +1,98 @@
 package com.muhammedkalender.pocketpassword.Components;
 
 import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.HorizontalScrollView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+
+import com.muhammedkalender.pocketpassword.Constants.ColorConstants;
+import com.muhammedkalender.pocketpassword.Global;
+import com.muhammedkalender.pocketpassword.Globals.Helpers;
+import com.muhammedkalender.pocketpassword.R;
 
 public class ColorPickerComponent {
-    private Context context = null;
 
-    public ColorPickerComponent(Context context){
-        this.context = context;
+    private ColorPickerItemComponent[] arrColorPickerItemComponent;
+    private int selected;
+    private int indexSelected = -1;
+    private ViewGroup viewGroup;
+    private LinearLayout parent;
+
+    private View.OnClickListener clickSelect;
+
+    public ColorPickerComponent(ViewGroup viewGroup, int selected) {
+        this.selected = selected;
+        this.viewGroup = viewGroup;
+
+        if(this.selected < 0){
+            this.selected *= -1;
+        }
+
+        initialize();
+    }
+
+    private void initialize() {
+        this.clickSelect = v -> {
+            int index = (int) v.getTag();
+
+            if (indexSelected != -1) {
+                arrColorPickerItemComponent[indexSelected].setUnSelected();
+            }
+
+            arrColorPickerItemComponent[index].setSelected();
+
+            indexSelected = index;
+        };
+    }
+
+    public void fillLayout(LinearLayout parent) {
+        arrColorPickerItemComponent = new ColorPickerItemComponent[ColorConstants.colorItem.length];
+
+        parent.removeAllViews();
+
+        parent.post(() -> parent.setScrollX(0));
+
+        for (int i = 0; i < arrColorPickerItemComponent.length; i++) {
+            ColorPickerItemComponent colorPickerItemComponent = new ColorPickerItemComponent(viewGroup, ColorConstants.colorItem[i].getColor(), ColorConstants.colorItem[i].getColor() == selected, clickSelect, i);
+
+            arrColorPickerItemComponent[i] = colorPickerItemComponent;
+
+            parent.addView(arrColorPickerItemComponent[i].getView());
+
+            if (selected == ColorConstants.colorItem[i].getColor()) {
+                arrColorPickerItemComponent[i].setSelected();
+
+                this.indexSelected = i;
+            }
+        }
+
+        if (indexSelected != -1) {
+            RelativeLayout.LayoutParams paramBase = (RelativeLayout.LayoutParams) ((RelativeLayout) arrColorPickerItemComponent[0].getView()).getChildAt(0).getLayoutParams();
+
+            int sizeItem = paramBase.width + paramBase.leftMargin + paramBase.rightMargin;
+
+            ((HorizontalScrollView) parent.getParent()).post(() -> ((HorizontalScrollView) parent.getParent()).scrollTo((sizeItem * indexSelected) - (sizeItem / 3), 100));
+        }
+
+        this.parent = parent;
+    }
+
+    public int getIndexSelected() {
+        return indexSelected;
+    }
+
+    public int getColor(){
+        return ColorConstants.colorItem[indexSelected].getColor();
+    }
+
+    public void refresh(int selected){
+        this.selected = selected;
+        this.indexSelected = -1;
+
+        this.initialize();
+        this.fillLayout(parent);
     }
 }

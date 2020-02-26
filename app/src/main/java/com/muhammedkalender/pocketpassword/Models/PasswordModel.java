@@ -24,6 +24,7 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
     private int id;
 
     private String name;
+    private String account;
     private String password;
     private int color;
 
@@ -40,28 +41,31 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
         initTable();
     }
 
-    public PasswordModel(String name, String password, int color) {
+    public PasswordModel(String name, String account, String password, int color) {
         initTable();
 
         this.name = name;
+        this.account = account;
         this.password = password;
         this.color = color;
     }
 
-    public PasswordModel(int id, String name, String password, int color) {
+    public PasswordModel(int id, String name, String account, String password, int color) {
         initTable();
 
         this.id = id;
         this.name = name;
+        this.account = account;
         this.password = password;
         this.color = color;
     }
 
-    public PasswordModel(int id, String name, String password, int color, boolean active) {
+    public PasswordModel(int id, String name, String account, String password, int color, boolean active) {
         initTable();
 
         this.id = id;
         this.name = name;
+        this.account = account;
         this.password = password;
         this.color = color;
         this.active = active;
@@ -88,6 +92,12 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
                         .setNotNull()
                         .setMinLength(1)
                         .setMaxLength(128),
+                new ColumnObject()
+                        .setName("account")
+                        .setType(SQLConstants.TYPE_STRING)
+                        .setNotNull()
+                        .setMinLength(1)
+                        .setMaxLength(32),
                 new ColumnObject()
                         .setName("password")
                         .setType(SQLConstants.TYPE_STRING)
@@ -139,7 +149,7 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
 
     public ResultObject insert() {
         try {
-            return Helpers.database.insert("INSERT INTO passwords (password_name, password_password, password_color) VALUES ('" + Helpers.crypt.quickEncrypt(name) + "', '" + Helpers.crypt.quickEncrypt(password) + "', '')");
+            return Helpers.database.insert("INSERT INTO passwords (password_name, password_account, password_password, password_color) VALUES ('" + name + "', '" + Helpers.crypt.quickEncrypt(account) + "', '" + Helpers.crypt.quickEncrypt(password) + "', '')");
         } catch (Exception e) {
             return new ResultObject(ErrorCodeConstants.MODEL_PASSWORD_INSERT)
                     .setError(e);
@@ -170,8 +180,9 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
                 passwords.add(new PasswordModel(
                         cursor.getInt(cursor.getColumnIndex(prefix + "_id")),
                         cursor.getString(cursor.getColumnIndex(prefix + "_name")),
+                        cursor.getString(cursor.getColumnIndex(prefix + "_account")),
                         cursor.getString(cursor.getColumnIndex(prefix + "_password")),
-                        color, //todo cursor.getInt(cursor.getColumnIndex(prefix + "_color")),
+                        cursor.getInt(cursor.getColumnIndex(prefix + "_color")),
                         cursor.getInt(cursor.getColumnIndex(prefix + "_active")) == 1
 
                 ));
@@ -199,11 +210,12 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
     @Override
     public ResultObject update() {
         String queryUpdate = String.format(
-                "UPDATE %1$s SET %2$s_name = '%4$s', %2$s_password = '%5$s', %2$s_color = '%6$s', %2$s_active = %7$s WHERE %2$s_id = %3$s",
+                "UPDATE %1$s SET %2$s_name = '%4$s', %2$s_account= '%5$s', %2$s_password = '%6$s', %2$s_color = '%7$s', %2$s_active = %8$s WHERE %2$s_id = %3$s",
                 this.table,
                 this.prefix,
                 this.id,
                 this.name,
+                this.account,
                 this.password,
                 this.color,
                 this.active
@@ -217,11 +229,12 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
         PasswordModel model = (PasswordModel) obj;
 
         String queryUpdate = String.format(
-                "UPDATE %1$s SET %2$s_name = '%4$s', %2$s_password = '%5$s', %2$s_color = '%6$s', %2$s_active = %7$s WHERE %2$s_id = %3$s",
+                "UPDATE %1$s SET %2$s_name = '%4$s',%2$s_account = '%5$s', %2$s_password = '%6$s', %2$s_color = '%7$s', %2$s_active = %8$s WHERE %2$s_id = %3$s",
                 model.table,
                 model.prefix,
                 model.id,
                 model.name,
+                model.account,
                 model.password,
                 model.color,
                 model.active
@@ -252,14 +265,18 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
         return name;
     }
 
+    public String getAccount() {
+        return account;
+    }
+
     public String getPassword() {
         return password;
     }
 
     public String getEncryptedPassword() {
-        if(isDecrypted()){
+        if (isDecrypted()) {
             return Helpers.crypt.quickEncrypt(this.password);
-        }else{
+        } else {
             return password;
         }
     }
@@ -280,16 +297,16 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
         this.id = id;
     }
 
-    public void setNameEncrypted(boolean nameEncrypted) {
-        this.nameEncrypted = nameEncrypted;
-    }
-
     public void setDecrypted(boolean decrypted) {
         this.decrypted = decrypted;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setAccount(String account) {
+        this.account = account;
     }
 
     public void setPassword(String password) {
@@ -305,18 +322,6 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
     }
 
     //endregion
-
-    //endregion
-
-    //region Secondary Functions
-
-    public void decryptName(CryptHelper cryptHelper){
-        if(isNameEncrypted()){
-            this.name = cryptHelper.quickDecrypt(this.name);
-
-            setNameEncrypted(false);
-        }
-    }
 
     //endregion
 
@@ -345,7 +350,7 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
             return;
         }
 
-        this.name = Helpers.crypt.quickDecrypt(this.name);
+        this.account = Helpers.crypt.quickDecrypt(this.account);
         this.password = Helpers.crypt.quickDecrypt(this.password);
         this.decrypted = true;
     }
@@ -355,7 +360,7 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
             return;
         }
 
-        this.name = Helpers.crypt.quickEncrypt(this.name);
+        this.account = Helpers.crypt.quickEncrypt(this.account);
         this.password = Helpers.crypt.quickEncrypt(this.password);
         this.decrypted = false;
     }

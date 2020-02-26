@@ -3,6 +3,7 @@ package com.muhammedkalender.pocketpassword;
 import android.content.Context;
 import android.service.autofill.Dataset;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TableLayout;
 
 import androidx.viewpager.widget.ViewPager;
@@ -31,6 +32,7 @@ public class Global {
     public static List<PasswordModel> LIST_PASSWORDS_SOLID = null;
     public static List<PasswordModel> LIST_PASSWORDS = null;
     public static PasswordAdapter PASSWORD_ADAPTER = null;
+    public static ViewGroup VIEW_GROUP = null;
 
     //region Pages
 
