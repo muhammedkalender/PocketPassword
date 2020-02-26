@@ -49,6 +49,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import android.view.Menu;
+import android.view.ViewGroup;
 
 import java.security.Key;
 import java.security.KeyFactory;
@@ -116,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
         if (Global.TAB_LAYOUT.getSelectedTabPosition() == Config.TAB_HOME_INDEX) {
             super.onBackPressed();
         } else {
+            Helpers.system.hideSoftKeyboard();
             Global.TAB_LAYOUT.getTabAt(Config.TAB_HOME_INDEX).select();
         }
     }
@@ -326,9 +328,9 @@ public class MainActivity extends AppCompatActivity {
 
                             Helpers.crypt = cryptHelper;
 
-                            int color = ColorConstants.colorItem[Global.LIST_PASSWORDS_SOLID.size() % ColorConstants.colorItem.length].getColor();
+                            int color = Helpers.resource.getColor(R.color.lightBlue);
 
-                            PasswordModel passwordModel = new PasswordModel(Helpers.resource.getString(R.string.example_name, "Example Account"), Helpers.resource.getString(R.string.example_password, "Example_Password"), color);
+                            PasswordModel passwordModel = new PasswordModel(Helpers.resource.getString(R.string.example_name, "Example Account"), Helpers.resource.getString(R.string.example_account, "example_account"), Helpers.resource.getString(R.string.example_password, "Example_Password"), color);
                             ResultObject resultInsert = passwordModel.insert();
 
                             if (resultInsert.isSuccess()) {
@@ -382,7 +384,9 @@ public class MainActivity extends AppCompatActivity {
                 new ColorObject(Helpers.resource.getColor(R.color.amber), Helpers.resource.getColor(R.color.tintAmber)),
                 new ColorObject(Helpers.resource.getColor(R.color.red), Helpers.resource.getColor(R.color.tintRed)),
                 new ColorObject(Helpers.resource.getColor(R.color.purple), Helpers.resource.getColor(R.color.tintPurple)),
-                new ColorObject(Helpers.resource.getColor(R.color.deepOrange), Helpers.resource.getColor(R.color.tintDeepOrange))
+                new ColorObject(Helpers.resource.getColor(R.color.deepOrange), Helpers.resource.getColor(R.color.tintDeepOrange)),
+                new ColorObject(Helpers.resource.getColor(R.color.brown), Helpers.resource.getColor(R.color.tintBrown)),
+                new ColorObject(Helpers.resource.getColor(R.color.green), Helpers.resource.getColor(R.color.tintGreen))
         };
 
         Global.SECTION_PAGER_ADAPTER = new SectionsPagerAdapter(this, getSupportFragmentManager());
@@ -391,10 +395,27 @@ public class MainActivity extends AppCompatActivity {
         Global.TAB_LAYOUT = findViewById(R.id.tabs);
         Global.TAB_LAYOUT.setupWithViewPager(Global.VIEW_PAGER);
 
+        Helpers.system.hideSoftKeyboard();
+
         Global.TAB_LAYOUT.getTabAt(Config.TAB_HOME_INDEX).select();
+
+        //https://stackoverflow.com/a/24612529
+        Global.VIEW_GROUP = (ViewGroup) findViewById(android.R.id.content);
 
         Helpers.loading.hide();
     }
 
     //endregion
 }
+
+/*
+    TODO
+
+    1 - Hesap ismi kontrolü, şuan sadece ana başlık kontrolü var
+    2 - Hesap adı kopyalama
+    3 - Hesap adı şifreleme seçeneği ? gereksiz olabilir
+    5 - Klavye Açıldığında scrollanacak yukarı
+    6 - İsimin İnputu Capitalized olmalı
+    7 - Göz ile hesap adını açıp gizlemek mantıklı olabilir
+    8 - Klavyeye ek fonskiyonla direk klavyeden kopyalam vs..
+ */

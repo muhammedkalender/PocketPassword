@@ -8,7 +8,9 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.muhammedkalender.pocketpassword.Abstracts.PageAbstract;
+import com.muhammedkalender.pocketpassword.Components.ColorPickerComponent;
 import com.muhammedkalender.pocketpassword.Components.SnackbarComponent;
+import com.muhammedkalender.pocketpassword.Constants.ColorConstants;
 import com.muhammedkalender.pocketpassword.Constants.ErrorCodeConstants;
 import com.muhammedkalender.pocketpassword.Global;
 import com.muhammedkalender.pocketpassword.Globals.Config;
@@ -28,8 +30,13 @@ public class NewPasswordPage extends PageAbstract implements PageInterface {
     public TextInputLayout tilName = null;
     public TextInputEditText etName = null;
 
+    public TextInputLayout tilAccount = null;
+    public TextInputEditText etAccount = null;
+
     public TextInputLayout tilPassword = null;
     public TextInputEditText etPassword = null;
+
+    private ColorPickerComponent colorPickerComponent;
 
     @Override
     public void initialize(View viewRoot) {
@@ -38,9 +45,15 @@ public class NewPasswordPage extends PageAbstract implements PageInterface {
 
         this.tilName = this.viewRoot.findViewById(R.id.tilName);
         this.etName = this.viewRoot.findViewById(R.id.etName);
+        this.tilAccount = this.viewRoot.findViewById(R.id.tilAccount);
+        this.etAccount = this.viewRoot.findViewById(R.id.etAccount);
         this.tilPassword = this.viewRoot.findViewById(R.id.tilPassword);
         this.etPassword = this.viewRoot.findViewById(R.id.etPassword);
         this.btnAdd = this.viewRoot.findViewById(R.id.btnAdd);
+
+        colorPickerComponent = new ColorPickerComponent(Global.VIEW_GROUP, ColorConstants.colorItem[0].getColor());
+
+        colorPickerComponent.fillLayout(viewRoot.findViewById(R.id.llColors));
 
         final PasswordModel passwordModel = new PasswordModel();
 
@@ -50,11 +63,14 @@ public class NewPasswordPage extends PageAbstract implements PageInterface {
                 Helpers.loading.show();
 
                 String name = etName.getText().toString();
+                String account = etAccount.getText().toString();
                 String password = etPassword.getText().toString();
+                int color = colorPickerComponent.getColor();
 
                 passwordModel.setName(name);
+                passwordModel.setAccount(account);
                 passwordModel.setPassword(password);
-                passwordModel.setColor(-1);
+                passwordModel.setColor(color);
 
                 ResultObject validation = passwordModel.validation();
 
@@ -88,6 +104,27 @@ public class NewPasswordPage extends PageAbstract implements PageInterface {
                     }
                 }
 
+                if (etAccount.getText().toString() == null || etAccount.getText().toString().length() == 0) {
+                    tilAccount.setError(Helpers.resource.getString(R.string.not_null, "", Helpers.resource.getString(R.string.input_account)));
+
+                    Helpers.loading.hide();
+                    return;
+                } else {
+                    if (name.length() > Helpers.resource.getInt(R.integer.account_max_length)) {
+                        tilAccount.setError(Helpers.resource.getString(R.string.max_length, "", Helpers.resource.getString(R.string.account_name), Helpers.resource.getInt(R.integer.account_max_length)));
+
+                        Helpers.loading.hide();
+                        return;
+                    } else if (name.length() < Helpers.resource.getInt(R.integer.account_min_length)) {
+                        tilAccount.setError(Helpers.resource.getString(R.string.min_length, "", Helpers.resource.getString(R.string.account_name), Helpers.resource.getInt(R.integer.account_min_length)));
+
+                        Helpers.loading.hide();
+                        return;
+                    } else {
+                        tilAccount.setErrorEnabled(false);
+                    }
+                }
+
                 if (etPassword.getText().toString() == null || etPassword.getText().toString().length() == 0) {
                     tilPassword.setError(Helpers.resource.getString(R.string.not_null, "", Helpers.resource.getString(R.string.input_password)));
 
@@ -112,8 +149,7 @@ public class NewPasswordPage extends PageAbstract implements PageInterface {
                     }
                 }
 
-                //todo color
-                PasswordModel passwordModel = new PasswordModel(name, password, -1);
+                PasswordModel passwordModel = new PasswordModel(name, account, password, color);
 
                 ResultObject insert = passwordModel.insert();
 
@@ -121,7 +157,7 @@ public class NewPasswordPage extends PageAbstract implements PageInterface {
                     Helpers.logger.info(String.format("%1$d ID ile kayıt girildi", (int) insert.getData()));
 
                     Global.TAB_LAYOUT.getTabAt(Config.TAB_HOME_INDEX).select();
-                    PasswordModel addedPasswordModel = new PasswordModel((int) insert.getData(), name, password, -1);
+                    PasswordModel addedPasswordModel = new PasswordModel((int) insert.getData(), name, account, password, color);
                     addedPasswordModel.setDecrypted(true);
 
                     Global.LIST_PASSWORDS.add(addedPasswordModel);
@@ -132,6 +168,7 @@ public class NewPasswordPage extends PageAbstract implements PageInterface {
                     snackbarComponent.show();
 
                     etName.setText(null);
+                    etAccount.setText(null);
                     etPassword.setText(null);
                 } else {
                     Helpers.logger.error(ErrorCodeConstants.MODEL_PASSWORD_INSERT, (Exception) insert.getData());

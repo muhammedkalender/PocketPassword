@@ -82,6 +82,8 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordListHolder> {
 
                 Helpers.loading.hide();
 
+                Helpers.system.hideSoftKeyboard();
+
                 Global.TAB_LAYOUT.getTabAt(Config.TAB_PASSWORD_INDEX).select();
                 Global.TAB_LAYOUT.getTabAt(Config.TAB_PASSWORD_INDEX).setText(passwordModel.getName());
                 Global.TAB_LAYOUT.getTabAt(Config.TAB_PASSWORD_INDEX).setContentDescription(passwordModel.getName());

@@ -83,4 +83,9 @@
     <string name="failure_load_list">Liste yüklenirken sorun oluştu</string>
     <string name="switch_disable_error_log">Hata loglarını kapat</string>
     <string name="switch_disable_info_log">Bilgilendirme loglarını kapat</string>
+    <string name="example_account">ornek_hesap@mail.com</string>
+    <string name="input_account">Hesap</string>
+    <string name="account_name">Hesap</string>
+    <string name="hint_account_edit">Giriş yapmak için kullanacağınız hesap</string>
+    <string name="input_account_edit">Hesap</string>
 </resources>
