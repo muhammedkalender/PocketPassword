@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
@@ -85,6 +86,16 @@ public class PasswordPage extends PageAbstract implements PageInterface {
     public void load(PasswordModel passwordModel) {
 
         passwordModel.decrypt();
+
+        this.hsvColors.post(() -> {
+            this.hsvColors.setScrollX(0);
+        });
+
+        ScrollView svPassword = this.viewRoot.findViewById(R.id.svPassword);
+
+        svPassword.post(() -> {
+            svPassword.setScrollY(0);
+        });
 
         this.etName.setText(passwordModel.getName());
         this.etAccount.setText(passwordModel.getAccount());

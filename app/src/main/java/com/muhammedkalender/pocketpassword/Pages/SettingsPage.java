@@ -2,6 +2,7 @@ package com.muhammedkalender.pocketpassword.Pages;
 
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.android.material.switchmaterial.SwitchMaterial;
@@ -79,6 +80,12 @@ public class SettingsPage extends PageAbstract implements PageInterface {
                     buttonView.setChecked(!isChecked);
                 }
             }
+        });
+
+        ScrollView svSettings = this.viewRoot.findViewById(R.id.svSettings);
+
+        svSettings.post(() -> {
+            svSettings.setScrollX(0);
         });
     }
 
