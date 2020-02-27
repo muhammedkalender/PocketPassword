@@ -2,6 +2,8 @@ package com.muhammedkalender.pocketpassword.Pages.Password;
 
 import android.graphics.Color;
 import android.view.View;
+import android.widget.HorizontalScrollView;
+import android.widget.ScrollView;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -50,6 +52,19 @@ public class NewPasswordPage extends PageAbstract implements PageInterface {
         this.tilPassword = this.viewRoot.findViewById(R.id.tilPassword);
         this.etPassword = this.viewRoot.findViewById(R.id.etPassword);
         this.btnAdd = this.viewRoot.findViewById(R.id.btnAdd);
+
+        HorizontalScrollView hsvColors = this.viewRoot.findViewById(R.id.hsvColors);
+
+        hsvColors.post(() -> {
+            hsvColors.setScrollX(0);
+        });
+
+        ScrollView svNewPassword = this.viewRoot.findViewById(R.id.svNewPassword);
+
+        svNewPassword.post(() -> {
+            svNewPassword.setScrollY(0);
+        });
+
 
         colorPickerComponent = new ColorPickerComponent(Global.VIEW_GROUP, ColorConstants.colorItem[0].getColor());
 
