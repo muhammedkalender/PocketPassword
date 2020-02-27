@@ -34,19 +34,21 @@ public class ColorPickerComponent {
     }
 
     private void initialize() {
-        this.clickSelect = v -> {
-            int index = (int) v.getTag();
+        if (indexSelected == -1) {
+            indexSelected = 0;
 
-            if (indexSelected == -1) {
-                indexSelected = 0;
+            selected = Math.abs(selected);
 
-                for(int i = 0; i < ColorConstants.colorItem.length; i++){
-                    if(selected == Math.abs(ColorConstants.colorItem[i].getColor())){
-                        indexSelected = i;
-                        break;
-                    }
+            for(int i = 0; i < ColorConstants.colorItem.length; i++){
+                if(selected == Math.abs(ColorConstants.colorItem[i].getColor())){
+                    indexSelected = i;
+                    break;
                 }
             }
+        }
+
+        this.clickSelect = v -> {
+            int index = (int) v.getTag();
 
             arrColorPickerItemComponent[indexSelected].setUnSelected();
             arrColorPickerItemComponent[index].setSelected();

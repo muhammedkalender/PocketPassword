@@ -421,7 +421,7 @@ public class MainActivity extends AppCompatActivity {
     16 - Şifre uygulaması ( siteye girdiğinde buraya soracak felan )
     17 - Login hatalı olduğunda görüntüleme butnuyla üst üste oluyr
     18 - Örnek girdide renk sorunlu galia, gri oluyor
-    19 - Update hata verdi gerçek ciahzda bak bi, hepsini değiştir
     20 - Settingste cümle yanlış, tersini kastediyr logda
     21 - Şifre değiştirme
+    22 - Sayfa değişince scrollu yukarı at
  */
