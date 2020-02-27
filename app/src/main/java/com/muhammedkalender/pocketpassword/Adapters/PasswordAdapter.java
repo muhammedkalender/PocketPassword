@@ -3,17 +3,15 @@ package com.muhammedkalender.pocketpassword.Adapters;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.tabs.TabLayout;
 import com.muhammedkalender.pocketpassword.Constants.ColorConstants;
 import com.muhammedkalender.pocketpassword.Constants.ErrorCodeConstants;
 import com.muhammedkalender.pocketpassword.Constants.InfoCodeConstants;
@@ -24,8 +22,6 @@ import com.muhammedkalender.pocketpassword.Helpers.CryptHelper;
 import com.muhammedkalender.pocketpassword.Holders.PasswordListHolder;
 import com.muhammedkalender.pocketpassword.Models.PasswordModel;
 import com.muhammedkalender.pocketpassword.R;
-
-import java.util.List;
 
 public class PasswordAdapter extends RecyclerView.Adapter<PasswordListHolder> {
     private Context context;
@@ -124,15 +120,25 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordListHolder> {
             }
         });
 
+        holder.ivShow.setTag(false);
+
+        holder.ivShow.setOnClickListener(v -> {
+            if((boolean)v.getTag()){
+                holder.tvName.setText(passwordModel.getName());
+
+                ((ImageView)v).setImageResource(R.drawable.ic_remove_red_eye_24dp);
+            }else{
+                holder.tvName.setText(passwordModel.getDecryptedAccount());
+
+                ((ImageView)v).setImageResource(R.drawable.ic_visibility_off_24dp);
+            }
+
+            v.setTag(!(boolean)v.getTag());
+        });
+
         holder.ivForward.setColorFilter(tintColor);
         holder.ivClipboard.setColorFilter(tintColor);
         holder.ivShow.setColorFilter(tintColor);
-
-        if(Config.CONFIG_HIDE_VIEW){
-            holder.ivShow.setClickable(false);
-        }else{
-            holder.ivShow.setClickable(true);
-        }
     }
 
     @Override

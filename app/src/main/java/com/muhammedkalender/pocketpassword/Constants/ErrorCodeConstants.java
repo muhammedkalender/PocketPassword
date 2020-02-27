@@ -61,7 +61,8 @@ public class ErrorCodeConstants {
 
     public static final int
             CLIPBOARD_PASSWORD = 1000,
-            CLIPBOARD_PASSWORD_IN_LIST = 1001;
+            CLIPBOARD_PASSWORD_IN_LIST = 1001,
+            CLIPBOARD_ACCOUNT = 1002;
 
     //endregion
 
@@ -100,7 +101,6 @@ public class ErrorCodeConstants {
             CRYPT_QUICK_ENCRYPT_WITH_BASE64 = 3011;
 
     //endregion
-
 
     //region AES
 

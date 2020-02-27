@@ -1,7 +1,6 @@
 package com.muhammedkalender.pocketpassword.Components;
 
-import android.content.Context;
-import android.view.LayoutInflater;
+import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
@@ -11,7 +10,7 @@ import android.widget.RelativeLayout;
 import com.muhammedkalender.pocketpassword.Constants.ColorConstants;
 import com.muhammedkalender.pocketpassword.Global;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
-import com.muhammedkalender.pocketpassword.R;
+import com.muhammedkalender.pocketpassword.Objects.ColorObject;
 
 public class ColorPickerComponent {
 
@@ -38,10 +37,18 @@ public class ColorPickerComponent {
         this.clickSelect = v -> {
             int index = (int) v.getTag();
 
-            if (indexSelected != -1) {
-                arrColorPickerItemComponent[indexSelected].setUnSelected();
+            if (indexSelected == -1) {
+                indexSelected = 0;
+
+                for(int i = 0; i < ColorConstants.colorItem.length; i++){
+                    if(selected == Math.abs(ColorConstants.colorItem[i].getColor())){
+                        indexSelected = i;
+                        break;
+                    }
+                }
             }
 
+            arrColorPickerItemComponent[indexSelected].setUnSelected();
             arrColorPickerItemComponent[index].setSelected();
 
             indexSelected = index;
@@ -62,7 +69,7 @@ public class ColorPickerComponent {
 
             parent.addView(arrColorPickerItemComponent[i].getView());
 
-            if (selected == ColorConstants.colorItem[i].getColor()) {
+            if (selected == Math.abs(ColorConstants.colorItem[i].getColor())) {
                 arrColorPickerItemComponent[i].setSelected();
 
                 this.indexSelected = i;
@@ -76,6 +83,7 @@ public class ColorPickerComponent {
 
             ((HorizontalScrollView) parent.getParent()).post(() -> ((HorizontalScrollView) parent.getParent()).scrollTo((sizeItem * indexSelected) - (sizeItem / 3), 100));
         }
+
 
         this.parent = parent;
     }

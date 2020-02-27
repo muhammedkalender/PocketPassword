@@ -40,7 +40,9 @@ public class PasswordPage extends PageAbstract implements PageInterface {
     public TextInputLayout tilPassword = null;
     public TextInputEditText etPassword = null;
 
-    public MaterialButton btnClipboard = null;
+    public MaterialButton
+            btnClipboard = null,
+            btnClipboardAccount = null;
 
     private HorizontalScrollView hsvColors = null;
     private LinearLayout llColors = null;
@@ -62,6 +64,7 @@ public class PasswordPage extends PageAbstract implements PageInterface {
         this.btnClipboard = this.viewRoot.findViewById(R.id.btnClipboard);
         this.hsvColors = this.viewRoot.findViewById(R.id.hsvColors);
         this.llColors = this.viewRoot.findViewById(R.id.llColors);
+        this.btnClipboardAccount = this.viewRoot.findViewById(R.id.btnClipboardAccount);
 
         PasswordModel passwordModel = Helpers.list.findByGlobal();
 
@@ -79,7 +82,7 @@ public class PasswordPage extends PageAbstract implements PageInterface {
         return this.viewRoot;
     }
 
-    public void load(PasswordModel passwordModel){
+    public void load(PasswordModel passwordModel) {
 
         passwordModel.decrypt();
 
@@ -207,20 +210,31 @@ public class PasswordPage extends PageAbstract implements PageInterface {
             }
         });
 
-        btnClipboard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try{
-                    ClipboardManager clipboard = (ClipboardManager) Global.CONTEXT.getSystemService(Context.CLIPBOARD_SERVICE);
-                    ClipData clip = ClipData.newPlainText(Helpers.resource.getString(R.string.clipboard_title), CryptHelper.buildDefault().quickDecrypt(passwordModel.getPassword()));
-                    clipboard.setPrimaryClip(clip);
+        btnClipboard.setOnClickListener(v -> {
+            try {
+                ClipboardManager clipboard = (ClipboardManager) Global.CONTEXT.getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText(Helpers.resource.getString(R.string.clipboard_title), passwordModel.getDecryptedPassword());
+                clipboard.setPrimaryClip(clip);
 
-                    Toast.makeText(Global.CONTEXT,R.string.password_clipboard, Toast.LENGTH_SHORT).show();
-                }catch (Exception e){
-                    Helpers.logger.error(ErrorCodeConstants.CLIPBOARD_PASSWORD, e);
+                Toast.makeText(Global.CONTEXT, R.string.password_clipboard, Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                Helpers.logger.error(ErrorCodeConstants.CLIPBOARD_PASSWORD, e);
 
-                    Toast.makeText(Global.CONTEXT, R.string.failure_password_clipboard, Toast.LENGTH_SHORT).show();
-                }
+                Toast.makeText(Global.CONTEXT, R.string.failure_password_clipboard, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        btnClipboardAccount.setOnClickListener(v -> {
+            try {
+                ClipboardManager clipboardManager = (ClipboardManager) Global.CONTEXT.getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clipData = ClipData.newPlainText(Helpers.resource.getString(R.string.account_name), passwordModel.getDecryptedAccount());
+                clipboardManager.setPrimaryClip(clipData);
+
+                Toast.makeText(Global.CONTEXT, R.string.account_clipboard, Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                Helpers.logger.error(ErrorCodeConstants.CLIPBOARD_ACCOUNT, e);
+
+                Toast.makeText(Global.CONTEXT, R.string.failure_account_clipboard, Toast.LENGTH_SHORT).show();
             }
         });
     }

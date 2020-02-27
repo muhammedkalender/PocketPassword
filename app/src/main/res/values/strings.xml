@@ -88,4 +88,7 @@
     <string name="account_name">Hesap</string>
     <string name="hint_account_edit">Giriş yapmak için kullanacağınız hesap</string>
     <string name="input_account_edit">Hesap</string>
+    <string name="button_copy_account">HESABI KOPYALA</string>
+    <string name="failure_account_clipboard">Hesap kopyalanırken sorun oluştu</string>
+    <string name="account_clipboard">Hesap Kopyalanmıştır</string>
 </resources>
