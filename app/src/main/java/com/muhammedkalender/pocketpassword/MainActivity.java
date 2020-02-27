@@ -124,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean buildHelpers() {
         Global.CONTEXT = this;
+        Global.ACTIVITY = MainActivity.this;
 
         Helpers.logger = new LogHelpers();
         Helpers.resource = new ResourceHelper();
