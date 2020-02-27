@@ -152,6 +152,8 @@ public class SharedPreferencesHelper {
 
             editor.putBoolean(key, value);
 
+            Helpers.logger.info("Ayar Set Edildi : " + key + " to " + value);
+
             return editor.commit();
         }catch (Exception e){
             Helpers.logger.error(ErrorCodeConstants.SHARED_PREFERENCES_BOOLEAN_WRITE, e);

@@ -189,7 +189,7 @@ public class CryptHelper {
 
             this.publicKey = keyPair.getPublic();
             this.privateKey = keyPair.getPrivate();
-
+Helpers.logger.info("Keyler Yüklendi");
             return new ResultObject()
                     .setData(keyPair);
         } catch (Exception e) {

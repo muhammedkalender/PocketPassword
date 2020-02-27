@@ -223,11 +223,13 @@ public class PasswordPage extends PageAbstract implements PageInterface {
 
         btnClipboard.setOnClickListener(v -> {
             try {
-                ClipboardManager clipboard = (ClipboardManager) Global.CONTEXT.getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText(Helpers.resource.getString(R.string.clipboard_title), passwordModel.getDecryptedPassword());
-                clipboard.setPrimaryClip(clip);
+                new Thread(() -> {
+                    ClipboardManager clipboard = (ClipboardManager) Global.CONTEXT.getSystemService(Context.CLIPBOARD_SERVICE);
+                    ClipData clip = ClipData.newPlainText(Helpers.resource.getString(R.string.clipboard_title), passwordModel.getDecryptedPassword());
+                    clipboard.setPrimaryClip(clip);
 
-                Toast.makeText(Global.CONTEXT, R.string.password_clipboard, Toast.LENGTH_SHORT).show();
+                    SnackbarComponent.direct(viewRoot, R.string.password_clipboard);
+                }).start();
             } catch (Exception e) {
                 Helpers.logger.error(ErrorCodeConstants.CLIPBOARD_PASSWORD, e);
 
@@ -237,11 +239,13 @@ public class PasswordPage extends PageAbstract implements PageInterface {
 
         btnClipboardAccount.setOnClickListener(v -> {
             try {
-                ClipboardManager clipboardManager = (ClipboardManager) Global.CONTEXT.getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clipData = ClipData.newPlainText(Helpers.resource.getString(R.string.account_name), passwordModel.getDecryptedAccount());
-                clipboardManager.setPrimaryClip(clipData);
+                new Thread(() -> {
+                    ClipboardManager clipboardManager = (ClipboardManager) Global.CONTEXT.getSystemService(Context.CLIPBOARD_SERVICE);
+                    ClipData clipData = ClipData.newPlainText(Helpers.resource.getString(R.string.account_name), passwordModel.getDecryptedAccount());
+                    clipboardManager.setPrimaryClip(clipData);
 
-                Toast.makeText(Global.CONTEXT, R.string.account_clipboard, Toast.LENGTH_SHORT).show();
+                    SnackbarComponent.direct(viewRoot, R.string.account_clipboard);
+                }).start();
             } catch (Exception e) {
                 Helpers.logger.error(ErrorCodeConstants.CLIPBOARD_ACCOUNT, e);
 

@@ -17,17 +17,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
-            android:visibility="visible"
             android:theme="@style/TabWithHeader"
+            android:visibility="visible"
             app:tabSelectedTextColor="#fff"
             app:tabTextColor="#B3E5FC" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.viewpager.widget.ViewPager
-        android:layout_below="@id/appBar"
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/appBar"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 
@@ -57,11 +57,10 @@
                 android:id="@+id/etMainPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:imeOptions="actionDone"
                 android:inputType="textPassword"
                 android:maxLength="@integer/password_max_length"
-                android:maxLines="1"
-                android:imeOptions="actionDone"
-                />
+                android:maxLines="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -95,4 +94,30 @@
             app:icon="@drawable/ic_check_circle_24dp" />
 
     </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlLoading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:drawable/screen_background_dark_transparent"
+        android:clickable="true"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/pbLoading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"></ProgressBar>
+
+        <TextView
+            android:id="@+id/tvLoading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/pbLoading"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:text="Yükleniyor, lÜtfen Bekleyin"
+            android:textStyle="bold" />
+    </RelativeLayout>
 </RelativeLayout>
