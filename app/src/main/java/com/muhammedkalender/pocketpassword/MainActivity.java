@@ -411,12 +411,17 @@ public class MainActivity extends AppCompatActivity {
 
 /*
     TODO
-
-    1 - Hesap ismi kontrolü, şuan sadece ana başlık kontrolü var
-    2 - Hesap adı kopyalama
-    3 - Hesap adı şifreleme seçeneği ? gereksiz olabilir
-    5 - Klavye Açıldığında scrollanacak yukarı
-    6 - İsimin İnputu Capitalized olmalı
-    7 - Göz ile hesap adını açıp gizlemek mantıklı olabilir
-    8 - Klavyeye ek fonskiyonla direk klavyeden kopyalam vs..
+    9 - Model üzerinden validation ? mesajı felan outpu verebilir direkt
+    10 - Export
+    11 - İmport
+    12 - İletişim kur maili
+    13 - Logları mail at
+    14 - Hata loglarını mail at
+    15 - Parmak İzi
+    16 - Şifre uygulaması ( siteye girdiğinde buraya soracak felan )
+    17 - Login hatalı olduğunda görüntüleme butnuyla üst üste oluyr
+    18 - Örnek girdide renk sorunlu galia, gri oluyor
+    19 - Update hata verdi gerçek ciahzda bak bi, hepsini değiştir
+    20 - Settingste cümle yanlış, tersini kastediyr logda
+    21 - Şifre değiştirme
  */

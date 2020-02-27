@@ -365,5 +365,21 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
         this.decrypted = false;
     }
 
+    public String getDecryptedPassword() {
+        if (this.isDecrypted()) {
+            return this.password;
+        } else {
+            return Helpers.crypt.quickDecrypt(this.password);
+        }
+    }
+
+    public String getDecryptedAccount(){
+        if(this.isDecrypted()){
+            return this.account;
+        }else{
+            return Helpers.crypt.quickDecrypt(this.account);
+        }
+    }
+
     //endregion
 }
