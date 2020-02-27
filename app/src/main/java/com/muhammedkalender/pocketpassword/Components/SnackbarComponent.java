@@ -1,8 +1,10 @@
 package com.muhammedkalender.pocketpassword.Components;
 
+import android.app.Activity;
 import android.view.View;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.muhammedkalender.pocketpassword.Global;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
 import com.muhammedkalender.pocketpassword.R;
 
@@ -76,7 +78,7 @@ public class SnackbarComponent {
         snackbar.setBackgroundTint(colorBackground);
         snackbar.setTextColor(colorText);
 
-        if(!action.equals(null)){
+        if(action != null){
             snackbar.setAction(action, listenerAction);
         }
 
@@ -101,6 +103,34 @@ public class SnackbarComponent {
         this.duration = Snackbar.LENGTH_INDEFINITE;
 
         return this;
+    }
+
+    //endregion
+
+    //region Multi Thread
+
+    public static void direct(View view, String message){
+        ((Activity) Global.CONTEXT).runOnUiThread(() -> {
+            new SnackbarComponent(view, message).show();
+        });
+    }
+
+    public static void direct(View view, int resMessage){
+        ((Activity) Global.CONTEXT).runOnUiThread(() -> {
+            new SnackbarComponent(view, resMessage).show();
+        });
+    }
+
+    public static void direct(View view, int resMessage, int resAction){
+        ((Activity) Global.CONTEXT).runOnUiThread(() -> {
+            new SnackbarComponent(view, resMessage, resAction).show();
+        });
+    }
+
+    public static void direct(View view, String message, String action){
+        ((Activity) Global.CONTEXT).runOnUiThread(() -> {
+            new SnackbarComponent(view, message, action).show();
+        });
     }
 
     //endregion

@@ -1,5 +1,6 @@
 package com.muhammedkalender.pocketpassword.Adapters;
 
+import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -96,17 +97,21 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordListHolder> {
             @Override
             public void onClick(View v) {
                 try{
-                    String password = passwordModel.getPassword();
+                    new Thread(() -> {
+                        String password = passwordModel.getPassword();
 
-                    if(!passwordModel.isDecrypted()){
-                        passwordModel.decrypt();
-                    }
+                        if(!passwordModel.isDecrypted()){
+                            passwordModel.decrypt();
+                        }
 
-                    ClipboardManager clipboard = (ClipboardManager) Global.CONTEXT.getSystemService(Context.CLIPBOARD_SERVICE);
-                    ClipData clip = ClipData.newPlainText(Helpers.resource.getString(R.string.clipboard_title), password);
-                    clipboard.setPrimaryClip(clip);
+                        ClipboardManager clipboard = (ClipboardManager) Global.CONTEXT.getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clip = ClipData.newPlainText(Helpers.resource.getString(R.string.clipboard_title), password);
+                        clipboard.setPrimaryClip(clip);
 
-                    Toast.makeText(Global.CONTEXT,R.string.password_clipboard, Toast.LENGTH_SHORT).show();
+                        ((Activity)Global.CONTEXT).runOnUiThread(() -> {
+                            Toast.makeText(Global.CONTEXT,R.string.password_clipboard, Toast.LENGTH_SHORT).show();
+                        });
+                    }).start();
                 }catch (Exception e){
                     Helpers.logger.error(ErrorCodeConstants.CLIPBOARD_PASSWORD_IN_LIST, e);
                 }

@@ -7,6 +7,10 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.muhammedkalender.pocketpassword.Constants.ErrorCodeConstants;
 import com.muhammedkalender.pocketpassword.Global;
@@ -17,14 +21,16 @@ import java.util.concurrent.CompletableFuture;
 
 //https://stackoverflow.com/a/22879207
 public class LoadingComponent {
-    private ProgressDialog progressDialog;
+    private RelativeLayout rlLoading;
+    private TextView tvLoading;
+    private ProgressBar pbLoading;
+
     private String defaultMessage;
 
-    public LoadingComponent(Context context) {
-        progressDialog = new ProgressDialog(context);
-        progressDialog.setCancelable(false);
-
-        defaultMessage = Helpers.resource.getString(R.string.loading);
+    public LoadingComponent(RelativeLayout rlLoading) {
+        this.rlLoading = rlLoading;
+        this.tvLoading = rlLoading.findViewById(R.id.tvLoading);
+        this.pbLoading = rlLoading.findViewById(R.id.pbLoading);
     }
 
     public void show() {
@@ -45,10 +51,11 @@ public class LoadingComponent {
 
     public void show(String message) {
         try {
-            if (!progressDialog.isShowing()) {
-                progressDialog.setMessage(message);
-                progressDialog.show();
-            }
+            rlLoading.post(() -> {
+                if (rlLoading.getVisibility() != View.VISIBLE) {
+                    rlLoading.setVisibility(View.VISIBLE);
+                }
+            });
         } catch (Exception e) {
             Helpers.logger.error(ErrorCodeConstants.LOADING_SHOW_WITH_MESSAGE, e);
         }
@@ -56,9 +63,11 @@ public class LoadingComponent {
 
     public void hide() {
         try {
-            if (progressDialog.isShowing()) {
-                progressDialog.hide();
-            }
+            rlLoading.post(() -> {
+                if (rlLoading.getVisibility() == View.VISIBLE) {
+                    rlLoading.setVisibility(View.GONE);
+                }
+            });
         } catch (Exception e) {
             Helpers.logger.error(ErrorCodeConstants.LOADING_HIDE, e);
         }
