@@ -2,6 +2,7 @@ package com.muhammedkalender.pocketpassword.Helpers;
 
 import android.util.Log;
 
+import com.hypertrack.hyperlog.HyperLog;
 import com.muhammedkalender.pocketpassword.Constants.ErrorCodeConstants;
 import com.muhammedkalender.pocketpassword.Globals.Config;
 
@@ -33,6 +34,7 @@ public class LogHelpers {
                 }
             }
 
+            HyperLog.e("ERROR_" + errorCode, message);
             Log.e("ERROR_" + errorCode, message);
         }catch (Exception ignored){
         }

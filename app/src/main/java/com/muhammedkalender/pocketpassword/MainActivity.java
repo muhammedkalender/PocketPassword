@@ -1,10 +1,14 @@
 package com.muhammedkalender.pocketpassword;
 
 import android.app.ActionBar;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.database.DataSetObserver;
 import android.graphics.Color;
 import android.os.Bundle;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -13,6 +17,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -21,11 +26,14 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.hypertrack.hyperlog.HyperLog;
 import com.muhammedkalender.pocketpassword.Abstracts.ModelAbstract;
 import com.muhammedkalender.pocketpassword.Adapters.PasswordAdapter;
+import com.muhammedkalender.pocketpassword.Components.CustomLogMessageFormat;
 import com.muhammedkalender.pocketpassword.Components.LoadingComponent;
 import com.muhammedkalender.pocketpassword.Components.SnackbarComponent;
 import com.muhammedkalender.pocketpassword.Constants.ColorConstants;
+import com.muhammedkalender.pocketpassword.Constants.ErrorCodeConstants;
 import com.muhammedkalender.pocketpassword.Globals.Config;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
 import com.muhammedkalender.pocketpassword.Helpers.AESHelper;
@@ -50,7 +58,13 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.view.Menu;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.security.Key;
 import java.security.KeyFactory;
 import java.security.KeyPair;
@@ -61,6 +75,7 @@ import java.security.PublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.RSAPublicKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -83,13 +98,87 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        buildHelpers();
+        try {
+            buildHelpers();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         Config.initConfig();
 
         loadComponents();
 
         firstOpen();
+
+        final List<String> flowers = new ArrayList<String>();
+        flowers.add("Echinacea");
+        flowers.add("English Bluebell");
+        flowers.add("Erica");
+        flowers.add("Eustoma");
+        flowers.add("Evening Primrose");
+        ArrayAdapter arrayAdapter = new ArrayAdapter<String>(
+                this, // Context
+                android.R.layout.simple_list_item_single_choice, // Layout
+                flowers // List
+        );
+
+
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setSingleChoiceItems(
+                arrayAdapter, // Items list
+                -1, // Index of checked item (-1 = no selection)
+                new DialogInterface.OnClickListener() // Item click listener
+                {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // Get the alert dialog selected item's text
+                        String selectedItem = flowers.get(i);
+
+                        Helpers.logger.info(selectedItem);
+                    }
+                });
+
+        // Set the a;ert dialog positive button
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                // Just dismiss the alert dialog after selection
+                // Or do something now
+            }
+        });
+
+        // Create the alert dialog
+        AlertDialog dialog = builder.create();
+
+        // Change the alert dialog background color
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.holo_red_dark);
+
+        // Finally, display the alert dialog
+        dialog.show();
+
+        new MaterialAlertDialogBuilder(MainActivity.this)
+                .setTitle("Title")
+                .setMessage("Your message goes here. Keep it short but clear.")
+                .setSingleChoiceItems((android.widget.ListAdapter) flowers, -1, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setPositiveButton("GOT IT", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                })
+                .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                })
+                .show();
     }
 
     @Override
@@ -117,10 +206,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public boolean buildHelpers() {
+    public boolean buildHelpers() throws IOException {
         Global.CONTEXT = this;
         Global.ACTIVITY = MainActivity.this;
 
+        HyperLog.initialize(this, new CustomLogMessageFormat(this));
         Helpers.logger = new LogHelpers();
         Helpers.resource = new ResourceHelper();
         Helpers.database = new DatabaseHelper(this);
@@ -315,7 +405,7 @@ public class MainActivity extends AppCompatActivity {
                             ResultObject resultRSAEncrypt = cryptHelper.encrypt(confirmText, cryptHelper.getPrivateKey());
 
                             if (resultRSAEncrypt.isFailure()) {
-                                Helpers.logger.info("HATA RSA");
+                                Helpers.logger.error(ErrorCodeConstants.REGISTER_RESULT_RSA,"HATA RSA");
 
                                 SnackbarComponent snackbarComponent = new SnackbarComponent(getWindow().getDecorView().getRootView(), R.string.register_failure, R.string.action_ok);
                                 snackbarComponent.show();
@@ -324,7 +414,7 @@ public class MainActivity extends AppCompatActivity {
                             ResultObject resultAESEncrypt = Helpers.aes.encrypt((String) resultRSAEncrypt.getData(), Global.PASSWORD);
 
                             if (resultAESEncrypt.isFailure()) {
-                                Helpers.logger.info("HATA AES");
+                                Helpers.logger.error(ErrorCodeConstants.REGISTER_RESULT_AES,"HATA AES");
 
                                 SnackbarComponent snackbarComponent = new SnackbarComponent(getWindow().getDecorView().getRootView(), R.string.register_failure_1, R.string.action_ok);
                                 snackbarComponent.show();
@@ -452,11 +542,15 @@ public class MainActivity extends AppCompatActivity {
 /*
     TODO
     9 - Model üzerinden validation ? mesajı felan outpu verebilir direkt
-    10 - Export
-    11 - İmport
-    12 - İletişim kur maili
-    13 - Logları mail at
-    14 - Hata loglarını mail at
+    10 - Export | Şifreli hallerini export et
+    11 - İmport | Şifreyi sor çöz, dbye import et
     15 - Parmak İzi
     16 - Şifre uygulaması ( siteye girdiğinde buraya soracak felan )
+    17 - Silme :)
+    18 - "." tarzı karakterleri ekle regexp ye
+    19 - Hata mesajları - kontrolleri
+    20 - Ayarlar Hakkında Info ?
+    21 - Dilleri kontrol et
+    22 - Kategorizasyon
+    23 - Modelde insert vs.. çok sağlıklı değil kafada çizip gir
  */

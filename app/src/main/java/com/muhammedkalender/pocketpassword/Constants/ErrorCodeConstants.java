@@ -125,4 +125,19 @@ public class ErrorCodeConstants {
             LOGGER_INFO_WITH_MESSAGE = 5000;
 
     //endregion
+
+    //region Register
+
+    public static final int
+            REGISTER_RESULT_RSA = 6000,
+            REGISTER_RESULT_AES = 6001;
+
+    //endregion
+
+    //region Settings
+
+    public static final int
+            SETTINGS_SEND_ERROR_LOG = 6500;
+
+    //endregion
 }

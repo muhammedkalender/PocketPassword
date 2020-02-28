@@ -32,11 +32,11 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment:2.0.0'
     implementation 'androidx.navigation:navigation-ui:2.0.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
-    implementation "androidx.cardview:cardview:1.0.0"
-    implementation "androidx.recyclerview:recyclerview:1.1.0"
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'net.zetetic:android-database-sqlcipher:4.3.0'
-    implementation "androidx.sqlite:sqlite:2.0.1"
-
+    implementation 'androidx.sqlite:sqlite:2.0.1'
+implementation 'com.hypertrack:hyperlog:0.0.10'
     implementation 'androidx.annotation:annotation:1.0.2'
     androidTestImplementation "androidx.room:room-testing:$rootProject.roomVersion"
 
