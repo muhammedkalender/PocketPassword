@@ -10,7 +10,7 @@ import com.muhammedkalender.pocketpassword.Objects.ResultObject;
 import java.util.List;
 
 public class CategoryModel extends ModelAbstract implements ModelInterface {
-    private int id, color;
+    private int id, color, tintColor;
     private String name;
     private boolean active;
 
@@ -76,15 +76,12 @@ public class CategoryModel extends ModelAbstract implements ModelInterface {
                 this.prefix,
                 this.id,
                 this.name,
-                this.account,
-                this.password,
                 this.color,
                 this.active,
                 this.tintColor
         );
 
         return super.insert(queryUpdate);
-        return null;
     }
 
     @Override

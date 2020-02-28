@@ -552,5 +552,5 @@ public class MainActivity extends AppCompatActivity {
     20 - Ayarlar Hakkında Info ?
     21 - Dilleri kontrol et
     22 - Kategorizasyon
-    23 - Modelde insert vs.. çok sağlıklı değil kafada çizip gir
+    23 - Modellerdede insert vs.. çok sağlıklı değil kafada çizip gir
  */
