@@ -27,6 +27,7 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
     private String account;
     private String password;
     private int color;
+    private int tintColor;
 
     private boolean active;
 
@@ -41,16 +42,17 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
         initTable();
     }
 
-    public PasswordModel(String name, String account, String password, int color) {
+    public PasswordModel(String name, String account, String password, int color, int tintColor) {
         initTable();
 
         this.name = name;
         this.account = account;
         this.password = password;
         this.color = color;
+        this.tintColor = tintColor;
     }
 
-    public PasswordModel(int id, String name, String account, String password, int color) {
+    public PasswordModel(int id, String name, String account, String password, int color, int tintColor) {
         initTable();
 
         this.id = id;
@@ -58,9 +60,10 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
         this.account = account;
         this.password = password;
         this.color = color;
+        this.tintColor = tintColor;
     }
 
-    public PasswordModel(int id, String name, String account, String password, int color, boolean active) {
+    public PasswordModel(int id, String name, String account, String password, int color, int tintColor, boolean active) {
         initTable();
 
         this.id = id;
@@ -68,6 +71,7 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
         this.account = account;
         this.password = password;
         this.color = color;
+        this.tintColor = tintColor;
         this.active = active;
     }
 
@@ -109,7 +113,13 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
                         .setType(SQLConstants.TYPE_STRING)
                         .setDef("")
                         .setMinLength(0)
-                        .setMaxLength(6),
+                        .setMaxLength(8),
+                new ColumnObject()
+                        .setName("tint_color")
+                        .setType(SQLConstants.TYPE_STRING)
+                        .setDef("")
+                        .setMinLength(0)
+                        .setMaxLength(8),
                 new ColumnObject()
                         .setName("insert")
                         .setType(SQLConstants.TYPE_DATE)
@@ -149,7 +159,7 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
 
     public ResultObject insert() {
         try {
-            return Helpers.database.insert("INSERT INTO passwords (password_name, password_account, password_password, password_color) VALUES ('" + name + "', '" + Helpers.crypt.quickEncrypt(account) + "', '" + Helpers.crypt.quickEncrypt(password) + "', '')");
+            return Helpers.database.insert("INSERT INTO passwords (password_name, password_account, password_password, password_color, password_tint_color) VALUES ('" + name + "', '" + Helpers.crypt.quickEncrypt(account) + "', '" + Helpers.crypt.quickEncrypt(password) + "', '" + this.color + "', '" + this.tintColor + "')");
         } catch (Exception e) {
             return new ResultObject(ErrorCodeConstants.MODEL_PASSWORD_INSERT)
                     .setError(e);
@@ -172,17 +182,14 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
 
             List passwords = new ArrayList();
 
-            int index = 0;
-
             while (cursor.moveToNext()) {
-                int color = ColorConstants.colorItem[index++ % ColorConstants.colorItem.length].getColor();
-
                 passwords.add(new PasswordModel(
                         cursor.getInt(cursor.getColumnIndex(prefix + "_id")),
                         cursor.getString(cursor.getColumnIndex(prefix + "_name")),
                         cursor.getString(cursor.getColumnIndex(prefix + "_account")),
                         cursor.getString(cursor.getColumnIndex(prefix + "_password")),
-                        cursor.getInt(cursor.getColumnIndex(prefix + "_color")),
+                        Integer.parseInt(cursor.getString(cursor.getColumnIndex(prefix + "_color"))),
+                        Integer.parseInt(cursor.getString(cursor.getColumnIndex(prefix + "_tint_color"))),
                         cursor.getInt(cursor.getColumnIndex(prefix + "_active")) == 1
 
                 ));
@@ -210,7 +217,7 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
     @Override
     public ResultObject update() {
         String queryUpdate = String.format(
-                "UPDATE %1$s SET %2$s_name = '%4$s', %2$s_account= '%5$s', %2$s_password = '%6$s', %2$s_color = '%7$s', %2$s_active = %8$s WHERE %2$s_id = %3$s",
+                "UPDATE %1$s SET %2$s_name = '%4$s', %2$s_account= '%5$s', %2$s_password = '%6$s', %2$s_color = '%7$s', %2$s_tint_color = '%9$s', %2$s_active = %8$s WHERE %2$s_id = %3$s",
                 this.table,
                 this.prefix,
                 this.id,
@@ -218,7 +225,8 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
                 this.account,
                 this.password,
                 this.color,
-                this.active
+                this.active,
+                this.tintColor
         );
 
         return super.update(queryUpdate);
@@ -229,7 +237,7 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
         PasswordModel model = (PasswordModel) obj;
 
         String queryUpdate = String.format(
-                "UPDATE %1$s SET %2$s_name = '%4$s',%2$s_account = '%5$s', %2$s_password = '%6$s', %2$s_color = '%7$s', %2$s_active = %8$s WHERE %2$s_id = %3$s",
+                "UPDATE %1$s SET %2$s_name = '%4$s',%2$s_account = '%5$s', %2$s_password = '%6$s', %2$s_color = '%7$s', %2$s_tint_color = '%9$s', %2$s_active = %8$s WHERE %2$s_id = %3$s",
                 model.table,
                 model.prefix,
                 model.id,
@@ -237,7 +245,8 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
                 model.account,
                 model.password,
                 model.color,
-                model.active
+                model.active,
+                model.tintColor
         );
 
         return super.update(queryUpdate);
@@ -285,6 +294,10 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
         return color;
     }
 
+    public int getTintColor() {
+        return tintColor;
+    }
+
     public boolean isActive() {
         return active;
     }
@@ -315,6 +328,10 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
 
     public void setColor(int color) {
         this.color = color;
+    }
+
+    public void setTintColor(int tintColor) {
+        this.tintColor = tintColor;
     }
 
     public void setActive(boolean active) {
@@ -373,10 +390,10 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
         }
     }
 
-    public String getDecryptedAccount(){
-        if(this.isDecrypted()){
+    public String getDecryptedAccount() {
+        if (this.isDecrypted()) {
             return this.account;
-        }else{
+        } else {
             return Helpers.crypt.quickDecrypt(this.account);
         }
     }

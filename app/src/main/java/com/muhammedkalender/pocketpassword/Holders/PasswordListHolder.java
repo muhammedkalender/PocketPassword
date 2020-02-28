@@ -27,7 +27,7 @@ import javax.crypto.Cipher;
 public class PasswordListHolder extends RecyclerView.ViewHolder {
     public View view;
     public TextView tvName;
-    public ImageView ivShow, ivForward, ivClipboard;
+    public ImageView ivShow, ivForward, ivClipboard, ivAccount;
     public LinearLayout llContainer;
 
     public PasswordListHolder(Context context, View view) {
@@ -38,6 +38,7 @@ public class PasswordListHolder extends RecyclerView.ViewHolder {
         this.ivShow = view.findViewById(R.id.ivShow);
         this.ivForward = view.findViewById(R.id.ivForward);
         this.ivClipboard = view.findViewById(R.id.ivClipboard);
+        this.ivAccount = view.findViewById(R.id.ivAccount);
         this.llContainer = view.findViewById(R.id.llContainer);
     }
 }

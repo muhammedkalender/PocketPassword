@@ -7,10 +7,12 @@ import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.google.android.material.button.MaterialButton;
 import com.muhammedkalender.pocketpassword.Constants.ColorConstants;
 import com.muhammedkalender.pocketpassword.Global;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
 import com.muhammedkalender.pocketpassword.Objects.ColorObject;
+import com.muhammedkalender.pocketpassword.R;
 
 public class ColorPickerComponent {
 
@@ -19,12 +21,14 @@ public class ColorPickerComponent {
     private int indexSelected = -1;
     private ViewGroup viewGroup;
     private LinearLayout parent;
+    private MaterialButton button;
 
     private View.OnClickListener clickSelect;
 
-    public ColorPickerComponent(ViewGroup viewGroup, int selected) {
+    public ColorPickerComponent(ViewGroup viewGroup, int selected, MaterialButton button) {
         this.selected = selected;
         this.viewGroup = viewGroup;
+        this.button = button;
 
         if(this.selected < 0){
             this.selected *= -1;
@@ -45,6 +49,12 @@ public class ColorPickerComponent {
                     break;
                 }
             }
+
+            button.setBackgroundColor(ColorConstants.colorItem[indexSelected].getColor());
+            button.setTextColor(ColorConstants.colorItem[indexSelected].getTint());
+        }else{
+            button.setBackgroundColor(Helpers.resource.getColor(R.color.lightBlue));
+            button.setTextColor(Helpers.resource.getColor(R.color.tintLightBlue));
         }
 
         this.clickSelect = v -> {
@@ -52,6 +62,9 @@ public class ColorPickerComponent {
 
             arrColorPickerItemComponent[indexSelected].setUnSelected();
             arrColorPickerItemComponent[index].setSelected();
+
+            button.setBackgroundColor(ColorConstants.colorItem[index].getColor());
+            button.setTextColor(ColorConstants.colorItem[index].getTint());
 
             indexSelected = index;
         };
@@ -96,6 +109,10 @@ public class ColorPickerComponent {
 
     public int getColor(){
         return ColorConstants.colorItem[indexSelected].getColor();
+    }
+
+    public int getTintColor(){
+        return ColorConstants.colorItem[indexSelected].getTint();
     }
 
     public void refresh(int selected){

@@ -14,6 +14,7 @@ import com.muhammedkalender.pocketpassword.Adapters.PasswordAdapter;
 import com.muhammedkalender.pocketpassword.Models.PasswordModel;
 import com.muhammedkalender.pocketpassword.Pages.HomePage;
 import com.muhammedkalender.pocketpassword.Pages.Password.PasswordPage;
+import com.muhammedkalender.pocketpassword.Pages.SettingsPage;
 import com.muhammedkalender.pocketpassword.ui.main.SectionsPagerAdapter;
 
 import java.util.List;
@@ -56,6 +57,12 @@ public class Global {
             return null;
         }
     }
+
+    //endregion
+
+    //region Settings
+
+    public static SettingsPage PAGE_SETTINGS = null;
 
     //endregion
 

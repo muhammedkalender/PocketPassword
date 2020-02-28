@@ -51,7 +51,7 @@ public class PlaceholderFragment extends Fragment {
             Bundle savedInstanceState) {
         View root;
 
-        Helpers.logger.info("İndex" + pageViewModel.getIndex());
+        Helpers.logger.info("İndex : " + pageViewModel.getIndex());
 
         if(pageViewModel.getIndex() == Config.TAB_SETTINGS_INDEX + 1){
             root = inflater.inflate(R.layout.fragment_settings, container, false);

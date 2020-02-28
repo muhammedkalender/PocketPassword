@@ -93,6 +93,13 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordListHolder> {
 
         holder.llContainer.setBackgroundColor(passwordModel.getColor());
 
+        holder.tvName.setTextColor(passwordModel.getTintColor());
+
+        holder.ivShow.setColorFilter(passwordModel.getTintColor());
+        holder.ivClipboard.setColorFilter(passwordModel.getTintColor());
+        holder.ivForward.setColorFilter(passwordModel.getTintColor());
+        holder.ivAccount.setColorFilter(passwordModel.getTintColor());
+
         holder.ivClipboard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -118,12 +125,7 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordListHolder> {
             }
         });
 
-        holder.ivForward.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                holder.llContainer.callOnClick();
-            }
-        });
+        holder.ivForward.setOnClickListener(v -> holder.llContainer.callOnClick());
 
         holder.ivShow.setTag(false);
 
@@ -139,6 +141,24 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordListHolder> {
             }
 
             v.setTag(!(boolean)v.getTag());
+        });
+
+        holder.ivAccount.setOnClickListener(v -> {
+            try{
+                new Thread(() -> {
+                    String account = passwordModel.getDecryptedAccount();
+
+                    ClipboardManager clipboard = (ClipboardManager) Global.CONTEXT.getSystemService(Context.CLIPBOARD_SERVICE);
+                    ClipData clip = ClipData.newPlainText(Helpers.resource.getString(R.string.clipboard_title), account);
+                    clipboard.setPrimaryClip(clip);
+
+                    ((Activity)Global.CONTEXT).runOnUiThread(() -> {
+                        Toast.makeText(Global.CONTEXT,R.string.account_clipboard, Toast.LENGTH_SHORT).show();
+                    });
+                }).start();
+            }catch (Exception e){
+                Helpers.logger.error(ErrorCodeConstants.CLIPBOARD_ACCOUNT_COPY, e);
+            }
         });
 
         holder.ivForward.setColorFilter(tintColor);
