@@ -93,4 +93,9 @@
     <string name="account_clipboard">Hesap Kopyalanmıştır</string>
     <string name="button_enter">Ayarları Görüntüle</string>
     <string name="input_password_settings_edit">Ayarları görüntülüyebilmeniz için önce şifrenizi girmelisiniz</string>
+    <string name="button_contact_us">Bize Yazın</string>
+
+    <string name="mail_subject">Bize Yazın - Pocket Password</string>
+    <string name="mail_chooser">Bir Mail Uygulaması Seçin :</string>
+    <string name="button_send_error_log">Hata Raporlarını Gönder</string>
 </resources>
