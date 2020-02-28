@@ -81,8 +81,8 @@
     <string name="view_null">Sayfa yüklenirken sorun oluştu</string>
     <string name="failure_password_clipboard">Şifre kopyalanamadı</string>
     <string name="failure_load_list">Liste yüklenirken sorun oluştu</string>
-    <string name="switch_disable_error_log">Hata loglarını kapat</string>
-    <string name="switch_disable_info_log">Bilgilendirme loglarını kapat</string>
+    <string name="switch_disable_error_log">Hata loglarını aktif et</string>
+    <string name="switch_disable_info_log">Bilgilendirme loglarını aktif et</string>
     <string name="example_account">ornek_hesap@mail.com</string>
     <string name="input_account">Hesap</string>
     <string name="account_name">Hesap</string>
@@ -91,4 +91,6 @@
     <string name="button_copy_account">HESABI KOPYALA</string>
     <string name="failure_account_clipboard">Hesap kopyalanırken sorun oluştu</string>
     <string name="account_clipboard">Hesap Kopyalanmıştır</string>
+    <string name="button_enter">Ayarları Görüntüle</string>
+    <string name="input_password_settings_edit">Ayarları görüntülüyebilmeniz için önce şifrenizi girmelisiniz</string>
 </resources>

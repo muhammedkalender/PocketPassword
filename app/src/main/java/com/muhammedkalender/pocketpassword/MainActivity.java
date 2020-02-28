@@ -337,8 +337,9 @@ public class MainActivity extends AppCompatActivity {
                             Helpers.crypt = cryptHelper;
 
                             int color = Helpers.resource.getColor(R.color.lightBlue);
+                            int tintColor = Helpers.resource.getColor(R.color.tintLightBlue);
 
-                            PasswordModel passwordModel = new PasswordModel(Helpers.resource.getString(R.string.example_name, "Example Account"), Helpers.resource.getString(R.string.example_account, "example_account"), Helpers.resource.getString(R.string.example_password, "Example_Password"), color);
+                            PasswordModel passwordModel = new PasswordModel(Helpers.resource.getString(R.string.example_name, "Example Account"), Helpers.resource.getString(R.string.example_account, "example_account"), Helpers.resource.getString(R.string.example_password, "Example_Password"), color, tintColor);
                             ResultObject resultInsert = passwordModel.insert();
 
                             if (resultInsert.isSuccess()) {
@@ -368,8 +369,8 @@ public class MainActivity extends AppCompatActivity {
 
             if (resultDecryptConfirmString.isFailure()) {
                 runOnUiThread(() -> {
-                    etMainPassword.setError(Helpers.resource.getString(R.string.password_wrong_1));
                     etMainPassword.setText(null);
+                    tilMainPassword.setError(Helpers.resource.getString(R.string.password_wrong_1));
 
                     Helpers.loading.hide();
                 });
@@ -382,8 +383,8 @@ public class MainActivity extends AppCompatActivity {
             ResultObject resultDecryptRSAConfirmString = Helpers.crypt.decrypt((String) resultDecryptConfirmString.getData(), Helpers.crypt.getPublicKey());
 
             ColorConstants.colorItem = new ColorObject[]{
+                    new ColorObject(Helpers.resource.getColor(R.color.lightBlue), Helpers.resource.getColor(R.color.tintLightBlue)), //Prımary Color
                     new ColorObject(Helpers.resource.getColor(R.color.pink), Helpers.resource.getColor(R.color.tintPink)),
-                    new ColorObject(Helpers.resource.getColor(R.color.lightBlue), Helpers.resource.getColor(R.color.tintLightBlue)),
                     new ColorObject(Helpers.resource.getColor(R.color.amber), Helpers.resource.getColor(R.color.tintAmber)),
                     new ColorObject(Helpers.resource.getColor(R.color.red), Helpers.resource.getColor(R.color.tintRed)),
                     new ColorObject(Helpers.resource.getColor(R.color.purple), Helpers.resource.getColor(R.color.tintPurple)),
@@ -394,8 +395,8 @@ public class MainActivity extends AppCompatActivity {
 
             runOnUiThread(() ->{
                 if (resultDecryptRSAConfirmString.isFailure()) {
-                    etMainPassword.setError(Helpers.resource.getString(R.string.password_wrong));
                     etMainPassword.setText(null);
+                    tilMainPassword.setError(Helpers.resource.getString(R.string.password_wrong));
 
                     Helpers.loading.hide();
 
@@ -420,6 +421,26 @@ public class MainActivity extends AppCompatActivity {
 
                 Global.TAB_LAYOUT.getTabAt(Config.TAB_HOME_INDEX).select();
 
+                Global.TAB_LAYOUT.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+                    @Override
+                    public void onTabSelected(TabLayout.Tab tab) {
+                        if(tab.getPosition() == Config.TAB_SETTINGS_INDEX){
+                            Helpers.logger.info(tab.getPosition() + " Settingse girdimi");
+                            Global.PAGE_SETTINGS.initialize(Global.PAGE_SETTINGS.getView());
+                        }
+                    }
+
+                    @Override
+                    public void onTabUnselected(TabLayout.Tab tab) {
+
+                    }
+
+                    @Override
+                    public void onTabReselected(TabLayout.Tab tab) {
+
+                    }
+                });
+
                 Helpers.loading.hide();
             });
         }).start();
@@ -438,10 +459,4 @@ public class MainActivity extends AppCompatActivity {
     14 - Hata loglarını mail at
     15 - Parmak İzi
     16 - Şifre uygulaması ( siteye girdiğinde buraya soracak felan )
-    17 - Login hatalı olduğunda görüntüleme butnuyla üst üste oluyr
-    18 - Örnek girdide renk sorunlu galia, gri oluyor
-    20 - Settingste cümle yanlış, tersini kastediyr logda
-    21 - Şifre değiştirme
-    22 - Sayfa değişince scrollu yukarı at
-    23 - Giriş yapıp login olmayınca sapıtıyormu ? ( ilk kayıt )
  */

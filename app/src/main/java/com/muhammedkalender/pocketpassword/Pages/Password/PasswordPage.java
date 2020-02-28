@@ -71,7 +71,7 @@ public class PasswordPage extends PageAbstract implements PageInterface {
 
         Helpers.logger.info(InfoCodeConstants.PASSWORD_FILL_VIEW, passwordModel.getName());
 
-        colorPickerComponent = new ColorPickerComponent(Global.VIEW_GROUP, passwordModel.getColor());
+        colorPickerComponent = new ColorPickerComponent(Global.VIEW_GROUP, passwordModel.getColor(), btnSave);
 
         colorPickerComponent.fillLayout(viewRoot.findViewById(R.id.llColors));
 
@@ -188,11 +188,11 @@ public class PasswordPage extends PageAbstract implements PageInterface {
                     }
                 }
 
-                //todo color
                 passwordModel.setName(name);
                 passwordModel.setAccount(account);
                 passwordModel.setPassword(password);
                 passwordModel.setColor(colorPickerComponent.getColor());
+                passwordModel.setTintColor(colorPickerComponent.getTintColor());
 
                 passwordModel.encrypt();
 

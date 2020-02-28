@@ -66,7 +66,7 @@ public class NewPasswordPage extends PageAbstract implements PageInterface {
         });
 
 
-        colorPickerComponent = new ColorPickerComponent(Global.VIEW_GROUP, ColorConstants.colorItem[0].getColor());
+        colorPickerComponent = new ColorPickerComponent(Global.VIEW_GROUP, ColorConstants.colorItem[0].getColor(), btnAdd);
 
         colorPickerComponent.fillLayout(viewRoot.findViewById(R.id.llColors));
 
@@ -79,11 +79,13 @@ public class NewPasswordPage extends PageAbstract implements PageInterface {
             String account = etAccount.getText().toString();
             String password = etPassword.getText().toString();
             int color = colorPickerComponent.getColor();
+            int tintColor = colorPickerComponent.getTintColor();
 
             passwordModel.setName(name);
             passwordModel.setAccount(account);
             passwordModel.setPassword(password);
             passwordModel.setColor(color);
+            passwordModel.setTintColor(tintColor);
 
             ResultObject validation = passwordModel.validation();
 
@@ -162,7 +164,7 @@ public class NewPasswordPage extends PageAbstract implements PageInterface {
                 }
             }
 
-            PasswordModel passwordModel1 = new PasswordModel(name, account, password, color);
+            PasswordModel passwordModel1 = new PasswordModel(name, account, password, color, tintColor);
 
             ResultObject insert = passwordModel1.insert();
 
@@ -170,7 +172,7 @@ public class NewPasswordPage extends PageAbstract implements PageInterface {
                 Helpers.logger.info(String.format("%1$d ID ile kayıt girildi", (int) insert.getData()));
 
                 Global.TAB_LAYOUT.getTabAt(Config.TAB_HOME_INDEX).select();
-                PasswordModel addedPasswordModel = new PasswordModel((int) insert.getData(), name, account, password, color);
+                PasswordModel addedPasswordModel = new PasswordModel((int) insert.getData(), name, account, password, color, tintColor);
                 addedPasswordModel.setDecrypted(true);
 
                 Global.LIST_PASSWORDS.add(addedPasswordModel);
