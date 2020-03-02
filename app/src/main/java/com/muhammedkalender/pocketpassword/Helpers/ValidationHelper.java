@@ -20,7 +20,7 @@ public class ValidationHelper {
                 $                 # end-of-string
              */
 
-            String pattern = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[$\\-_+=])(?=\\S+$).{8,}$";
+            String pattern = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[$\\-_.+=])(?=\\S+$).{8,}$";
 
             return password.matches(pattern);
         }

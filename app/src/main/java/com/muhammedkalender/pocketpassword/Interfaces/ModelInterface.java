@@ -13,7 +13,9 @@ public interface ModelInterface<T> {
     public ResultObject initTable();
 
   //todo ? spesifik return lazım
-    public T insert(Object model);
+    public T insert(T model);
+    public T insert(String query);
+    public T insert();
     public T get(int id);
     public List<T> select();
     public List<T> selectActive();

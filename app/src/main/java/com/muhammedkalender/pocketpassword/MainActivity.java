@@ -45,6 +45,7 @@ import com.muhammedkalender.pocketpassword.Helpers.ResourceHelper;
 import com.muhammedkalender.pocketpassword.Helpers.SharedPreferencesHelper;
 import com.muhammedkalender.pocketpassword.Helpers.SystemHelper;
 import com.muhammedkalender.pocketpassword.Helpers.ValidationHelper;
+import com.muhammedkalender.pocketpassword.Models.CategoryModel;
 import com.muhammedkalender.pocketpassword.Models.PasswordModel;
 import com.muhammedkalender.pocketpassword.Objects.ColorObject;
 import com.muhammedkalender.pocketpassword.Objects.ColumnObject;
@@ -109,76 +110,6 @@ public class MainActivity extends AppCompatActivity {
         loadComponents();
 
         firstOpen();
-
-        final List<String> flowers = new ArrayList<String>();
-        flowers.add("Echinacea");
-        flowers.add("English Bluebell");
-        flowers.add("Erica");
-        flowers.add("Eustoma");
-        flowers.add("Evening Primrose");
-        ArrayAdapter arrayAdapter = new ArrayAdapter<String>(
-                this, // Context
-                android.R.layout.simple_list_item_single_choice, // Layout
-                flowers // List
-        );
-
-
-
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setSingleChoiceItems(
-                arrayAdapter, // Items list
-                -1, // Index of checked item (-1 = no selection)
-                new DialogInterface.OnClickListener() // Item click listener
-                {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        // Get the alert dialog selected item's text
-                        String selectedItem = flowers.get(i);
-
-                        Helpers.logger.info(selectedItem);
-                    }
-                });
-
-        // Set the a;ert dialog positive button
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                // Just dismiss the alert dialog after selection
-                // Or do something now
-            }
-        });
-
-        // Create the alert dialog
-        AlertDialog dialog = builder.create();
-
-        // Change the alert dialog background color
-        dialog.getWindow().setBackgroundDrawableResource(android.R.color.holo_red_dark);
-
-        // Finally, display the alert dialog
-        dialog.show();
-
-        new MaterialAlertDialogBuilder(MainActivity.this)
-                .setTitle("Title")
-                .setMessage("Your message goes here. Keep it short but clear.")
-                .setSingleChoiceItems((android.widget.ListAdapter) flowers, -1, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                })
-                .setPositiveButton("GOT IT", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                    }
-                })
-                .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                    }
-                })
-                .show();
     }
 
     @Override
@@ -429,7 +360,22 @@ public class MainActivity extends AppCompatActivity {
                             int color = Helpers.resource.getColor(R.color.lightBlue);
                             int tintColor = Helpers.resource.getColor(R.color.tintLightBlue);
 
-                            PasswordModel passwordModel = new PasswordModel(Helpers.resource.getString(R.string.example_name, "Example Account"), Helpers.resource.getString(R.string.example_account, "example_account"), Helpers.resource.getString(R.string.example_password, "Example_Password"), color, tintColor);
+                            CategoryModel[] categoryModels = new CategoryModel[]{
+                                    new CategoryModel(Helpers.resource.getString(R.string.category_other), Helpers.resource.getColor(R.color.grey), Helpers.resource.getColor(R.color.tintGrey), true),
+                                    new CategoryModel(Helpers.resource.getString(R.string.category_social_media), Helpers.resource.getColor(R.color.pink), Helpers.resource.getColor(R.color.tintPink), true),
+                                    new CategoryModel(Helpers.resource.getString(R.string.category_bank), Helpers.resource.getColor(R.color.lightBlue), Helpers.resource.getColor(R.color.tintLightBlue), true),
+                                    new CategoryModel(Helpers.resource.getString(R.string.category_mail), Helpers.resource.getColor(R.color.amber), Helpers.resource.getColor(R.color.tintAmber), true),
+                                    new CategoryModel(Helpers.resource.getString(R.string.category_server), Helpers.resource.getColor(R.color.indigo), Helpers.resource.getColor(R.color.tintIndigo), true),
+                                    new CategoryModel(Helpers.resource.getString(R.string.category_app), Helpers.resource.getColor(R.color.red), Helpers.resource.getColor(R.color.tintRed), true),
+                                    new CategoryModel(Helpers.resource.getString(R.string.category_computer), Helpers.resource.getColor(R.color.green), Helpers.resource.getColor(R.color.tintGreen), true),
+                                    new CategoryModel(Helpers.resource.getString(R.string.category_service), Helpers.resource.getColor(R.color.deepOrange), Helpers.resource.getColor(R.color.tintDeepOrange), true),
+                            };
+
+                            for (int i = 0; i < categoryModels.length; i++){
+                                categoryModels[i].insert();
+                            }
+
+                            PasswordModel passwordModel = new PasswordModel(Helpers.resource.getString(R.string.example_name, "Example Account"), Helpers.resource.getString(R.string.example_account, "example_account"), Helpers.resource.getString(R.string.example_password, "Example_Password"), color, tintColor, 1);
                             ResultObject resultInsert = passwordModel.insert();
 
                             if (resultInsert.isSuccess()) {
@@ -551,6 +497,6 @@ public class MainActivity extends AppCompatActivity {
     19 - Hata mesajları - kontrolleri
     20 - Ayarlar Hakkında Info ?
     21 - Dilleri kontrol et
-    22 - Kategorizasyon
     23 - Modellerdede insert vs.. çok sağlıklı değil kafada çizip gir
+    24 - Boş uyarısı ( Eventi olamyan iemle öğre yok felan )
  */

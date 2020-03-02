@@ -15,6 +15,7 @@ import com.muhammedkalender.pocketpassword.Constants.InfoCodeConstants;
 import com.muhammedkalender.pocketpassword.Global;
 import com.muhammedkalender.pocketpassword.Globals.Config;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
+import com.muhammedkalender.pocketpassword.Models.CategoryModel;
 import com.muhammedkalender.pocketpassword.Models.PasswordModel;
 import com.muhammedkalender.pocketpassword.Objects.ResultObject;
 
@@ -47,6 +48,7 @@ public class DatabaseHelper {
 
             if (isFirst) {
                 ModelAbstract[] models = new ModelAbstract[]{
+                        new CategoryModel(),
                         new PasswordModel()
                 };
 

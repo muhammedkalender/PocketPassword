@@ -5,20 +5,24 @@ import com.muhammedkalender.pocketpassword.Interfaces.ModelInterface;
 import com.muhammedkalender.pocketpassword.Objects.ColumnObject;
 import com.muhammedkalender.pocketpassword.Objects.ResultObject;
 
-public abstract class ModelAbstract implements ModelInterface {
+public abstract class ModelAbstract<T> implements ModelInterface {
     protected String table = null;
     protected String prefix = null;
 
     protected ColumnObject[] columns = new ColumnObject[]{};
 
-
     public ResultObject delete(int id) {
-        //todo
+        String query = String.format(
+                "UPDATE %1$s SET %2$s_active = 0 WHERE %2$s_id = %3$d",
+                table,
+                prefix,
+                id
+        );
 
-        return null;
+        return Helpers.database.execute(query);
     }
 
-    public ResultObject update(){
+    public ResultObject update() {
         //OVVERIDE
         return update(this);
     }
@@ -44,7 +48,7 @@ public abstract class ModelAbstract implements ModelInterface {
                 7 => DEFAULT
             */
 
-            if(i != 0){
+            if (i != 0) {
                 query += ", ";
             }
 
@@ -70,5 +74,15 @@ public abstract class ModelAbstract implements ModelInterface {
         query += ")";
 
         return query;
+    }
+
+    @Override
+    public T insert(Object model) {
+        return null;
+    }
+
+    @Override
+    public ResultObject insert(String query) {
+        return Helpers.database.insert(query);
     }
 }

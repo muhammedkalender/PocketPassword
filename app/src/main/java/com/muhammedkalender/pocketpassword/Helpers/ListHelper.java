@@ -43,4 +43,14 @@ public class ListHelper {
     public PasswordModel findByGlobal() {
         return Global.LIST_PASSWORDS_SOLID.get(findIndexFromTempIndex(Global.CURRENT_PASSWORD_MODEL_INDEX));
     }
+
+    public void findAndDelete(PasswordModel findPasswordModel) {
+        for (int i = 0; i < Global.LIST_PASSWORDS_SOLID.size(); i++) {
+            if (Global.LIST_PASSWORDS_SOLID.get(i).getId() == findPasswordModel.getId()) {
+                Global.LIST_PASSWORDS_SOLID.remove(i);
+
+                return;
+            }
+        }
+    }
 }
