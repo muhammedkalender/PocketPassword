@@ -1,7 +1,9 @@
 package com.muhammedkalender.pocketpassword.Pages.Password;
 
+import android.app.AlertDialog;
 import android.graphics.Color;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.HorizontalScrollView;
 import android.widget.ScrollView;
 
@@ -19,10 +21,13 @@ import com.muhammedkalender.pocketpassword.Globals.Config;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
 import com.muhammedkalender.pocketpassword.Helpers.CryptHelper;
 import com.muhammedkalender.pocketpassword.Interfaces.PageInterface;
+import com.muhammedkalender.pocketpassword.Models.CategoryModel;
 import com.muhammedkalender.pocketpassword.Models.PasswordModel;
 import com.muhammedkalender.pocketpassword.Objects.ResultObject;
 import com.muhammedkalender.pocketpassword.R;
 
+import java.lang.reflect.Array;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class NewPasswordPage extends PageAbstract implements PageInterface {
@@ -38,10 +43,26 @@ public class NewPasswordPage extends PageAbstract implements PageInterface {
     public TextInputLayout tilPassword = null;
     public TextInputEditText etPassword = null;
 
+    public TextInputLayout tilCategory = null;
+    public TextInputEditText etCategory = null;
+
     private ColorPickerComponent colorPickerComponent;
+
+    public int selectedCategoryIndex = 0;
+    public int selectedCategoryId = 0;
+
+    private List<CategoryModel> listCategory;
+
+    ArrayAdapter arrayAdapter;
 
     @Override
     public void initialize(View viewRoot) {
+        if(isInitialized()){
+            selectedCategoryId = 0;
+            selectedCategoryIndex = 0;
+            etCategory.setText(listCategory.get(0).getName());
+        }
+
         this.viewRoot = viewRoot;
         this.initialized = true;
 
@@ -51,7 +72,19 @@ public class NewPasswordPage extends PageAbstract implements PageInterface {
         this.etAccount = this.viewRoot.findViewById(R.id.etAccount);
         this.tilPassword = this.viewRoot.findViewById(R.id.tilPassword);
         this.etPassword = this.viewRoot.findViewById(R.id.etPassword);
+        this.tilCategory = this.viewRoot.findViewById(R.id.tilCategory);
+        this.etCategory = this.viewRoot.findViewById(R.id.etCategory);
         this.btnAdd = this.viewRoot.findViewById(R.id.btnAdd);
+
+        CategoryModel categoryModel = new CategoryModel();
+        listCategory =  categoryModel.selectActive();
+        arrayAdapter = new ArrayAdapter<>(Global.CONTEXT, android.R.layout.select_dialog_singlechoice);
+
+        listCategory.remove(0); //Remove All Of Them
+
+        for(CategoryModel category : listCategory){
+            arrayAdapter.add(category.getName());
+        }
 
         HorizontalScrollView hsvColors = this.viewRoot.findViewById(R.id.hsvColors);
 
@@ -65,10 +98,39 @@ public class NewPasswordPage extends PageAbstract implements PageInterface {
             svNewPassword.setScrollY(0);
         });
 
-
         colorPickerComponent = new ColorPickerComponent(Global.VIEW_GROUP, ColorConstants.colorItem[0].getColor(), btnAdd);
 
         colorPickerComponent.fillLayout(viewRoot.findViewById(R.id.llColors));
+
+        Helpers.logger.info("Listener Atandı");
+        this.tilCategory.setOnClickListener(v -> {
+            Helpers.logger.info("Girdi");
+
+            AlertDialog.Builder builderSingle = new AlertDialog.Builder(Global.CONTEXT);
+            builderSingle.setIcon(R.drawable.ic_format_list_bulleted_24dp);
+            builderSingle.setTitle(R.string.select_category);
+
+            builderSingle.setSingleChoiceItems(arrayAdapter, selectedCategoryIndex, (dialog, which) -> {
+                //todo seçildinm iyapılacak filtreleme
+                //todo all of them ekle<
+                dialog.dismiss();
+
+                selectedCategoryId = listCategory.get(which).getId();
+                selectedCategoryIndex = which;
+
+                etCategory.setText(listCategory.get(which).getName());
+            });
+
+            builderSingle.setNegativeButton(R.string.select_category_cancel, (dialog, which) -> dialog.dismiss());
+
+            builderSingle.show();
+        });
+
+        this.etCategory.setOnClickListener(v -> {
+            this.tilCategory.callOnClick();
+        });
+
+
 
         final PasswordModel passwordModel = new PasswordModel();
 
@@ -80,12 +142,14 @@ public class NewPasswordPage extends PageAbstract implements PageInterface {
             String password = etPassword.getText().toString();
             int color = colorPickerComponent.getColor();
             int tintColor = colorPickerComponent.getTintColor();
+            int category = listCategory.get(selectedCategoryIndex).getId();
 
             passwordModel.setName(name);
             passwordModel.setAccount(account);
             passwordModel.setPassword(password);
             passwordModel.setColor(color);
             passwordModel.setTintColor(tintColor);
+            passwordModel.setCategoryID(category);
 
             ResultObject validation = passwordModel.validation();
 
@@ -164,7 +228,7 @@ public class NewPasswordPage extends PageAbstract implements PageInterface {
                 }
             }
 
-            PasswordModel passwordModel1 = new PasswordModel(name, account, password, color, tintColor);
+            PasswordModel passwordModel1 = new PasswordModel(name, account, password, color, tintColor, category);
 
             ResultObject insert = passwordModel1.insert();
 
@@ -172,7 +236,7 @@ public class NewPasswordPage extends PageAbstract implements PageInterface {
                 Helpers.logger.info(String.format("%1$d ID ile kayıt girildi", (int) insert.getData()));
 
                 Global.TAB_LAYOUT.getTabAt(Config.TAB_HOME_INDEX).select();
-                PasswordModel addedPasswordModel = new PasswordModel((int) insert.getData(), name, account, password, color, tintColor);
+                PasswordModel addedPasswordModel = new PasswordModel((int) insert.getData(), name, account, password, color, tintColor, category);
                 addedPasswordModel.setDecrypted(true);
 
                 Global.LIST_PASSWORDS.add(addedPasswordModel);
@@ -185,6 +249,9 @@ public class NewPasswordPage extends PageAbstract implements PageInterface {
                 etName.setText(null);
                 etAccount.setText(null);
                 etPassword.setText(null);
+                selectedCategoryIndex = 0;
+                selectedCategoryId = 0;
+                etCategory.setText(listCategory.get(selectedCategoryIndex).getName());
             } else {
                 Helpers.logger.error(ErrorCodeConstants.MODEL_PASSWORD_INSERT, (Exception) insert.getData());
             }

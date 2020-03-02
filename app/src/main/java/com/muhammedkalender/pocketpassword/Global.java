@@ -5,12 +5,14 @@ import android.content.Context;
 import android.service.autofill.Dataset;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.TableLayout;
 
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.muhammedkalender.pocketpassword.Adapters.PasswordAdapter;
+import com.muhammedkalender.pocketpassword.Models.CategoryModel;
 import com.muhammedkalender.pocketpassword.Models.PasswordModel;
 import com.muhammedkalender.pocketpassword.Pages.HomePage;
 import com.muhammedkalender.pocketpassword.Pages.Password.PasswordPage;
@@ -36,6 +38,8 @@ public class Global {
     public static PasswordAdapter PASSWORD_ADAPTER = null;
     public static ViewGroup VIEW_GROUP = null;
     public static Activity ACTIVITY = null;
+    public static List<CategoryModel> LIST_CATEGORY = null;
+    public static ArrayAdapter<String> ADAPTER_CATEGORY = null;
 
     //region Pages
 
@@ -98,4 +102,7 @@ public class Global {
     public static boolean LOCK_PASSWORD_PAGE = true;
 
     public static String PASSWORD = null;
+
+    public static int SELECTED_CATEGORY = 1;
+    public static int SELECTED_CATEGORY_INDEX = 0;
 }

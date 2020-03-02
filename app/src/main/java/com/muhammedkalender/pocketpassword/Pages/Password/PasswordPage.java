@@ -1,11 +1,15 @@
 package com.muhammedkalender.pocketpassword.Pages.Password;
 
+import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.location.Address;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -25,9 +29,13 @@ import com.muhammedkalender.pocketpassword.Globals.Config;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
 import com.muhammedkalender.pocketpassword.Helpers.CryptHelper;
 import com.muhammedkalender.pocketpassword.Interfaces.PageInterface;
+import com.muhammedkalender.pocketpassword.MainActivity;
+import com.muhammedkalender.pocketpassword.Models.CategoryModel;
 import com.muhammedkalender.pocketpassword.Models.PasswordModel;
 import com.muhammedkalender.pocketpassword.Objects.ResultObject;
 import com.muhammedkalender.pocketpassword.R;
+
+import java.util.List;
 
 public class PasswordPage extends PageAbstract implements PageInterface {
     public MaterialButton btnSave = null;
@@ -41,14 +49,25 @@ public class PasswordPage extends PageAbstract implements PageInterface {
     public TextInputLayout tilPassword = null;
     public TextInputEditText etPassword = null;
 
+    public TextInputLayout tilCategory = null;
+    public TextInputEditText etCategory = null;
+
     public MaterialButton
             btnClipboard = null,
-            btnClipboardAccount = null;
+            btnClipboardAccount = null,
+            btnDeletePassword = null;
 
     private HorizontalScrollView hsvColors = null;
     private LinearLayout llColors = null;
 
     private ColorPickerComponent colorPickerComponent;
+
+    public int selectedCategoryIndex = 0;
+    public int selectedCategoryId = 0;
+
+    private List<CategoryModel> listCategory;
+
+    ArrayAdapter arrayAdapter;
 
     @Override
     public void initialize(View viewRoot) {
@@ -66,14 +85,97 @@ public class PasswordPage extends PageAbstract implements PageInterface {
         this.hsvColors = this.viewRoot.findViewById(R.id.hsvColors);
         this.llColors = this.viewRoot.findViewById(R.id.llColors);
         this.btnClipboardAccount = this.viewRoot.findViewById(R.id.btnClipboardAccount);
+        this.tilCategory = this.viewRoot.findViewById(R.id.tilCategory);
+        this.etCategory = this.viewRoot.findViewById(R.id.etCategory);
+        this.btnDeletePassword = this.viewRoot.findViewById(R.id.btnDeletePassword);
 
-        PasswordModel passwordModel = Helpers.list.findByGlobal();
+        final PasswordModel passwordModel = Helpers.list.findByGlobal();
 
         Helpers.logger.info(InfoCodeConstants.PASSWORD_FILL_VIEW, passwordModel.getName());
 
         colorPickerComponent = new ColorPickerComponent(Global.VIEW_GROUP, passwordModel.getColor(), btnSave);
 
         colorPickerComponent.fillLayout(viewRoot.findViewById(R.id.llColors));
+
+        CategoryModel categoryModel = new CategoryModel();
+        listCategory =  categoryModel.selectActive();
+        arrayAdapter = new ArrayAdapter<>(Global.CONTEXT, android.R.layout.select_dialog_singlechoice);
+
+        for(int i = 0; i < listCategory.size();i++){
+            if(listCategory.get(i).getId() == passwordModel.getCategoryID()){
+                selectedCategoryIndex = i;
+                selectedCategoryId = passwordModel.getCategoryID();
+                etCategory.setText(listCategory.get(selectedCategoryIndex).getName());
+            }
+
+            arrayAdapter.add(listCategory.get(i).getName());
+        }
+
+        this.tilCategory.setOnClickListener(v -> {
+            Helpers.logger.info("Girdi");
+
+            AlertDialog.Builder builderSingle = new AlertDialog.Builder(Global.CONTEXT);
+            builderSingle.setIcon(R.drawable.ic_format_list_bulleted_24dp);
+            builderSingle.setTitle(R.string.select_category);
+
+            builderSingle.setSingleChoiceItems(arrayAdapter, selectedCategoryIndex, (dialog, which) -> {
+                //todo seçildinm iyapılacak filtreleme
+                //todo all of them ekle<
+                dialog.dismiss();
+
+                selectedCategoryId = listCategory.get(which).getId();
+                selectedCategoryIndex = which;
+
+                etCategory.setText(listCategory.get(which).getName());
+            });
+
+            builderSingle.setNegativeButton(R.string.select_category_cancel, (dialog, which) -> dialog.dismiss());
+
+            builderSingle.show();
+        });
+
+        this.etCategory.setOnClickListener(v -> {
+            this.tilCategory.callOnClick();
+        });
+
+        this.btnDeletePassword.setOnClickListener(v -> {
+            AlertDialog.Builder alert = new AlertDialog.Builder(Global.CONTEXT);
+            alert.setTitle(R.string.dialog_delete_password_title);
+            alert.setMessage(R.string.dialog_delete_password);
+            alert.setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
+
+//                ResultObject update = passwordModel.update();
+//
+//                passwordModel.decrypt();
+//
+//                if (update.isSuccess()) {
+                Helpers.list.findAndDelete(passwordModel);
+                    Global.LIST_PASSWORDS.remove(Global.CURRENT_PASSWORD_MODEL_INDEX);
+                    Global.PASSWORD_ADAPTER.notifyDataSetChanged();
+                    Global.TAB_LAYOUT.removeTabAt(Config.TAB_PASSWORD_INDEX);
+
+
+                    SnackbarComponent snackbarComponent = new SnackbarComponent(viewRoot, R.string.success_delete_password, R.string.action_ok);
+                    snackbarComponent.show();
+
+                    Global.PAGE_HOME.filter("");
+
+                    Global.PAGE_HOME = null;
+//                } else {
+//                    SnackbarComponent snackbarComponent = new SnackbarComponent(viewRoot, R.string.failure_update_password, R.string.action_ok);
+//                    snackbarComponent.show();
+//                }
+
+
+                Helpers.logger.info(passwordModel.getId()+"---");
+
+                dialog.dismiss();
+            });
+
+            alert.setNeutralButton(R.string.dialog_cancel, (dialog, which) -> dialog.dismiss());
+
+            alert.show();
+        });
 
         load(passwordModel);
     }
@@ -104,121 +206,131 @@ public class PasswordPage extends PageAbstract implements PageInterface {
 
         this.colorPickerComponent.refresh(passwordModel.getColor());
 
-        this.btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Helpers.loading.show();
+        for(int i = 0; i < listCategory.size();i++){
+            if(listCategory.get(i).getId() == passwordModel.getCategoryID()){
+                selectedCategoryIndex = i;
+                selectedCategoryId = passwordModel.getCategoryID();
+                etCategory.setText(listCategory.get(selectedCategoryIndex).getName());
+            }
+        }
 
-                String name = etName.getText().toString();
-                String account = etAccount.getText().toString();
-                String password = etPassword.getText().toString();
+        this.btnSave.setOnClickListener(v -> {
+            Helpers.loading.show();
 
-                String oldName = passwordModel.getName();
+            String name = etName.getText().toString();
+            String account = etAccount.getText().toString();
+            String password = etPassword.getText().toString();
 
-                passwordModel.setName(name);
-                passwordModel.setAccount(account);
-                passwordModel.setPassword(password);
-                passwordModel.setColor(-1);
+            String oldName = passwordModel.getName();
 
-                if (etName.getText().toString() == null || etName.getText().toString().length() == 0) {
-                    tilName.setError(Helpers.resource.getString(R.string.not_null, "", Helpers.resource.getString(R.string.input_name)));
+            int category = listCategory.get(selectedCategoryIndex).getId();
 
-                    Helpers.loading.hide();
-                    return;
-                } else {
-                    if (name.length() > Helpers.resource.getInt(R.integer.name_max_length)) {
-                        tilName.setError(Helpers.resource.getString(R.string.max_length, "", Helpers.resource.getString(R.string.input_name), Helpers.resource.getInt(R.integer.name_max_length)));
+            passwordModel.setName(name);
+            passwordModel.setAccount(account);
+            passwordModel.setPassword(password);
+            passwordModel.setColor(-1);
+            passwordModel.setCategoryID(category);
 
-                        Helpers.loading.hide();
-                        return;
-                    } else if (name.length() < Helpers.resource.getInt(R.integer.name_min_length)) {
-                        tilName.setError(Helpers.resource.getString(R.string.min_length, "", Helpers.resource.getString(R.string.input_name), Helpers.resource.getInt(R.integer.name_min_length)));
-
-                        Helpers.loading.hide();
-                        return;
-                    } else if (!oldName.equals(name) && passwordModel.checkDuplicate(name)) {
-                        tilName.setError(Helpers.resource.getString(R.string.already_used, "", name));
-
-                        Helpers.loading.hide();
-                        return;
-                    } else {
-                        tilName.setErrorEnabled(false);
-                    }
-                }
-
-                if (etAccount.getText().toString() == null || etAccount.getText().toString().length() == 0) {
-                    tilAccount.setError(Helpers.resource.getString(R.string.not_null, "", Helpers.resource.getString(R.string.input_account)));
-
-                    Helpers.loading.hide();
-                    return;
-                } else {
-                    if (name.length() > Helpers.resource.getInt(R.integer.account_max_length)) {
-                        tilAccount.setError(Helpers.resource.getString(R.string.max_length, "", Helpers.resource.getString(R.string.account_name), Helpers.resource.getInt(R.integer.account_max_length)));
-
-                        Helpers.loading.hide();
-                        return;
-                    } else if (name.length() < Helpers.resource.getInt(R.integer.account_min_length)) {
-                        tilAccount.setError(Helpers.resource.getString(R.string.min_length, "", Helpers.resource.getString(R.string.account_name), Helpers.resource.getInt(R.integer.account_min_length)));
-
-                        Helpers.loading.hide();
-                        return;
-                    } else {
-                        tilAccount.setErrorEnabled(false);
-                    }
-                }
-
-                if (etPassword.getText().toString() == null || etPassword.getText().toString().length() == 0) {
-                    tilPassword.setError(Helpers.resource.getString(R.string.not_null, "", Helpers.resource.getString(R.string.input_password)));
-
-                    Helpers.loading.hide();
-                    return;
-                } else {
-                    if (password.length() > Helpers.resource.getInt(R.integer.password_max_length)) {
-                        tilPassword.setError(Helpers.resource.getString(R.string.max_length, "", Helpers.resource.getString(R.string.input_password)));
-
-                        Helpers.loading.hide();
-                        return;
-                    } else if (password.length() < Helpers.resource.getInt(R.integer.password_min_length)) {
-                        tilPassword.setError(Helpers.resource.getString(R.string.min_length, "", Helpers.resource.getString(R.string.input_password)));
-
-                        Helpers.loading.hide();
-                        return;
-                    } else {
-                        tilPassword.setErrorEnabled(false);
-                    }
-                }
-
-                passwordModel.setName(name);
-                passwordModel.setAccount(account);
-                passwordModel.setPassword(password);
-                passwordModel.setColor(colorPickerComponent.getColor());
-                passwordModel.setTintColor(colorPickerComponent.getTintColor());
-
-                passwordModel.encrypt();
-
-                ResultObject update = passwordModel.update();
-
-                passwordModel.decrypt();
-
-                if (update.isSuccess()) {
-                    Global.LIST_PASSWORDS.set(Global.CURRENT_PASSWORD_MODEL_INDEX, passwordModel);
-                    Helpers.list.findAndUpdate(passwordModel);
-                    Global.LIST_PASSWORDS_SOLID.set(Helpers.list.findIndexFromSolid(passwordModel), passwordModel);
-                    Global.PASSWORD_ADAPTER.notifyDataSetChanged();
-                    Global.TAB_LAYOUT.getTabAt(Config.TAB_PASSWORD_INDEX).setText(passwordModel.getName());
-                    Global.TAB_LAYOUT.getTabAt(Config.TAB_PASSWORD_INDEX).setContentDescription(passwordModel.getName());
-
-                    SnackbarComponent snackbarComponent = new SnackbarComponent(viewRoot, R.string.success_update_password, R.string.action_ok);
-                    snackbarComponent.show();
-                } else {
-                    SnackbarComponent snackbarComponent = new SnackbarComponent(viewRoot, R.string.failure_update_password, R.string.action_ok);
-                    snackbarComponent.show();
-                }
-
-                Helpers.system.hideSoftKeyboard();
+            if (etName.getText().toString() == null || etName.getText().toString().length() == 0) {
+                tilName.setError(Helpers.resource.getString(R.string.not_null, "", Helpers.resource.getString(R.string.input_name)));
 
                 Helpers.loading.hide();
+                return;
+            } else {
+                if (name.length() > Helpers.resource.getInt(R.integer.name_max_length)) {
+                    tilName.setError(Helpers.resource.getString(R.string.max_length, "", Helpers.resource.getString(R.string.input_name), Helpers.resource.getInt(R.integer.name_max_length)));
+
+                    Helpers.loading.hide();
+                    return;
+                } else if (name.length() < Helpers.resource.getInt(R.integer.name_min_length)) {
+                    tilName.setError(Helpers.resource.getString(R.string.min_length, "", Helpers.resource.getString(R.string.input_name), Helpers.resource.getInt(R.integer.name_min_length)));
+
+                    Helpers.loading.hide();
+                    return;
+                } else if (!oldName.equals(name) && passwordModel.checkDuplicate(name)) {
+                    tilName.setError(Helpers.resource.getString(R.string.already_used, "", name));
+
+                    Helpers.loading.hide();
+                    return;
+                } else {
+                    tilName.setErrorEnabled(false);
+                }
             }
+
+            if (etAccount.getText().toString() == null || etAccount.getText().toString().length() == 0) {
+                tilAccount.setError(Helpers.resource.getString(R.string.not_null, "", Helpers.resource.getString(R.string.input_account)));
+
+                Helpers.loading.hide();
+                return;
+            } else {
+                if (name.length() > Helpers.resource.getInt(R.integer.account_max_length)) {
+                    tilAccount.setError(Helpers.resource.getString(R.string.max_length, "", Helpers.resource.getString(R.string.account_name), Helpers.resource.getInt(R.integer.account_max_length)));
+
+                    Helpers.loading.hide();
+                    return;
+                } else if (name.length() < Helpers.resource.getInt(R.integer.account_min_length)) {
+                    tilAccount.setError(Helpers.resource.getString(R.string.min_length, "", Helpers.resource.getString(R.string.account_name), Helpers.resource.getInt(R.integer.account_min_length)));
+
+                    Helpers.loading.hide();
+                    return;
+                } else {
+                    tilAccount.setErrorEnabled(false);
+                }
+            }
+
+            if (etPassword.getText().toString() == null || etPassword.getText().toString().length() == 0) {
+                tilPassword.setError(Helpers.resource.getString(R.string.not_null, "", Helpers.resource.getString(R.string.input_password)));
+
+                Helpers.loading.hide();
+                return;
+            } else {
+                if (password.length() > Helpers.resource.getInt(R.integer.password_max_length)) {
+                    tilPassword.setError(Helpers.resource.getString(R.string.max_length, "", Helpers.resource.getString(R.string.input_password)));
+
+                    Helpers.loading.hide();
+                    return;
+                } else if (password.length() < Helpers.resource.getInt(R.integer.password_min_length)) {
+                    tilPassword.setError(Helpers.resource.getString(R.string.min_length, "", Helpers.resource.getString(R.string.input_password)));
+
+                    Helpers.loading.hide();
+                    return;
+                } else {
+                    tilPassword.setErrorEnabled(false);
+                }
+            }
+
+            passwordModel.setName(name);
+            passwordModel.setAccount(account);
+            passwordModel.setPassword(password);
+            passwordModel.setColor(colorPickerComponent.getColor());
+            passwordModel.setTintColor(colorPickerComponent.getTintColor());
+            passwordModel.setCategoryID(category);
+            passwordModel.encrypt();
+
+            ResultObject update = passwordModel.update();
+
+            passwordModel.decrypt();
+
+            if (update.isSuccess()) {
+                Global.LIST_PASSWORDS.set(Global.CURRENT_PASSWORD_MODEL_INDEX, passwordModel);
+                Helpers.list.findAndUpdate(passwordModel);
+                Global.LIST_PASSWORDS_SOLID.set(Helpers.list.findIndexFromSolid(passwordModel), passwordModel);
+                Global.PASSWORD_ADAPTER.notifyDataSetChanged();
+                Global.TAB_LAYOUT.getTabAt(Config.TAB_PASSWORD_INDEX).setText(passwordModel.getName());
+                Global.TAB_LAYOUT.getTabAt(Config.TAB_PASSWORD_INDEX).setContentDescription(passwordModel.getName());
+
+                SnackbarComponent snackbarComponent = new SnackbarComponent(viewRoot, R.string.success_update_password, R.string.action_ok);
+                snackbarComponent.show();
+
+                Global.PAGE_HOME.filter("");
+            } else {
+                SnackbarComponent snackbarComponent = new SnackbarComponent(viewRoot, R.string.failure_update_password, R.string.action_ok);
+                snackbarComponent.show();
+            }
+
+            Helpers.system.hideSoftKeyboard();
+
+            Helpers.loading.hide();
         });
 
         btnClipboard.setOnClickListener(v -> {

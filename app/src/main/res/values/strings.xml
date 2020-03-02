@@ -98,4 +98,27 @@
     <string name="mail_subject">Bize Yazın - Pocket Password</string>
     <string name="mail_chooser">Bir Mail Uygulaması Seçin :</string>
     <string name="button_send_error_log">Hata Raporlarını Gönder</string>
+    <string name="failure_load_category_list">Kategoriler yüklenemedi, uygulamayı yeniden açmayı deneyin</string>
+    <string name="category_social_media">Sosyal Medya</string>
+    <string name="category_bank">Banka</string>
+    <string name="category_mail">E - Posta</string>
+    <string name="category_server">Sunucu</string>
+    <string name="category_app">Uygulama</string>
+    <string name="category_computer">Bilgisayar</string>
+    <string name="category_service">Servisler</string>
+    <string name="category_other">Diğerleri</string>
+    <string name="select_category">Bir kategori seçiniz</string>
+
+    <string name="select_category_cancel">Vazgeç</string>
+
+    <string name="category_all">Hepsi</string>
+
+    <string name="hint_category">Kategori</string>
+    <string name="input_category">Şifrenin dahil olacağı kategori</string>
+    <string name="button_delete_password">Şifreyi Sil</string>
+    <string name="dialog_confirm">Onayla</string>
+    <string name="dialog_delete_password">Şifreyi silmek istediğinize eminmisiniz ?</string>
+    <string name="dialog_delete_password_title">Şifre Silme</string>
+    <string name="dialog_cancel">İptal</string>
+    <string name="success_delete_password">Şifre başarıyla silindi</string>
 </resources>
