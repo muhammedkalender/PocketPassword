@@ -498,5 +498,7 @@ public class MainActivity extends AppCompatActivity {
     20 - Ayarlar Hakkında Info ?
     21 - Dilleri kontrol et
     23 - Modellerdede insert vs.. çok sağlıklı değil kafada çizip gir
-    24 - Boş uyarısı ( Eventi olamyan iemle öğre yok felan )
+    24 - Boş uyarısı ( Eventi olamyan iemle öğre yok felan tarzı boş item ekleme )
+    25 - Dialogları güncelle tasarımı tuhaf şuan -- https://developer.android.com/guide/topics/ui/dialogs
+
  */
