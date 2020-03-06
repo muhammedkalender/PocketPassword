@@ -137,7 +137,7 @@ public class CategoryModel extends ModelAbstract implements ModelInterface {
 
             List<CategoryModel> categories = new ArrayList<>();
 
-            categories.add(new CategoryModel(0, Helpers.resource.getString(R.string.category_all),-1,-1, true)); //todo
+            categories.add(new CategoryModel(0, Helpers.resource.getString(R.string.category_all),-1,-1, true));
 
             while (cursor.moveToNext()) {
                 categories.add(new CategoryModel(
@@ -178,7 +178,6 @@ public class CategoryModel extends ModelAbstract implements ModelInterface {
     public ResultObject validation() {
         return null;
     }
-
 
     public void setColor(int color) {
         this.color = color;

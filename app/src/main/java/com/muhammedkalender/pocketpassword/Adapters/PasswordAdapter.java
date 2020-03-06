@@ -51,7 +51,7 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordListHolder> {
 
         int tintColor = ColorConstants.colorItem[position % ColorConstants.colorItem.length].getTint();
 
-        PasswordModel passwordModel = Global.LIST_PASSWORDS_SOLID.get(Helpers.list.findIndexFromTempIndex(position));
+        final PasswordModel passwordModel = Global.LIST_PASSWORDS_SOLID.get(Helpers.list.findIndexFromTempIndex(position));
 
         if(!passwordModel.isDecrypted()){
             passwordModel.decrypt();
@@ -64,16 +64,17 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordListHolder> {
             public void onClick(View v) {
                 Global.LOCK_PASSWORD_PAGE = false;
 
-                Helpers.logger.info(InfoCodeConstants.PASSWORD_HOLDER_CLICK, String.format("Index : %1$d", position));
+                Helpers.logger.info(InfoCodeConstants.PASSWORD_HOLDER_CLICK, String.format("Index : %1$d", Helpers.list.findTempIndexFromId(passwordModel.getId())));
 
                 Helpers.loading.show();
 
-                Global.CURRENT_PASSWORD_MODEL_INDEX = position;
+                Global.CURRENT_PASSWORD_MODEL_INDEX = Helpers.list.findTempIndexFromId(passwordModel.getId());
+                Global.SELECTED_PASSWORD_ID = passwordModel.getId();
 
                 Helpers.logger.info(String.format("Şuan %1$d adet sayfa var", Global.SECTION_PAGER_ADAPTER.getCount()));
 
                 if(Global.SECTION_PAGER_ADAPTER.getCount() < Config.TAB_HOME_INDEX + 2) {
-                    Global.SECTION_PAGER_ADAPTER.add(Global.LIST_PASSWORDS.get(Global.CURRENT_PASSWORD_MODEL_INDEX).getName());
+                    Global.SECTION_PAGER_ADAPTER.add(Helpers.list.findBySelectedId().getName());
                     Global.SECTION_PAGER_ADAPTER.notifyDataSetChanged();
                 }
 

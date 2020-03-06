@@ -9,6 +9,8 @@ public abstract class ModelAbstract<T> implements ModelInterface {
     protected String table = null;
     protected String prefix = null;
 
+    protected int id;
+
     protected ColumnObject[] columns = new ColumnObject[]{};
 
     public ResultObject delete(int id) {
@@ -84,5 +86,10 @@ public abstract class ModelAbstract<T> implements ModelInterface {
     @Override
     public ResultObject insert(String query) {
         return Helpers.database.insert(query);
+    }
+
+    @Override
+    public ResultObject delete() {
+        return delete(this.id);
     }
 }

@@ -48,7 +48,7 @@ public class HomePage extends PageAbstract implements PageInterface {
         if (isInitialized()) {
             return;
         }
-
+Helpers.logger.info("Geldi gene");
         try {
             this.viewRoot = viewRoot;
 
@@ -81,6 +81,7 @@ public class HomePage extends PageAbstract implements PageInterface {
             }
 
             tvCategory.setText(listCategory.get(0).getName());
+            Helpers.logger.info("Step gene");
 
             View.OnClickListener clickListener = v -> {
                     AlertDialog.Builder builderSingle = new AlertDialog.Builder(Global.CONTEXT);
@@ -88,8 +89,6 @@ public class HomePage extends PageAbstract implements PageInterface {
                     builderSingle.setTitle(R.string.select_category);
 
                     builderSingle.setSingleChoiceItems(Global.ADAPTER_CATEGORY, Global.SELECTED_CATEGORY_INDEX, (dialog, which) -> {
-                        //todo seçildinm iyapılacak filtreleme
-                        //todo all of them ekle<
                         dialog.dismiss();
 
                         Global.SELECTED_CATEGORY = Global.LIST_CATEGORY.get(which).getId();
@@ -128,13 +127,15 @@ public class HomePage extends PageAbstract implements PageInterface {
 
             Global.PASSWORD_ADAPTER = new PasswordAdapter(Global.CONTEXT);
             rvPasswordList.setAdapter(Global.PASSWORD_ADAPTER);
-
+Helpers.logger.info("azzzzz");
             this.initialized = true;
 
             PasswordModel passwordModel = new PasswordModel();
             List<PasswordModel> list = passwordModel.selectActive();
 
+
             Global.LIST_PASSWORDS.addAll(list);
+            Helpers.logger.info("Ekledim");
             Global.LIST_PASSWORDS_SOLID.addAll(list);
 
             Helpers.logger.info(String.format("Listeler hazırlandı, Listede %1$d geçicide %2$d adet, kalıcıda %3$d adet kayıt var",list.size(),  Global.LIST_PASSWORDS.size(), Global.LIST_PASSWORDS_SOLID.size()));
@@ -149,6 +150,8 @@ public class HomePage extends PageAbstract implements PageInterface {
         new Thread(() -> {
             Helpers.loading.show();
 
+            Helpers.logger.info("asda");
+
             String _keyword = keyword;
 
             Helpers.logger.info(_keyword + " Arandı");
@@ -160,7 +163,7 @@ public class HomePage extends PageAbstract implements PageInterface {
             List<PasswordModel> tempPasswords = new ArrayList<>();
 
             for(int i = 0; i < Global.LIST_PASSWORDS_SOLID.size(); i++){
-                if(Global.LIST_PASSWORDS_SOLID.get(i).getName().toLowerCase().contains(_keyword.toLowerCase())){
+                if(_keyword.equals("") || Global.LIST_PASSWORDS_SOLID.get(i).getName().toLowerCase().contains(_keyword.toLowerCase())){
                     if(Global.SELECTED_CATEGORY != 0){
                         if(Global.SELECTED_CATEGORY != Global.LIST_PASSWORDS_SOLID.get(i).getCategoryID()){
                             continue;
