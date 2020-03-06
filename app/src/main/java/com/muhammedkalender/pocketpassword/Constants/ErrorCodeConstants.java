@@ -137,7 +137,8 @@ public class ErrorCodeConstants {
     //region Settings
 
     public static final int
-            SETTINGS_SEND_ERROR_LOG = 6500;
+            SETTINGS_SEND_ERROR_LOG = 6500,
+            SETTINGS_CHANGE_PASSWORD = 6051;
 
     //endregion
 }

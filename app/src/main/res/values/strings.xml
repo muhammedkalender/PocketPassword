@@ -121,4 +121,8 @@
     <string name="dialog_delete_password_title">Şifre Silme</string>
     <string name="dialog_cancel">İptal</string>
     <string name="success_delete_password">Şifre başarıyla silindi</string>
+    <string name="button_change_password">ŞİFREYİ GÜNCELLE</string>
+    <string name="hint_password_change_edit">Yeni Şifreniz</string>
+    <string name="input_password_rchange_edit">Bundan sonra kullanmak istediğiniz şifreniz</string>
+    <string name="hint_password_change_repeat_edit">Yeni şifrenizin tekrarı</string>
 </resources>
