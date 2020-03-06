@@ -22,4 +22,5 @@ public interface ModelInterface<T> {
     public ResultObject delete(int id);
     public ResultObject update(T model);
     public ResultObject validation();
+    public ResultObject delete();
 }

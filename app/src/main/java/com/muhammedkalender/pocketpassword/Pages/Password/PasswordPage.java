@@ -89,7 +89,7 @@ public class PasswordPage extends PageAbstract implements PageInterface {
         this.etCategory = this.viewRoot.findViewById(R.id.etCategory);
         this.btnDeletePassword = this.viewRoot.findViewById(R.id.btnDeletePassword);
 
-        final PasswordModel passwordModel = Helpers.list.findByGlobal();
+        final PasswordModel passwordModel = Helpers.list.findBySelectedId();
 
         Helpers.logger.info(InfoCodeConstants.PASSWORD_FILL_VIEW, passwordModel.getName());
 
@@ -98,11 +98,11 @@ public class PasswordPage extends PageAbstract implements PageInterface {
         colorPickerComponent.fillLayout(viewRoot.findViewById(R.id.llColors));
 
         CategoryModel categoryModel = new CategoryModel();
-        listCategory =  categoryModel.selectActive();
+        listCategory = categoryModel.selectActive();
         arrayAdapter = new ArrayAdapter<>(Global.CONTEXT, android.R.layout.select_dialog_singlechoice);
 
-        for(int i = 0; i < listCategory.size();i++){
-            if(listCategory.get(i).getId() == passwordModel.getCategoryID()){
+        for (int i = 0; i < listCategory.size(); i++) {
+            if (listCategory.get(i).getId() == passwordModel.getCategoryID()) {
                 selectedCategoryIndex = i;
                 selectedCategoryId = passwordModel.getCategoryID();
                 etCategory.setText(listCategory.get(selectedCategoryIndex).getName());
@@ -119,8 +119,6 @@ public class PasswordPage extends PageAbstract implements PageInterface {
             builderSingle.setTitle(R.string.select_category);
 
             builderSingle.setSingleChoiceItems(arrayAdapter, selectedCategoryIndex, (dialog, which) -> {
-                //todo seçildinm iyapılacak filtreleme
-                //todo all of them ekle<
                 dialog.dismiss();
 
                 selectedCategoryId = listCategory.get(which).getId();
@@ -149,25 +147,30 @@ public class PasswordPage extends PageAbstract implements PageInterface {
 //                passwordModel.decrypt();
 //
 //                if (update.isSuccess()) {
-                Helpers.list.findAndDelete(passwordModel);
-                    Global.LIST_PASSWORDS.remove(Global.CURRENT_PASSWORD_MODEL_INDEX);
-                    Global.PASSWORD_ADAPTER.notifyDataSetChanged();
-                    Global.TAB_LAYOUT.removeTabAt(Config.TAB_PASSWORD_INDEX);
+                Helpers.list.findAndDeleteBySelectedId();
+                Helpers.list.findAndDeleteBySelectedIdFromTempList();
 
+                Global.PASSWORD_ADAPTER.notifyDataSetChanged();
 
-                    SnackbarComponent snackbarComponent = new SnackbarComponent(viewRoot, R.string.success_delete_password, R.string.action_ok);
-                    snackbarComponent.show();
+                Global.TAB_LAYOUT.removeTabAt(Config.TAB_PASSWORD_INDEX);
 
-                    Global.PAGE_HOME.filter("");
+                SnackbarComponent snackbarComponent = new SnackbarComponent(viewRoot, R.string.success_delete_password, R.string.action_ok);
+                snackbarComponent.show();
 
-                    Global.PAGE_HOME = null;
+               // Global.PAGE_HOME.filter("");
+
+                //Global.PAGE_HOME = null;
 //                } else {
 //                    SnackbarComponent snackbarComponent = new SnackbarComponent(viewRoot, R.string.failure_update_password, R.string.action_ok);
 //                    snackbarComponent.show();
 //                }
 
+                Global.SECTION_PAGER_ADAPTER.delete(Config.TAB_PASSWORD_INDEX);
+                Global.SECTION_PAGER_ADAPTER.notifyDataSetChanged();
 
-                Helpers.logger.info(passwordModel.getId()+"---");
+                Global.PAGE_HOME.filter("");
+
+                passwordModel.delete();
 
                 dialog.dismiss();
             });
@@ -206,8 +209,8 @@ public class PasswordPage extends PageAbstract implements PageInterface {
 
         this.colorPickerComponent.refresh(passwordModel.getColor());
 
-        for(int i = 0; i < listCategory.size();i++){
-            if(listCategory.get(i).getId() == passwordModel.getCategoryID()){
+        for (int i = 0; i < listCategory.size(); i++) {
+            if (listCategory.get(i).getId() == passwordModel.getCategoryID()) {
                 selectedCategoryIndex = i;
                 selectedCategoryId = passwordModel.getCategoryID();
                 etCategory.setText(listCategory.get(selectedCategoryIndex).getName());

@@ -57,7 +57,7 @@ public class NewPasswordPage extends PageAbstract implements PageInterface {
 
     @Override
     public void initialize(View viewRoot) {
-        if(isInitialized()){
+        if (isInitialized()) {
             selectedCategoryId = 0;
             selectedCategoryIndex = 0;
             etCategory.setText(listCategory.get(0).getName());
@@ -77,12 +77,12 @@ public class NewPasswordPage extends PageAbstract implements PageInterface {
         this.btnAdd = this.viewRoot.findViewById(R.id.btnAdd);
 
         CategoryModel categoryModel = new CategoryModel();
-        listCategory =  categoryModel.selectActive();
+        listCategory = categoryModel.selectActive();
         arrayAdapter = new ArrayAdapter<>(Global.CONTEXT, android.R.layout.select_dialog_singlechoice);
 
         listCategory.remove(0); //Remove All Of Them
 
-        for(CategoryModel category : listCategory){
+        for (CategoryModel category : listCategory) {
             arrayAdapter.add(category.getName());
         }
 
@@ -111,8 +111,6 @@ public class NewPasswordPage extends PageAbstract implements PageInterface {
             builderSingle.setTitle(R.string.select_category);
 
             builderSingle.setSingleChoiceItems(arrayAdapter, selectedCategoryIndex, (dialog, which) -> {
-                //todo seçildinm iyapılacak filtreleme
-                //todo all of them ekle<
                 dialog.dismiss();
 
                 selectedCategoryId = listCategory.get(which).getId();
@@ -129,7 +127,6 @@ public class NewPasswordPage extends PageAbstract implements PageInterface {
         this.etCategory.setOnClickListener(v -> {
             this.tilCategory.callOnClick();
         });
-
 
 
         final PasswordModel passwordModel = new PasswordModel();

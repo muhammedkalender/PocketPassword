@@ -103,6 +103,9 @@ public class Global {
 
     public static String PASSWORD = null;
 
-    public static int SELECTED_CATEGORY = 1;
+    public static int SELECTED_CATEGORY = 0;
     public static int SELECTED_CATEGORY_INDEX = 0;
+
+
+    public static int SELECTED_PASSWORD_ID = -1;
 }

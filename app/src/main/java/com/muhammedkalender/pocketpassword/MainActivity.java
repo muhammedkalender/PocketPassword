@@ -244,6 +244,9 @@ public class MainActivity extends AppCompatActivity {
             tilMainPassword.setHelperText(Helpers.resource.getString(R.string.input_login_password));
             tilMainPassword.setHint(Helpers.resource.getString(R.string.hint_password_edit));
 
+
+            etMainPassword.setText("123456aA_");
+
             findViewById(R.id.btnLogin).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -492,7 +495,6 @@ public class MainActivity extends AppCompatActivity {
     11 - İmport | Şifreyi sor çöz, dbye import et
     15 - Parmak İzi
     16 - Şifre uygulaması ( siteye girdiğinde buraya soracak felan )
-    17 - Silme :)
     18 - "." tarzı karakterleri ekle regexp ye
     19 - Hata mesajları - kontrolleri
     20 - Ayarlar Hakkında Info ?
@@ -500,5 +502,9 @@ public class MainActivity extends AppCompatActivity {
     23 - Modellerdede insert vs.. çok sağlıklı değil kafada çizip gir
     24 - Boş uyarısı ( Eventi olamyan iemle öğre yok felan tarzı boş item ekleme )
     25 - Dialogları güncelle tasarımı tuhaf şuan -- https://developer.android.com/guide/topics/ui/dialogs
+    26 - ReGİSTERDE OTOMATİK inputtan geçmiyor. ( Bir sonraki inputa geçmiyor klavye )
+    27 - Geri gelip uygulamayı açınca sapıtıyor ( kendini düzğün kapatmıyor kapat yada ona göre düzenle )(
+    28 - Şifre Değiştirme ?
+    29 - Renkte varsayılanı sıfırlama ( ekleidkten sorna felan )
 
  */

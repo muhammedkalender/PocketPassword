@@ -19,8 +19,6 @@ import java.util.List;
 public class PasswordModel extends ModelAbstract implements ModelInterface {
     //region Variables
 
-    private int id;
-
     private String name;
     private String account;
     private String password;
@@ -65,7 +63,7 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
     public PasswordModel(int id, String name, String account, String password, int color, int tintColor) {
         initTable();
 
-        this.id = id;
+        super.id = id;
         this.name = name;
         this.account = account;
         this.password = password;
@@ -76,7 +74,7 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
     public PasswordModel(int id, String name, String account, String password, int color, int tintColor, int categoryID) {
         initTable();
 
-        this.id = id;
+        super.id = id;
         this.name = name;
         this.account = account;
         this.password = password;
@@ -88,7 +86,7 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
     public PasswordModel(int id, String name, String account, String password, int color, int tintColor, boolean active) {
         initTable();
 
-        this.id = id;
+        super.id = id;
         this.name = name;
         this.account = account;
         this.password = password;
@@ -100,7 +98,7 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
     public PasswordModel(int id, String name, String account, String password, int color, int tintColor, int categoryID, boolean active) {
         initTable();
 
-        this.id = id;
+        super.id = id;
         this.name = name;
         this.account = account;
         this.password = password;
@@ -262,7 +260,7 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
                 "UPDATE %1$s SET %2$s_name = '%4$s', %2$s_account= '%5$s', %2$s_password = '%6$s', %2$s_color = '%7$s', %2$s_tint_color = '%9$s', %2$s_active = %8$s, %2$s_category = %10$d WHERE %2$s_id = %3$s",
                 this.table,
                 this.prefix,
-                this.id,
+                super.id,
                 this.name,
                 this.account,
                 this.password,
@@ -355,7 +353,7 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
     //region Setters
 
     public void setId(int id) {
-        this.id = id;
+        super.id = id;
     }
 
     public void setDecrypted(boolean decrypted) {

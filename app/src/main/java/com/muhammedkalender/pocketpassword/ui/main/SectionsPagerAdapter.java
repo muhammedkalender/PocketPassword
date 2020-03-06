@@ -32,6 +32,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         TAB_TITLES.add(Helpers.resource.getString(R.string.tab_add_password));
         TAB_TITLES.add(Helpers.resource.getString(R.string.tab_list_password));
     }
+
     @Override
     public Fragment getItem(int position) {
         // getItem is called to instantiate the fragment for the given page.
@@ -49,12 +50,25 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount() {
         // Show 2 total pages.
-        return  TAB_TITLES.size();
-
+        return TAB_TITLES.size();
     }
 
-    public void add(String title){
+    public void add(String title) {
         TAB_TITLES.add(title);
+    }
+
+    public void delete(int index) {
+        TAB_TITLES.remove(index);
+    }
+
+    //https://inneka.com/programming/android/add-delete-pages-to-viewpager-dynamically/
+    @Override
+    public int getItemPosition(Object object) {
+        if (TAB_TITLES.contains(object)) {
+            return TAB_TITLES.indexOf(object);
+        } else {
+            return POSITION_NONE;
+        }
     }
 
 }
