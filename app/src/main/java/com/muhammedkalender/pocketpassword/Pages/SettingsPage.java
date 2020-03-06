@@ -20,6 +20,7 @@ import com.muhammedkalender.pocketpassword.Constants.ErrorCodeConstants;
 import com.muhammedkalender.pocketpassword.Global;
 import com.muhammedkalender.pocketpassword.Globals.Config;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
+import com.muhammedkalender.pocketpassword.Helpers.AESHelper;
 import com.muhammedkalender.pocketpassword.Helpers.CryptHelper;
 import com.muhammedkalender.pocketpassword.Interfaces.PageInterface;
 import com.muhammedkalender.pocketpassword.Objects.ColorObject;
@@ -30,6 +31,8 @@ import com.muhammedkalender.pocketpassword.ui.main.SectionsPagerAdapter;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+
+import javax.crypto.spec.SecretKeySpec;
 
 public class SettingsPage extends PageAbstract implements PageInterface {
     private SwitchMaterial switchOnlyLogin, switchHideView, switchDisableErrorLog, switchDisableInfoLog;
@@ -170,18 +173,18 @@ public class SettingsPage extends PageAbstract implements PageInterface {
         //region Send Error Log
 
         this.viewRoot.findViewById(R.id.btnSendErrorLog).setOnClickListener(v -> {
-            try{
+            try {
                 Helpers.loading.show();
 
                 File file = HyperLog.getDeviceLogsInFile(Global.CONTEXT);
 
                 StringBuilder stringBuilder = new StringBuilder();
 
-                BufferedReader bufferedReader = new BufferedReader( new FileReader(file));
+                BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
 
                 String line;
 
-                while((line = bufferedReader.readLine()) != null){
+                while ((line = bufferedReader.readLine()) != null) {
                     stringBuilder.append(line);
                 }
 
@@ -197,13 +200,54 @@ public class SettingsPage extends PageAbstract implements PageInterface {
                 Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
 
                 //https://stackoverflow.com/a/9097251
-                intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"email@email.com"}); //todo
+                intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"email@email.com"}); //todo
                 intent.setData(uri);
                 Global.CONTEXT.startActivity(Intent.createChooser(intent, Helpers.resource.getString(R.string.mail_chooser)));
 
                 Helpers.loading.hide();
-            }catch (Exception e){
+            } catch (Exception e) {
                 Helpers.logger.error(ErrorCodeConstants.SETTINGS_SEND_ERROR_LOG, e);
+            }
+        });
+
+        //endregion
+
+        //region Change Password
+
+        this.viewRoot.findViewById(R.id.btnChangePassword).setOnClickListener(v -> {
+            try {
+                CryptHelper cryptHelper = new CryptHelper();
+                cryptHelper.generateKeys();
+
+                Helpers.logger.info(String.valueOf(cryptHelper.keyToString(cryptHelper.getPrivateKey()).getData()));
+                Helpers.logger.info(String.valueOf(cryptHelper.keyToString(cryptHelper.getPublicKey()).getData()));
+
+                AESHelper aesHelper = new AESHelper();
+
+                String secret = "TESTSifre_-_";
+                SecretKeySpec aesSecret = aesHelper.secretToKey(secret); //TODO
+                Helpers.logger.info(String.valueOf(aesHelper.encrypt("aa", secret).getData()));
+
+                String encryptedPrivateKey = (String) aesHelper.encrypt(
+                        ((String) cryptHelper.keyToString(cryptHelper.getPrivateKey()).getData())
+                        , secret).getData();
+
+                String encryptedPublicKey = (String) aesHelper.encrypt(
+                        ((String) cryptHelper.keyToString(cryptHelper.getPublicKey()).getData())
+                        , secret).getData();
+
+                CryptHelper cryptHelperDecoded = new CryptHelper();
+                cryptHelper.setPublicKey((String) aesHelper.decrypt(encryptedPublicKey, secret).getData());
+                cryptHelper.setPrivateKey((String) aesHelper.decrypt(encryptedPrivateKey, secret).getData());
+
+                String data = "oldumu";
+
+                Helpers.logger.info(-1111, cryptHelperDecoded.quickEncrypt(data));
+
+                Helpers.logger.info(-1111, cryptHelperDecoded.quickDecrypt(cryptHelperDecoded.quickEncrypt(data)));
+
+            } catch (Exception e) {
+                Helpers.logger.error(ErrorCodeConstants.SETTINGS_CHANGE_PASSWORD, e);
             }
         });
 
