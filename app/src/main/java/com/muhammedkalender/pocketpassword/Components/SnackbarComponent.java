@@ -9,12 +9,20 @@ import com.muhammedkalender.pocketpassword.Globals.Helpers;
 import com.muhammedkalender.pocketpassword.R;
 
 public class SnackbarComponent {
+    //region UI Components
+
     private View view;
     private String action, message;
     private View.OnClickListener listenerAction;
-    private int duration = Snackbar.LENGTH_LONG;
 
+    //endregion
+
+    //region Variables
+
+    private int duration = Snackbar.LENGTH_LONG;
     private int colorText, colorTextAction, colorBackground;
+
+    //endregion
 
     //region
 

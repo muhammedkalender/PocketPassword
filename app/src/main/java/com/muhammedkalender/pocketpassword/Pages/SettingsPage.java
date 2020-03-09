@@ -42,9 +42,9 @@ import java.util.List;
 import javax.crypto.spec.SecretKeySpec;
 
 public class SettingsPage extends PageAbstract implements PageInterface {
-    //region Variables
+    //region UI Components
 
-    //region Switch Confings
+    //region Switch Configs
 
     private SwitchMaterial switchOnlyLogin, switchHideView, switchDisableErrorLog, switchDisableInfoLog;
 
