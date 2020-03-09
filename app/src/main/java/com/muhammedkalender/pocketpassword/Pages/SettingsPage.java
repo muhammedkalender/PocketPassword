@@ -122,7 +122,7 @@ public class SettingsPage extends PageAbstract implements PageInterface {
 
             Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
             //https://stackoverflow.com/a/9097251
-            intent.putExtra(Intent.EXTRA_EMAIL, new String[]{Helpers.resource.getString(R.string.email_contact)}); //todo
+            intent.putExtra(Intent.EXTRA_EMAIL, new String[]{Helpers.resource.getString(R.string.email_contact)});
             Global.CONTEXT.startActivity(Intent.createChooser(intent, Helpers.resource.getString(R.string.mail_chooser)));
 
             Helpers.loading.hide();
@@ -211,7 +211,7 @@ public class SettingsPage extends PageAbstract implements PageInterface {
                 Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
 
                 //https://stackoverflow.com/a/9097251
-                intent.putExtra(Intent.EXTRA_EMAIL, new String[]{Helpers.resource.getString(R.string.email_log_error)}); //todo
+                intent.putExtra(Intent.EXTRA_EMAIL, new String[]{Helpers.resource.getString(R.string.email_log_error)});
                 intent.setData(uri);
                 Global.CONTEXT.startActivity(Intent.createChooser(intent, Helpers.resource.getString(R.string.mail_chooser)));
 
@@ -225,11 +225,16 @@ public class SettingsPage extends PageAbstract implements PageInterface {
 
         //region Change Password
 
+        //region Viewler Atanıyor
+
         etChangePassword = this.viewRoot.findViewById(R.id.etChangePassword);
         tilChangePassword = this.viewRoot.findViewById(R.id.tilChangePassword);
         etChangePasswordRepeat = this.viewRoot.findViewById(R.id.etChangePasswordRepeat);
         tilChangePasswordRepeat = this.viewRoot.findViewById(R.id.tilChangePasswordRepeat);
 
+        //endregion
+
+        //region Listener
 
         this.viewRoot.findViewById(R.id.btnChangePassword).setOnClickListener(v -> {
             try {
@@ -288,6 +293,8 @@ public class SettingsPage extends PageAbstract implements PageInterface {
 
                 new Thread(() -> {
                     try {
+                        //region Ön Şifrelem Elemanları Ayarlarnıyor
+
                         //Yeni şifreler türetiliyor
                         CryptHelper cryptHelper = new CryptHelper();
                         cryptHelper.generateKeys();
@@ -322,6 +329,10 @@ public class SettingsPage extends PageAbstract implements PageInterface {
                                 ).getData()
                         );
 
+                        //endregion
+
+                        //region Listeler Çıkartılıyor
+
                         //Şifrelerin listesi çekiliyor
                         //Mantık : Şifre listesi > Şifre Decode > Yeni Şifre İle Encode
                         PasswordModel passwordModelHelper = new PasswordModel();
@@ -335,6 +346,10 @@ public class SettingsPage extends PageAbstract implements PageInterface {
                         int errorCount = 0, indexProcess = 0;
                         List<PasswordModel> listFailureModels = new ArrayList<>();
                         boolean[] isProcessed = new boolean[passwordModels.size()];
+
+                        //endregion
+
+                        //region Şifreleme Deneniyor
 
                         for (PasswordModel passwordModel : passwordModels) {
                             //Hesap & Şifre decode ediliyor
@@ -351,11 +366,28 @@ public class SettingsPage extends PageAbstract implements PageInterface {
                             }
                         }
 
+                        //endregion
+
                         //Ön Deoode ve Encode işlemi gibi düşünülebilir
                         //Muhtemelen şimdiki işlem sırasındada hata alınmayacak, önceden denenmiş oldu
                         if (errorCount != 0) {
-                            //todo
+                            //region Ön Denemede Hata Oluştu
+
+                            //Ön denemede sorun oluştu, muhtemelen asıl denemedede sorun oluşacak, işlem iptal ediliyor
+
+                            new AlertDialogComponent()
+                                    .setTitle(R.string.title_failure_change_password)
+                                    .setMessage(R.string.message_failure_change_password__pre_error)
+                                    .show();
+
+                            Helpers.loading.hide();
+
+                            return;
+
+                            //endregion
                         } else {
+                            //region Şifreler güncelleniyor
+
                             //Yeni işlemlerde hata kontrolü yapabilmek için liste ve sayaç sıfırlanıyor
                             listFailureModels.clear();
                             errorCount = 0;
@@ -394,15 +426,18 @@ public class SettingsPage extends PageAbstract implements PageInterface {
                                     errorCount++;
                                     listFailureModels.add(passwordModel);
                                     isProcessed[indexProcess++] = true;
-                                    //todo
                                 } else {
                                     //İlgili modelin işlendiğini işaretliyoruz, hata durumunda geri dönmek için
                                     isProcessed[indexProcess++] = true;
                                 }
                             }
 
+                            //endregion
+
                             if (errorCount == 0) {
                                 //Hata olmadan tüm veriler aktarıldı demek
+
+                                //region region Keyler Ayarlanıyor
 
                                 //Set edilecek dataların yedeği
 
@@ -424,7 +459,6 @@ public class SettingsPage extends PageAbstract implements PageInterface {
                                 );
 
                                 if (!setPrivateKey || !setPublicKey || !setConfirmPassword) {
-                                    //todo
                                     //Yeni şifreler set edilirken sorun oluştu
 
                                     //Tekrar deneniyor
@@ -450,10 +484,15 @@ public class SettingsPage extends PageAbstract implements PageInterface {
                                                 .setMessage(R.string.message_failure_change_password_set_data)
                                                 .show();
 
+                                        Helpers.loading.hide();
+
                                         return;
                                     }
                                 }
 
+                                //endregion
+
+                                //region Yeniden Başlatmaya İhtiyaç Duymamak İçin Değişkenler Güncelleniyor
 
                                 //Global çözücü değiştiriliyor
                                 Helpers.crypt = _cryptHelper;
@@ -475,12 +514,16 @@ public class SettingsPage extends PageAbstract implements PageInterface {
                                 //Filtre yeniden yükleniyor
                                 Global.PAGE_HOME.filter("");
 
+                                //endregion
+
                                 new AlertDialogComponent()
                                         .setTitle(R.string.title_success_change_password)
                                         .setMessage(R.string.message_success_change_password)
                                         .show();
                             } else {
                                 //Hata alındı, dataların silinmesi gerekiyor
+
+                                //region Geri Dönme Deneniyor
 
                                 //Geri dönmedeki hata sayısı
                                 int _errorCount = 0;
@@ -514,6 +557,8 @@ public class SettingsPage extends PageAbstract implements PageInterface {
                                             .setMessage(R.string.message_failure_change_password_and_failure_revert)
                                             .show();
                                 }
+
+                                //endregion
                             }
                         }
 
@@ -521,13 +566,14 @@ public class SettingsPage extends PageAbstract implements PageInterface {
                     } catch (Exception e) {
                         Helpers.logger.error(ErrorCodeConstants.SETTINGS_CHANGE_PASSWORD_ON_THREAD, e);
                     }
-
                 }).start();
 
             } catch (Exception e) {
                 Helpers.logger.error(ErrorCodeConstants.SETTINGS_CHANGE_PASSWORD, e);
             }
         });
+
+        //endregion
 
         //endregion
     }
