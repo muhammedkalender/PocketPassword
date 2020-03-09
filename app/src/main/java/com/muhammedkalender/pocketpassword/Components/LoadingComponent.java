@@ -21,17 +21,27 @@ import java.util.concurrent.CompletableFuture;
 
 //https://stackoverflow.com/a/22879207
 public class LoadingComponent {
+    //region Variables
+
     private RelativeLayout rlLoading;
     private TextView tvLoading;
     private ProgressBar pbLoading;
 
     private String defaultMessage;
 
+    //endregion
+
+    //region Constructors
+
     public LoadingComponent(RelativeLayout rlLoading) {
         this.rlLoading = rlLoading;
         this.tvLoading = rlLoading.findViewById(R.id.tvLoading);
         this.pbLoading = rlLoading.findViewById(R.id.pbLoading);
     }
+
+    //endregion
+
+    //region Primary Methods
 
     public void show() {
         try {
@@ -72,4 +82,6 @@ public class LoadingComponent {
             Helpers.logger.error(ErrorCodeConstants.LOADING_HIDE, e);
         }
     }
+
+    //endregion
 }

@@ -29,10 +29,12 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.hypertrack.hyperlog.HyperLog;
 import com.muhammedkalender.pocketpassword.Abstracts.ModelAbstract;
 import com.muhammedkalender.pocketpassword.Adapters.PasswordAdapter;
+import com.muhammedkalender.pocketpassword.Components.AlertDialogComponent;
 import com.muhammedkalender.pocketpassword.Components.CustomLogMessageFormat;
 import com.muhammedkalender.pocketpassword.Components.LoadingComponent;
 import com.muhammedkalender.pocketpassword.Components.SnackbarComponent;
 import com.muhammedkalender.pocketpassword.Constants.ColorConstants;
+import com.muhammedkalender.pocketpassword.Constants.ConfigKeys;
 import com.muhammedkalender.pocketpassword.Constants.ErrorCodeConstants;
 import com.muhammedkalender.pocketpassword.Globals.Config;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
@@ -168,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void firstOpen() {
         new Thread(() -> {
-            if (!Helpers.config.getBoolean("first_open", true)) {
+            if (!Helpers.config.getBoolean(ConfigKeys.FIRST_OPEN, true)) {
                 runOnUiThread(this::registered);
 
                 return;
@@ -207,8 +209,8 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
-            boolean setPrivateKey = Helpers.config.setString("private_key", String.valueOf(resultPrivateKeyToString.getData()));
-            boolean setPublicKey = Helpers.config.setString("public_key", String.valueOf(resultPublicKeyToString.getData()));
+            boolean setPrivateKey = Helpers.config.setString(ConfigKeys.PRIVATE_KEY, String.valueOf(resultPrivateKeyToString.getData()));
+            boolean setPublicKey = Helpers.config.setString(ConfigKeys.PUBLIC_KEY, String.valueOf(resultPublicKeyToString.getData()));
 
             if (!(setPrivateKey && setPublicKey)) {
                 SnackbarComponent snackbarComponent = new SnackbarComponent(getWindow().getDecorView().getRootView(), R.string.first_open_error, R.string.action_ok);
@@ -221,9 +223,9 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
-            Helpers.config.setBoolean("first_open", false);
+            Helpers.config.setBoolean(ConfigKeys.FIRST_OPEN, false);
 
-            Helpers.config.setString("device_id", Settings.Secure.getString(MainActivity.this.getContentResolver(), Settings.Secure.ANDROID_ID));
+            Helpers.config.setString(ConfigKeys.DEVICE_ID, Settings.Secure.getString(MainActivity.this.getContentResolver(), Settings.Secure.ANDROID_ID));
 
             runOnUiThread(this::registered);
         }).start();
@@ -235,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
         etMainPassword.setText("");
         tilMainPassword.setErrorEnabled(false);
 
-        if (Helpers.config.getBoolean("registered", false)) {
+        if (Helpers.config.getBoolean(ConfigKeys.REGISTER, false)) {
             tilMainPasswordRepeat.setVisibility(View.GONE);
 
             ((MaterialButton) findViewById(R.id.btnLogin)).setText(R.string.button_login);
@@ -244,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
             tilMainPassword.setHelperText(Helpers.resource.getString(R.string.input_login_password));
             tilMainPassword.setHint(Helpers.resource.getString(R.string.hint_password_edit));
 
-
+            //TODO [TEST]
             etMainPassword.setText("123456aA_");
 
             findViewById(R.id.btnLogin).setOnClickListener(new View.OnClickListener() {
@@ -303,13 +305,13 @@ public class MainActivity extends AppCompatActivity {
                     }
 
 
-                    if (Helpers.config.getBoolean("first_open")) {
+                    if (Helpers.config.getBoolean(ConfigKeys.FIRST_OPEN)) {
                         //todo
                     } else {
                         Global.PASSWORD = etMainPassword.getText().toString();
 
-                        String base64PrivateKey = Helpers.config.getString("private_key");
-                        String base64PublicKey = Helpers.config.getString("public_key");
+                        String base64PrivateKey = Helpers.config.getString(ConfigKeys.PRIVATE_KEY);
+                        String base64PublicKey = Helpers.config.getString(ConfigKeys.PUBLIC_KEY);
 
                         Helpers.logger.info(base64PrivateKey);
 
@@ -326,8 +328,8 @@ public class MainActivity extends AppCompatActivity {
                         String encryptedBase64PrivateKey = String.valueOf(resultEncryptBase64PrivateKey.getData());
                         String encryptedBase64PublicKey = String.valueOf(resultEncryptBase64PublicKey.getData());
 
-                        boolean setBase64PrivateKey = Helpers.config.setString("private_key", encryptedBase64PrivateKey);
-                        boolean setBase64PublicKey = Helpers.config.setString("public_key", encryptedBase64PublicKey);
+                        boolean setBase64PrivateKey = Helpers.config.setString(ConfigKeys.PRIVATE_KEY, encryptedBase64PrivateKey);
+                        boolean setBase64PublicKey = Helpers.config.setString(ConfigKeys.PUBLIC_KEY, encryptedBase64PublicKey);
 
                         if (setBase64PrivateKey && setBase64PublicKey) {
                             CryptHelper cryptHelper = new CryptHelper();
@@ -354,9 +356,8 @@ public class MainActivity extends AppCompatActivity {
                                 snackbarComponent.show();
                             }
 
-                            Helpers.logger.info(3, "step");
-                            Helpers.config.setString("confirm_password", (String) resultAESEncrypt.getData());
-                            Helpers.config.setBoolean("registered", true);
+                            Helpers.config.setString(ConfigKeys.CONFIRM_TEXT, (String) resultAESEncrypt.getData());
+                            Helpers.config.setBoolean(ConfigKeys.REGISTER, true);
 
                             Helpers.crypt = cryptHelper;
 
@@ -382,7 +383,7 @@ public class MainActivity extends AppCompatActivity {
                             ResultObject resultInsert = passwordModel.insert();
 
                             if (resultInsert.isSuccess()) {
-                                Helpers.config.setBoolean("first_open", false);
+                                Helpers.config.setBoolean(ConfigKeys.FIRST_OPEN, false);
                             }
 
                             registered();
@@ -402,7 +403,7 @@ public class MainActivity extends AppCompatActivity {
         new Thread(() -> {
             Global.PASSWORD = etMainPassword.getText().toString();
 
-            String confirmString = Helpers.config.getString("confirm_password");
+            String confirmString = Helpers.config.getString(ConfigKeys.CONFIRM_TEXT);
 
             ResultObject resultDecryptConfirmString = Helpers.aes.decrypt(confirmString, Global.PASSWORD);
 
@@ -481,6 +482,11 @@ public class MainActivity extends AppCompatActivity {
                 });
 
                 Helpers.loading.hide();
+
+                new AlertDialogComponent()
+                        .setTitle(R.string.title_success_change_password)
+                        .setMessage(R.string.message_success_change_password)
+                        .show();
             });
         }).start();
     }
@@ -495,7 +501,6 @@ public class MainActivity extends AppCompatActivity {
     11 - İmport | Şifreyi sor çöz, dbye import et
     15 - Parmak İzi
     16 - Şifre uygulaması ( siteye girdiğinde buraya soracak felan )
-    18 - "." tarzı karakterleri ekle regexp ye
     19 - Hata mesajları - kontrolleri
     20 - Ayarlar Hakkında Info ?
     21 - Dilleri kontrol et
@@ -506,7 +511,7 @@ public class MainActivity extends AppCompatActivity {
     27 - Geri gelip uygulamayı açınca sapıtıyor ( kendini düzğün kapatmıyor kapat yada ona göre düzenle )(
     28 - Şifre Değiştirme ?
     29 - Renkte varsayılanı sıfırlama ( ekleidkten sorna felan )
-    30 - Quick Enc, Dec de sorun var keyler ayarlansada patlıyor
     31 - Hata durumunda Eski Datalar Tekrar Update edilsin
+    32 - Yükleniyorda klavyeyi kapat
 
  */

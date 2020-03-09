@@ -125,4 +125,18 @@
     <string name="hint_password_change_edit">Yeni Şifreniz</string>
     <string name="input_password_rchange_edit">Bundan sonra kullanmak istediğiniz şifreniz</string>
     <string name="hint_password_change_repeat_edit">Yeni şifrenizin tekrarı</string>
+    <string name="dialog_negative">İptal</string>
+    <string name="dialog_positive">Onayla</string>
+    <string name="title_success_change_password">Şifre Değiştirildi</string>
+    <string name="message_success_change_password">Şifreniz başarıyla değiştirildi.\nŞart olmasada uygulamayı yeniden başlatmanızı tavsiye ederiz.</string>
+    <string name="title_failure_change_password">Şifre değiştirilemedi</string>
+    <string name="message_failure_change_password_and_revert">Şifre değiştirilemedi.\\nFakat veriler başarıyla geri döndürüldü.</string>
+    <string name="message_failure_change_password_and_failure_revert"><![CDATA[Şifre değiştirilemedi.\\nAyrıca veriler düzğün şekilde geri yüklenemedi.\\n<b>Veri kaybı gerçekleşmiş olabilir.</b>]]></string>
+    <string name="message_failure_change_password_set_data"><![CDATA[Şifre değiştirildi fakat yeni şifre aktarılamadı.\\n<b>Veri kaybı olmuş olabilir.</b>]]></string>
+
+    <string name="email_log_error">error@test.com</string>
+    <string name="email_log_info">info@test.com</string>
+    <string name="email_contact">contact@test.com</string>
+    <string name="email_log_error_subject">Hata Logları</string>
+
 </resources>

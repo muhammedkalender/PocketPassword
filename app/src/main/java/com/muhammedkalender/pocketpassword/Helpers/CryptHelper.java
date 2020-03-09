@@ -5,6 +5,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.muhammedkalender.pocketpassword.Constants.ConfigKeys;
 import com.muhammedkalender.pocketpassword.Constants.ErrorCodeConstants;
 import com.muhammedkalender.pocketpassword.Global;
 import com.muhammedkalender.pocketpassword.Globals.Config;
@@ -197,7 +198,9 @@ public class CryptHelper {
 
             this.publicKey = keyPair.getPublic();
             this.privateKey = keyPair.getPrivate();
-Helpers.logger.info("Keyler Yüklendi");
+
+            Helpers.logger.info("Keyler türetildi");
+
             return new ResultObject()
                     .setData(keyPair);
         } catch (Exception e) {
@@ -209,7 +212,7 @@ Helpers.logger.info("Keyler Yüklendi");
     public String generateValidationText() {
         byte[] bytes = new byte[512];
 
-        byte[] deviceID = Helpers.config.getString("device_id").getBytes(UTF_8);
+        byte[] deviceID = Helpers.config.getString(ConfigKeys.DEVICE_ID).getBytes(UTF_8);
 
         for (int i = 0; i < bytes.length; i++) {
             bytes[i] = deviceID[i % deviceID.length];
@@ -325,8 +328,8 @@ Helpers.logger.info("Keyler Yüklendi");
     }
 
     public boolean loadDefaultKeys() {
-        String privateKey = Helpers.config.getString("private_key");
-        String publicKey = Helpers.config.getString("public_key");
+        String privateKey = Helpers.config.getString(ConfigKeys.PRIVATE_KEY);
+        String publicKey = Helpers.config.getString(ConfigKeys.PUBLIC_KEY);
 
         ResultObject resultDecryptPrivateKey = Helpers.aes.decrypt(privateKey, Global.PASSWORD);
         ResultObject resultDecryptPublicKey = Helpers.aes.decrypt(publicKey, Global.PASSWORD);
