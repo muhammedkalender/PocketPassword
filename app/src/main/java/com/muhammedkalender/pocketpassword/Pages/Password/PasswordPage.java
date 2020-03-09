@@ -38,6 +38,8 @@ import com.muhammedkalender.pocketpassword.R;
 import java.util.List;
 
 public class PasswordPage extends PageAbstract implements PageInterface {
+    //region UI Components
+
     public MaterialButton btnSave = null;
 
     public TextInputLayout tilName = null;
@@ -62,6 +64,10 @@ public class PasswordPage extends PageAbstract implements PageInterface {
 
     private ColorPickerComponent colorPickerComponent;
 
+    //endregion
+
+    //region Variables
+
     public int selectedCategoryIndex = 0;
     public int selectedCategoryId = 0;
 
@@ -69,8 +75,14 @@ public class PasswordPage extends PageAbstract implements PageInterface {
 
     ArrayAdapter arrayAdapter;
 
+    //endregion
+
+    //region Initialize
+
     @Override
     public void initialize(View viewRoot) {
+        //region Declare UI Components
+
         this.viewRoot = viewRoot;
         this.initialized = true;
 
@@ -88,6 +100,8 @@ public class PasswordPage extends PageAbstract implements PageInterface {
         this.tilCategory = this.viewRoot.findViewById(R.id.tilCategory);
         this.etCategory = this.viewRoot.findViewById(R.id.etCategory);
         this.btnDeletePassword = this.viewRoot.findViewById(R.id.btnDeletePassword);
+
+        //endregion
 
         final PasswordModel passwordModel = Helpers.list.findBySelectedId();
 
@@ -141,12 +155,6 @@ public class PasswordPage extends PageAbstract implements PageInterface {
             alert.setTitle(R.string.dialog_delete_password_title);
             alert.setMessage(R.string.dialog_delete_password);
             alert.setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
-
-//                ResultObject update = passwordModel.update();
-//
-//                passwordModel.decrypt();
-//
-//                if (update.isSuccess()) {
                 Helpers.list.findAndDeleteBySelectedId();
                 Helpers.list.findAndDeleteBySelectedIdFromTempList();
 
@@ -156,14 +164,6 @@ public class PasswordPage extends PageAbstract implements PageInterface {
 
                 SnackbarComponent snackbarComponent = new SnackbarComponent(viewRoot, R.string.success_delete_password, R.string.action_ok);
                 snackbarComponent.show();
-
-               // Global.PAGE_HOME.filter("");
-
-                //Global.PAGE_HOME = null;
-//                } else {
-//                    SnackbarComponent snackbarComponent = new SnackbarComponent(viewRoot, R.string.failure_update_password, R.string.action_ok);
-//                    snackbarComponent.show();
-//                }
 
                 Global.SECTION_PAGER_ADAPTER.delete(Config.TAB_PASSWORD_INDEX);
                 Global.SECTION_PAGER_ADAPTER.notifyDataSetChanged();
@@ -183,10 +183,22 @@ public class PasswordPage extends PageAbstract implements PageInterface {
         load(passwordModel);
     }
 
+    //endregion
+
+    //region Getters & Setters
+
+    //region Getters
+
     @Override
     public View getView() {
         return this.viewRoot;
     }
+
+    //endregion
+
+    //endregion
+
+    //region Loaders
 
     public void load(PasswordModel passwordModel) {
 
@@ -368,4 +380,6 @@ public class PasswordPage extends PageAbstract implements PageInterface {
             }
         });
     }
+
+    //endregion
 }

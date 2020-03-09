@@ -157,7 +157,7 @@
         android:clickable="true"
         android:gravity="center"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilPassword"
@@ -187,8 +187,8 @@
             android:layout_width="match_parent"
             android:layout_height="64dp"
             android:backgroundTint="@color/green"
-            android:textColor="@color/tintGreen"
             android:text="@string/button_enter"
+            android:textColor="@color/tintGreen"
             app:icon="@drawable/ic_settings_24dp" />
 
     </LinearLayout>

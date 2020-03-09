@@ -64,6 +64,8 @@ public class LoadingComponent {
             rlLoading.post(() -> {
                 if (rlLoading.getVisibility() != View.VISIBLE) {
                     rlLoading.setVisibility(View.VISIBLE);
+
+                    Helpers.system.hideSoftKeyboard();
                 }
             });
         } catch (Exception e) {
