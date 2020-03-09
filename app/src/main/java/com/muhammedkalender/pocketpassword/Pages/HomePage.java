@@ -34,6 +34,8 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class HomePage extends PageAbstract implements PageInterface {
+    //region Variables
+
     private RecyclerView rvPasswordList;
     private RecyclerView.LayoutManager rvlmPasswordList;
     private TextInputLayout tilSearch;
@@ -42,6 +44,10 @@ public class HomePage extends PageAbstract implements PageInterface {
     private LinearLayout llCategory;
     private TextView tvCategory;
     private ImageView ivCategory;
+
+    //endregion
+
+    //region Initialize
 
     @Override
     public void initialize(View viewRoot) {
@@ -144,6 +150,10 @@ public class HomePage extends PageAbstract implements PageInterface {
         }
     }
 
+    //endregion
+
+    //region Secondary Methods
+
     public void filter(final String keyword){
         new Thread(() -> {
             Helpers.loading.show();
@@ -179,8 +189,18 @@ public class HomePage extends PageAbstract implements PageInterface {
         }).start();
     }
 
+    //endregion
+
+    //region Getters & Setters
+
+    //region Getters
+
     @Override
     public View getView() {
         return this.viewRoot;
     }
+
+    //endregion
+
+    //endregion
 }

@@ -61,6 +61,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.view.Menu;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 
@@ -238,6 +239,7 @@ public class MainActivity extends AppCompatActivity {
         tilMainPassword.setErrorEnabled(false);
 
         if (Helpers.config.getBoolean(ConfigKeys.REGISTER, false)) {
+            etMainPassword.setImeOptions(EditorInfo.IME_ACTION_DONE);
             tilMainPasswordRepeat.setVisibility(View.GONE);
 
             ((MaterialButton) findViewById(R.id.btnLogin)).setText(R.string.button_login);
@@ -258,6 +260,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             ((MaterialButton) findViewById(R.id.btnLogin)).setText(R.string.button_confirm);
 
+            etMainPassword.setImeOptions(EditorInfo.IME_ACTION_NEXT);
             tilMainPassword.setHelperText(Helpers.resource.getString(R.string.input_password_register_edit));
             tilMainPassword.setHint(Helpers.resource.getString(R.string.hint_password_register_edit));
 
@@ -482,11 +485,6 @@ public class MainActivity extends AppCompatActivity {
                 });
 
                 Helpers.loading.hide();
-
-                new AlertDialogComponent()
-                        .setTitle(R.string.title_success_change_password)
-                        .setMessage(R.string.message_success_change_password)
-                        .show();
             });
         }).start();
     }
@@ -507,11 +505,5 @@ public class MainActivity extends AppCompatActivity {
     23 - Modellerdede insert vs.. çok sağlıklı değil kafada çizip gir
     24 - Boş uyarısı ( Eventi olamyan iemle öğre yok felan tarzı boş item ekleme )
     25 - Dialogları güncelle tasarımı tuhaf şuan -- https://developer.android.com/guide/topics/ui/dialogs
-    26 - ReGİSTERDE OTOMATİK inputtan geçmiyor. ( Bir sonraki inputa geçmiyor klavye )
     27 - Geri gelip uygulamayı açınca sapıtıyor ( kendini düzğün kapatmıyor kapat yada ona göre düzenle )(
-    28 - Şifre Değiştirme ?
-    29 - Renkte varsayılanı sıfırlama ( ekleidkten sorna felan )
-    31 - Hata durumunda Eski Datalar Tekrar Update edilsin
-    32 - Yükleniyorda klavyeyi kapat
-
  */

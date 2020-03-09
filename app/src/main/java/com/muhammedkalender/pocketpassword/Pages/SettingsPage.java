@@ -42,19 +42,36 @@ import java.util.List;
 import javax.crypto.spec.SecretKeySpec;
 
 public class SettingsPage extends PageAbstract implements PageInterface {
+    //region Variables
+
+    //region Switch Confings
+
     private SwitchMaterial switchOnlyLogin, switchHideView, switchDisableErrorLog, switchDisableInfoLog;
+
+    //endregion
+
+    //region Login
+
     private LinearLayout llLogin;
+
+    //endregion
+
+    //region Change Password
 
     private TextInputLayout tilChangePassword, tilChangePasswordRepeat;
     private TextInputEditText etChangePassword, etChangePasswordRepeat;
 
+    //endregion
+
+    //endregion
+
+    //region Initialize
 
     @Override
     public void initialize(View viewRoot) {
         Global.PAGE_SETTINGS = this;
 
         this.viewRoot = viewRoot;
-
 
         //region Switches
 
@@ -111,6 +128,8 @@ public class SettingsPage extends PageAbstract implements PageInterface {
 
         //endregion
 
+        //region Contact Us
+
         this.viewRoot.findViewById(R.id.btnContactUS).setOnClickListener(v -> {
             Helpers.loading.show();
 
@@ -131,55 +150,17 @@ public class SettingsPage extends PageAbstract implements PageInterface {
         ((TextInputEditText) this.viewRoot.findViewById(R.id.etPassword)).setText("");
         ((TextInputLayout) this.viewRoot.findViewById(R.id.tilPassword)).setErrorEnabled(false);
 
-        this.viewRoot.findViewById(R.id.btnLogin).setOnClickListener(v -> {
-            Helpers.loading.show();
+        //endregion
 
-            new Thread(() -> {
-                Global.PASSWORD = ((TextInputEditText) viewRoot.findViewById(R.id.etPassword)).getText().toString();
-
-                String confirmString = Helpers.config.getString(ConfigKeys.CONFIRM_TEXT);
-
-                ResultObject resultDecryptConfirmString = Helpers.aes.decrypt(confirmString, Global.PASSWORD);
-
-                if (resultDecryptConfirmString.isFailure()) {
-                    ((Activity) Global.CONTEXT).runOnUiThread(() -> {
-                        ((TextInputEditText) viewRoot.findViewById(R.id.etPassword)).setText(null);
-                        ((TextInputLayout) viewRoot.findViewById(R.id.tilPassword)).setError(Helpers.resource.getString(R.string.password_wrong_1));
-
-                        Helpers.loading.hide();
-                    });
-
-                    return;
-                }
-
-                Helpers.crypt = CryptHelper.buildDefault();
-
-                ResultObject resultDecryptRSAConfirmString = Helpers.crypt.decrypt((String) resultDecryptConfirmString.getData(), Helpers.crypt.getPublicKey());
-
-                ((Activity) Global.CONTEXT).runOnUiThread(() -> {
-                    if (resultDecryptRSAConfirmString.isFailure()) {
-                        ((TextInputEditText) viewRoot.findViewById(R.id.etPassword)).setText(null);
-                        ((TextInputLayout) viewRoot.findViewById(R.id.tilPassword)).setError(Helpers.resource.getString(R.string.password_wrong));
-
-                        Helpers.loading.hide();
-
-                        return;
-                    }
-
-                    viewRoot.findViewById(R.id.llPassword).setVisibility(View.INVISIBLE);
-
-                    Helpers.system.hideSoftKeyboard();
-
-                    Helpers.loading.hide();
-                });
-            }).start();
-        });
+        //region Reset Page
 
         ScrollView svSettings = this.viewRoot.findViewById(R.id.svSettings);
 
         svSettings.post(() -> {
             svSettings.setScrollX(0);
         });
+
+        //endregion
 
         //region Send Error Log
 
@@ -238,8 +219,6 @@ public class SettingsPage extends PageAbstract implements PageInterface {
 
         this.viewRoot.findViewById(R.id.btnChangePassword).setOnClickListener(v -> {
             try {
-                Helpers.loading.show();
-
                 //region Text Validation
 
                 if (etChangePassword.getText() == null || etChangePassword.getText().toString().equals("")) {
@@ -288,6 +267,8 @@ public class SettingsPage extends PageAbstract implements PageInterface {
                     etChangePasswordRepeat.setText("");
                     tilChangePasswordRepeat.setErrorEnabled(false);
                 });
+
+                Helpers.loading.show();
 
                 //endregion
 
@@ -576,10 +557,68 @@ public class SettingsPage extends PageAbstract implements PageInterface {
         //endregion
 
         //endregion
+
+        //region Confirm Permission
+
+        this.viewRoot.findViewById(R.id.btnLogin).setOnClickListener(v -> {
+            Helpers.loading.show();
+
+            new Thread(() -> {
+                Global.PASSWORD = ((TextInputEditText) viewRoot.findViewById(R.id.etPassword)).getText().toString();
+
+                String confirmString = Helpers.config.getString(ConfigKeys.CONFIRM_TEXT);
+
+                ResultObject resultDecryptConfirmString = Helpers.aes.decrypt(confirmString, Global.PASSWORD);
+
+                if (resultDecryptConfirmString.isFailure()) {
+                    ((Activity) Global.CONTEXT).runOnUiThread(() -> {
+                        ((TextInputEditText) viewRoot.findViewById(R.id.etPassword)).setText(null);
+                        ((TextInputLayout) viewRoot.findViewById(R.id.tilPassword)).setError(Helpers.resource.getString(R.string.password_wrong_1));
+
+                        Helpers.loading.hide();
+                    });
+
+                    return;
+                }
+
+                Helpers.crypt = CryptHelper.buildDefault();
+
+                ResultObject resultDecryptRSAConfirmString = Helpers.crypt.decrypt((String) resultDecryptConfirmString.getData(), Helpers.crypt.getPublicKey());
+
+                ((Activity) Global.CONTEXT).runOnUiThread(() -> {
+                    if (resultDecryptRSAConfirmString.isFailure()) {
+                        ((TextInputEditText) viewRoot.findViewById(R.id.etPassword)).setText(null);
+                        ((TextInputLayout) viewRoot.findViewById(R.id.tilPassword)).setError(Helpers.resource.getString(R.string.password_wrong));
+
+                        Helpers.loading.hide();
+
+                        return;
+                    }
+
+                    viewRoot.findViewById(R.id.llPassword).setVisibility(View.INVISIBLE);
+
+                    Helpers.system.hideSoftKeyboard();
+
+                    Helpers.loading.hide();
+                });
+            }).start();
+        });
+
+        //endregion
     }
+
+    //endregion
+
+    //region Getters & Setters
+
+    //region Getters
 
     @Override
     public View getView() {
         return viewRoot;
     }
+
+    //endregion
+
+    //endregion
 }
