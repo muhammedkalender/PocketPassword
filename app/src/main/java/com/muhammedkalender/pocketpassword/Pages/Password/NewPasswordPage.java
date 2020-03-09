@@ -249,6 +249,8 @@ public class NewPasswordPage extends PageAbstract implements PageInterface {
                 selectedCategoryIndex = 0;
                 selectedCategoryId = 0;
                 etCategory.setText(listCategory.get(selectedCategoryIndex).getName());
+
+                Global.PAGE_HOME.filter("");
             } else {
                 Helpers.logger.error(ErrorCodeConstants.MODEL_PASSWORD_INSERT, (Exception) insert.getData());
             }

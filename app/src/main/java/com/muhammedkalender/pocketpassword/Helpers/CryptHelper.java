@@ -114,6 +114,10 @@ public class CryptHelper {
 
     //region Encrypt
 
+    public ResultObject encrypt(@NonNull String pureData){
+        return this.encrypt(pureData, this.getPrivateKey());
+    }
+
     public ResultObject encrypt(@NonNull String pureData, @NonNull String base64PrivateKey) {
         try {
             ResultObject resultGeneratePrivateKeyFromString = privateKeyFromString(base64PrivateKey);
@@ -147,6 +151,10 @@ public class CryptHelper {
     //endregion
 
     //region Decrypt
+
+    public ResultObject decrypt(@NonNull String encryptedData){
+        return this.decrypt(encryptedData);
+    }
 
     public ResultObject decrypt(@NonNull String encryptedData, @NonNull String base64PublicKey) {
         try {
