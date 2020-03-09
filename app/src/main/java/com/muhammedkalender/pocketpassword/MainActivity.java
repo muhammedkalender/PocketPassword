@@ -506,5 +506,7 @@ public class MainActivity extends AppCompatActivity {
     27 - Geri gelip uygulamayı açınca sapıtıyor ( kendini düzğün kapatmıyor kapat yada ona göre düzenle )(
     28 - Şifre Değiştirme ?
     29 - Renkte varsayılanı sıfırlama ( ekleidkten sorna felan )
+    30 - Quick Enc, Dec de sorun var keyler ayarlansada patlıyor
+    31 - Hata durumunda Eski Datalar Tekrar Update edilsin
 
  */

@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.hypertrack.hyperlog.HLCallback;
 import com.hypertrack.hyperlog.HyperLog;
 import com.muhammedkalender.pocketpassword.Abstracts.PageAbstract;
 import com.muhammedkalender.pocketpassword.Constants.ColorConstants;
@@ -22,7 +23,9 @@ import com.muhammedkalender.pocketpassword.Globals.Config;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
 import com.muhammedkalender.pocketpassword.Helpers.AESHelper;
 import com.muhammedkalender.pocketpassword.Helpers.CryptHelper;
+import com.muhammedkalender.pocketpassword.Helpers.ValidationHelper;
 import com.muhammedkalender.pocketpassword.Interfaces.PageInterface;
+import com.muhammedkalender.pocketpassword.Models.PasswordModel;
 import com.muhammedkalender.pocketpassword.Objects.ColorObject;
 import com.muhammedkalender.pocketpassword.Objects.ResultObject;
 import com.muhammedkalender.pocketpassword.R;
@@ -31,12 +34,18 @@ import com.muhammedkalender.pocketpassword.ui.main.SectionsPagerAdapter;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.crypto.spec.SecretKeySpec;
 
 public class SettingsPage extends PageAbstract implements PageInterface {
     private SwitchMaterial switchOnlyLogin, switchHideView, switchDisableErrorLog, switchDisableInfoLog;
     private LinearLayout llLogin;
+
+    private TextInputLayout tilChangePassword, tilChangePasswordRepeat;
+    private TextInputEditText etChangePassword, etChangePasswordRepeat;
+
 
     @Override
     public void initialize(View viewRoot) {
@@ -214,37 +223,227 @@ public class SettingsPage extends PageAbstract implements PageInterface {
 
         //region Change Password
 
+        etChangePassword = this.viewRoot.findViewById(R.id.etChangePassword);
+        tilChangePassword = this.viewRoot.findViewById(R.id.tilChangePassword);
+        etChangePasswordRepeat = this.viewRoot.findViewById(R.id.etChangePasswordRepeat);
+        tilChangePasswordRepeat = this.viewRoot.findViewById(R.id.tilChangePasswordRepeat);
+
+
         this.viewRoot.findViewById(R.id.btnChangePassword).setOnClickListener(v -> {
             try {
-                CryptHelper cryptHelper = new CryptHelper();
-                cryptHelper.generateKeys();
+                Helpers.loading.show();
 
-                Helpers.logger.info(String.valueOf(cryptHelper.keyToString(cryptHelper.getPrivateKey()).getData()));
-                Helpers.logger.info(String.valueOf(cryptHelper.keyToString(cryptHelper.getPublicKey()).getData()));
+                //region Text Validation
 
-                AESHelper aesHelper = new AESHelper();
+                etChangePassword.setText("");
+                tilChangePassword.setErrorEnabled(false);
+                etChangePasswordRepeat.setText("");
+                tilChangePasswordRepeat.setErrorEnabled(false);
 
-                String secret = "TESTSifre_-_";
-                SecretKeySpec aesSecret = aesHelper.secretToKey(secret); //TODO
-                Helpers.logger.info(String.valueOf(aesHelper.encrypt("aa", secret).getData()));
+                if (etChangePassword.getText() == null || etChangePassword.getText().toString().equals("")) {
+                    tilChangePassword.setError(Helpers.resource.getString(R.string.not_null, "", Helpers.resource.getString(R.string.password)));
 
-                String encryptedPrivateKey = (String) aesHelper.encrypt(
-                        ((String) cryptHelper.keyToString(cryptHelper.getPrivateKey()).getData())
-                        , secret).getData();
+                    return;
+                }
 
-                String encryptedPublicKey = (String) aesHelper.encrypt(
-                        ((String) cryptHelper.keyToString(cryptHelper.getPublicKey()).getData())
-                        , secret).getData();
+                final String password = etChangePassword.getText().toString();
 
-                CryptHelper cryptHelperDecoded = new CryptHelper();
-                cryptHelper.setPublicKey((String) aesHelper.decrypt(encryptedPublicKey, secret).getData());
-                cryptHelper.setPrivateKey((String) aesHelper.decrypt(encryptedPrivateKey, secret).getData());
 
-                String data = "oldumu";
+                if (password.length() < 8) {
+                    tilChangePassword.setError(Helpers.resource.getString(R.string.min_length, "", Helpers.resource.getString(R.string.password), 8));
 
-                Helpers.logger.info(-1111, cryptHelperDecoded.quickEncrypt(data));
+                    return;
+                } else if (password.length() > 32) {
+                    tilChangePassword.setError(Helpers.resource.getString(R.string.max_length, "", Helpers.resource.getString(R.string.password), 32));
 
-                Helpers.logger.info(-1111, cryptHelperDecoded.quickDecrypt(cryptHelperDecoded.quickEncrypt(data)));
+                    return;
+                } else if (!Helpers.validation.checkPassword(password, ValidationHelper.PASSWORD_STRONG)) {
+                    tilChangePassword.setError(Helpers.resource.getString(R.string.password_must_strong));
+
+                    return;
+                } else {
+                    tilChangePassword.setErrorEnabled(false);
+
+                    if (etChangePasswordRepeat.getText() == null || etChangePasswordRepeat.getText().toString().equals("")) {
+                        tilChangePasswordRepeat.setError(Helpers.resource.getString(R.string.not_null, "", Helpers.resource.getString(R.string.password)));
+
+                        return;
+                    }
+
+                    String passwordRepeat = etChangePasswordRepeat.getText().toString();
+
+                    if (password.equals(passwordRepeat)) {
+                        tilChangePasswordRepeat.setErrorEnabled(false);
+                    } else {
+                        tilChangePasswordRepeat.setError(Helpers.resource.getString(R.string.password_not_match));
+
+                        return;
+                    }
+                }
+
+                //endregion
+
+                new Thread(() -> {
+                    try {
+                        //Yeni şifreler türetiliyor
+                        CryptHelper cryptHelper = new CryptHelper();
+                        cryptHelper.generateKeys();
+
+                        AESHelper aesHelper = new AESHelper();
+
+                        String encryptedPrivateKey = (String) aesHelper.encrypt(
+                                ((String) cryptHelper.keyToString(cryptHelper.getPrivateKey()).getData())
+                                , password).getData();
+
+                        //cryptHelper.setPrivateKey((String) aesHelper.decrypt(encryptedPrivateKey, password).getData());
+
+                        String encryptedPublicKey = (String) aesHelper.encrypt(
+                                ((String) cryptHelper.keyToString(cryptHelper.getPublicKey()).getData())
+                                , password).getData();
+
+                        //cryptHelper.setPublicKey((String) aesHelper.decrypt(encryptedPublicKey, password).getData());
+
+
+                        //Yeni şifrelerle hazırlanmış şifreleme sınıfı
+                        //Decode - Encode sırasında problem oluşursah ata almak için ayrı sınıf kullanılıyor
+                        CryptHelper _cryptHelper = new CryptHelper();
+                        _cryptHelper.setPublicKey(
+                                (String) aesHelper.decrypt(
+                                        encryptedPublicKey, password
+                                ).getData()
+                        );
+
+                        _cryptHelper.setPrivateKey(
+                                (String) aesHelper.decrypt(
+                                        encryptedPrivateKey, password
+                                ).getData()
+                        );
+
+                        //Şifrelerin listesi çekiliyor
+                        //Mantık : Şifre listesi > Şifre Decode > Yeni Şifre İle Encode
+                        PasswordModel passwordModelHelper = new PasswordModel();
+                        List<PasswordModel> passwordModels = passwordModelHelper.selectActive();
+
+
+                        //Hata oluşursa listeye ve sayaça işliyecek
+                        int errorCount = 0;
+                        List<PasswordModel> listFailureModels = new ArrayList<>();
+
+                        for (PasswordModel passwordModel : passwordModels) {
+                            //Hesap & Şifre decode ediliyor
+                            passwordModel.decrypt();
+
+                            //Hesap & Şifre yeni şifre ile encode ediliyor
+                            ResultObject resultEncryptAccount = _cryptHelper.encrypt(passwordModel.getAccount());
+                            ResultObject resultEncryptPassword = _cryptHelper.encrypt(passwordModel.getPassword());
+
+                            //Hata kontrolü
+                            if (resultEncryptAccount.isFailure() || resultEncryptPassword.isFailure()) {
+                                errorCount++;
+                                listFailureModels.add(passwordModel);
+                            }
+                        }
+
+
+                        //Ön Deoode ve Encode işlemi gibi düşünülebilir
+                        //Muhtemelen şimdiki işlem sırasındada hata alınmayacak, önceden denenmiş oldu
+                        if (errorCount != 0) {
+                            //todo
+                        } else {
+                            //Yeni işlemlerde hata kontrolü yapabilmek için liste ve sayaç sıfırlanıyor
+                            listFailureModels.clear();
+                            errorCount = 0;
+
+                            for (PasswordModel passwordModel : passwordModels) {
+                                //Öncelikle şifreli veriler çözülüyor
+                                passwordModel.decrypt();
+
+                                //Hesap & Şifre şifreleniyor
+                                ResultObject resultEncryptAccount = _cryptHelper.encrypt(passwordModel.getAccount());
+                                ResultObject resultEncryptPassword = _cryptHelper.encrypt(passwordModel.getPassword());
+
+                                if (resultEncryptAccount.isFailure() || resultEncryptPassword.isFailure()) {
+                                    errorCount++;
+                                    listFailureModels.add(passwordModel);
+
+                                    continue;
+                                }
+
+                                //Yeniden şifrelenmiş Hesap & Şifre String olarak alınıyor
+                                String strEncryptedAccount = resultEncryptAccount.getDataAsString();
+                                String strEncryptedPassword = resultEncryptPassword.getDataAsString();
+
+                                //Manuel olarak şifreli veriler girileceğindne modelin çözümü false yapılıyor
+                                passwordModel.setDecrypted(false);
+
+                                //Şifreli veriler modele aktarılıyor
+                                passwordModel.setAccount(strEncryptedAccount);
+                                passwordModel.setPassword(strEncryptedPassword);
+
+                                //Update ile yeni veriler veritabanına aktarılıyor
+                                ResultObject resultUpdate = passwordModel.update();
+
+                                if (resultUpdate.isFailure()) {
+                                    errorCount++;
+                                    listFailureModels.add(passwordModel);
+
+                                    //todo
+                                }
+                            }
+
+                            if (errorCount == 0) {
+                                //Hata olmadan tüm veriler aktarıldı demek
+
+                                //Yeni şifre ayarlara geçiliyor
+                                boolean setPrivateKey = Helpers.config.setString("private_key", encryptedPrivateKey);
+                                boolean setPublicKey = Helpers.config.setString("public_key", encryptedPublicKey);
+
+                                //Şifre onaylama metni ayarlara geçiliyor
+                                boolean setConfirmPassword = Helpers.config.setString("confirm_password",
+                                        (String) aesHelper.encrypt(
+                                                _cryptHelper.quickEncrypt(
+                                                        _cryptHelper.generateValidationText()
+                                                ),
+                                                password).getData()
+                                );
+
+                                if (!setPrivateKey || !setPublicKey || !setConfirmPassword) {
+                                    //todo
+                                }
+
+
+                                //Global çözücü değiştiriliyor
+                                Helpers.crypt = _cryptHelper;
+
+                                PasswordModel passwordModel = new PasswordModel();
+
+                                //Yeni veriler veritabanından çekiliyor
+                                List<PasswordModel> list = passwordModel.selectActive();
+
+                                //Listeler temizlenip yeni veriler çekiliyor
+                                Global.LIST_PASSWORDS.clear();
+                                Global.LIST_PASSWORDS.addAll(list);
+                                Global.LIST_PASSWORDS_SOLID.clear();
+                                Global.LIST_PASSWORDS_SOLID.addAll(list);
+
+                                Helpers.logger.info("Liste temizlendi");
+
+                                //Adaptör uyarılıyor
+                                Global.PASSWORD_ADAPTER.notifyDataSetChanged();
+
+                                //Filtre yeniden yükleniyor
+                                Global.PAGE_HOME.filter("");
+                            } else {
+                                //todo
+                            }
+                        }
+
+                        Helpers.loading.hide();
+                    } catch (Exception e) {
+                        Helpers.logger.error(ErrorCodeConstants.SETTINGS_CHANGE_PASSWORD_ON_THREAD, e);
+                    }
+
+                }).start();
 
             } catch (Exception e) {
                 Helpers.logger.error(ErrorCodeConstants.SETTINGS_CHANGE_PASSWORD, e);

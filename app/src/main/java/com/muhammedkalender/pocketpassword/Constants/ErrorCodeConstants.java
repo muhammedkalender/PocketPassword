@@ -138,7 +138,16 @@ public class ErrorCodeConstants {
 
     public static final int
             SETTINGS_SEND_ERROR_LOG = 6500,
-            SETTINGS_CHANGE_PASSWORD = 6051;
+            SETTINGS_CHANGE_PASSWORD = 6051,
+            SETTINGS_CHANGE_PASSWORD_ON_THREAD = 6052;
+
+    //endregion
+
+    //region Result As X
+
+    public static final int
+            RESULT_AS_STRING = 7000,
+            RESULT_AS_INTEGER = 7001;
 
     //endregion
 }
