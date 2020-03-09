@@ -15,6 +15,7 @@ import com.muhammedkalender.pocketpassword.Objects.ColorObject;
 import com.muhammedkalender.pocketpassword.R;
 
 public class ColorPickerComponent {
+    //region Variables
 
     private ColorPickerItemComponent[] arrColorPickerItemComponent;
     private int selected;
@@ -24,6 +25,10 @@ public class ColorPickerComponent {
     private MaterialButton button;
 
     private View.OnClickListener clickSelect;
+
+    //endregion
+
+    //region Constructors
 
     public ColorPickerComponent(ViewGroup viewGroup, int selected, MaterialButton button) {
         this.selected = selected;
@@ -36,6 +41,10 @@ public class ColorPickerComponent {
 
         initialize();
     }
+
+    //endregion
+
+    //region Initialize
 
     private void initialize() {
         if (indexSelected == -1) {
@@ -70,6 +79,10 @@ public class ColorPickerComponent {
         };
     }
 
+    //endregion
+
+    //region Loader
+
     public void fillLayout(LinearLayout parent) {
         arrColorPickerItemComponent = new ColorPickerItemComponent[ColorConstants.colorItem.length];
 
@@ -103,6 +116,20 @@ public class ColorPickerComponent {
         this.parent = parent;
     }
 
+    public void refresh(int selected){
+        this.selected = selected;
+        this.indexSelected = -1;
+
+        this.initialize();
+        this.fillLayout(parent);
+    }
+
+    //endregion
+
+    //region Getters & Setters
+
+    //region Getters
+
     public int getIndexSelected() {
         return indexSelected;
     }
@@ -115,11 +142,7 @@ public class ColorPickerComponent {
         return ColorConstants.colorItem[indexSelected].getTint();
     }
 
-    public void refresh(int selected){
-        this.selected = selected;
-        this.indexSelected = -1;
+    //endregion
 
-        this.initialize();
-        this.fillLayout(parent);
-    }
+    //endregion
 }

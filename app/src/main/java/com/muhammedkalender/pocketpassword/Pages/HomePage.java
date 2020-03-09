@@ -48,7 +48,7 @@ public class HomePage extends PageAbstract implements PageInterface {
         if (isInitialized()) {
             return;
         }
-Helpers.logger.info("Geldi gene");
+
         try {
             this.viewRoot = viewRoot;
 
@@ -81,7 +81,6 @@ Helpers.logger.info("Geldi gene");
             }
 
             tvCategory.setText(listCategory.get(0).getName());
-            Helpers.logger.info("Step gene");
 
             View.OnClickListener clickListener = v -> {
                     AlertDialog.Builder builderSingle = new AlertDialog.Builder(Global.CONTEXT);
@@ -127,7 +126,7 @@ Helpers.logger.info("Geldi gene");
 
             Global.PASSWORD_ADAPTER = new PasswordAdapter(Global.CONTEXT);
             rvPasswordList.setAdapter(Global.PASSWORD_ADAPTER);
-Helpers.logger.info("azzzzz");
+
             this.initialized = true;
 
             PasswordModel passwordModel = new PasswordModel();
@@ -135,7 +134,6 @@ Helpers.logger.info("azzzzz");
 
 
             Global.LIST_PASSWORDS.addAll(list);
-            Helpers.logger.info("Ekledim");
             Global.LIST_PASSWORDS_SOLID.addAll(list);
 
             Helpers.logger.info(String.format("Listeler hazırlandı, Listede %1$d geçicide %2$d adet, kalıcıda %3$d adet kayıt var",list.size(),  Global.LIST_PASSWORDS.size(), Global.LIST_PASSWORDS_SOLID.size()));
@@ -150,11 +148,7 @@ Helpers.logger.info("azzzzz");
         new Thread(() -> {
             Helpers.loading.show();
 
-            Helpers.logger.info("asda");
-
             String _keyword = keyword;
-
-            Helpers.logger.info(_keyword + " Arandı");
 
             if(_keyword.trim().length() == 0){
                 _keyword = "";

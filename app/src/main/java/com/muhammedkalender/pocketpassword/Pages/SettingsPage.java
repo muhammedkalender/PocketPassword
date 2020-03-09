@@ -16,7 +16,9 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.hypertrack.hyperlog.HLCallback;
 import com.hypertrack.hyperlog.HyperLog;
 import com.muhammedkalender.pocketpassword.Abstracts.PageAbstract;
+import com.muhammedkalender.pocketpassword.Components.AlertDialogComponent;
 import com.muhammedkalender.pocketpassword.Constants.ColorConstants;
+import com.muhammedkalender.pocketpassword.Constants.ConfigKeys;
 import com.muhammedkalender.pocketpassword.Constants.ErrorCodeConstants;
 import com.muhammedkalender.pocketpassword.Global;
 import com.muhammedkalender.pocketpassword.Globals.Config;
@@ -113,14 +115,14 @@ public class SettingsPage extends PageAbstract implements PageInterface {
             Helpers.loading.show();
 
             //https://stackoverflow.com/questions/8701634/send-email-intent
-            Uri uri = Uri.parse("mailto:") //TODO
+            Uri uri = Uri.parse("mailto:")
                     .buildUpon()
                     .appendQueryParameter("subject", Helpers.resource.getString(R.string.mail_subject))
                     .build();
 
             Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
             //https://stackoverflow.com/a/9097251
-            intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"email@email.com"}); //todo
+            intent.putExtra(Intent.EXTRA_EMAIL, new String[]{Helpers.resource.getString(R.string.email_contact)}); //todo
             Global.CONTEXT.startActivity(Intent.createChooser(intent, Helpers.resource.getString(R.string.mail_chooser)));
 
             Helpers.loading.hide();
@@ -135,7 +137,7 @@ public class SettingsPage extends PageAbstract implements PageInterface {
             new Thread(() -> {
                 Global.PASSWORD = ((TextInputEditText) viewRoot.findViewById(R.id.etPassword)).getText().toString();
 
-                String confirmString = Helpers.config.getString("confirm_password");
+                String confirmString = Helpers.config.getString(ConfigKeys.CONFIRM_TEXT);
 
                 ResultObject resultDecryptConfirmString = Helpers.aes.decrypt(confirmString, Global.PASSWORD);
 
@@ -200,16 +202,16 @@ public class SettingsPage extends PageAbstract implements PageInterface {
                 bufferedReader.close();
 
                 //https://stackoverflow.com/questions/8701634/send-email-intent
-                Uri uri = Uri.parse("mailto:") //TODO
+                Uri uri = Uri.parse("mailto:")
                         .buildUpon()
-                        .appendQueryParameter("subject", Helpers.resource.getString(R.string.mail_subject))
+                        .appendQueryParameter("subject", Helpers.resource.getString(R.string.email_log_error_subject))
                         .appendQueryParameter("body", stringBuilder.toString())
                         .build();
 
                 Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
 
                 //https://stackoverflow.com/a/9097251
-                intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"email@email.com"}); //todo
+                intent.putExtra(Intent.EXTRA_EMAIL, new String[]{Helpers.resource.getString(R.string.email_log_error)}); //todo
                 intent.setData(uri);
                 Global.CONTEXT.startActivity(Intent.createChooser(intent, Helpers.resource.getString(R.string.mail_chooser)));
 
@@ -235,11 +237,6 @@ public class SettingsPage extends PageAbstract implements PageInterface {
 
                 //region Text Validation
 
-                etChangePassword.setText("");
-                tilChangePassword.setErrorEnabled(false);
-                etChangePasswordRepeat.setText("");
-                tilChangePasswordRepeat.setErrorEnabled(false);
-
                 if (etChangePassword.getText() == null || etChangePassword.getText().toString().equals("")) {
                     tilChangePassword.setError(Helpers.resource.getString(R.string.not_null, "", Helpers.resource.getString(R.string.password)));
 
@@ -247,7 +244,6 @@ public class SettingsPage extends PageAbstract implements PageInterface {
                 }
 
                 final String password = etChangePassword.getText().toString();
-
 
                 if (password.length() < 8) {
                     tilChangePassword.setError(Helpers.resource.getString(R.string.min_length, "", Helpers.resource.getString(R.string.password), 8));
@@ -280,6 +276,13 @@ public class SettingsPage extends PageAbstract implements PageInterface {
                         return;
                     }
                 }
+
+                ((Activity)Global.CONTEXT).runOnUiThread(() -> {
+                    etChangePassword.setText("");
+                    tilChangePassword.setErrorEnabled(false);
+                    etChangePasswordRepeat.setText("");
+                    tilChangePasswordRepeat.setErrorEnabled(false);
+                });
 
                 //endregion
 
@@ -324,10 +327,14 @@ public class SettingsPage extends PageAbstract implements PageInterface {
                         PasswordModel passwordModelHelper = new PasswordModel();
                         List<PasswordModel> passwordModels = passwordModelHelper.selectActive();
 
+                        //Hata durumunda geri dönebilmek için, modellerin yedeği alınıyor
+                        List<PasswordModel> _passwordModels = passwordModels;
+
 
                         //Hata oluşursa listeye ve sayaça işliyecek
-                        int errorCount = 0;
+                        int errorCount = 0, indexProcess = 0;
                         List<PasswordModel> listFailureModels = new ArrayList<>();
+                        boolean[] isProcessed = new boolean[passwordModels.size()];
 
                         for (PasswordModel passwordModel : passwordModels) {
                             //Hesap & Şifre decode ediliyor
@@ -343,7 +350,6 @@ public class SettingsPage extends PageAbstract implements PageInterface {
                                 listFailureModels.add(passwordModel);
                             }
                         }
-
 
                         //Ön Deoode ve Encode işlemi gibi düşünülebilir
                         //Muhtemelen şimdiki işlem sırasındada hata alınmayacak, önceden denenmiş oldu
@@ -384,31 +390,68 @@ public class SettingsPage extends PageAbstract implements PageInterface {
                                 ResultObject resultUpdate = passwordModel.update();
 
                                 if (resultUpdate.isFailure()) {
+                                    //İlgili modelin işlendiğini işaretliyoruz, hata durumunda geri dönmek için
                                     errorCount++;
                                     listFailureModels.add(passwordModel);
-
+                                    isProcessed[indexProcess++] = true;
                                     //todo
+                                } else {
+                                    //İlgili modelin işlendiğini işaretliyoruz, hata durumunda geri dönmek için
+                                    isProcessed[indexProcess++] = true;
                                 }
                             }
 
                             if (errorCount == 0) {
                                 //Hata olmadan tüm veriler aktarıldı demek
 
+                                //Set edilecek dataların yedeği
+
+                                String _privateKey = Helpers.config.getString(ConfigKeys.PRIVATE_KEY);
+                                String _publicKey = Helpers.config.getString(ConfigKeys.PUBLIC_KEY);
+                                String _confirmPassword = Helpers.config.getString(ConfigKeys.CONFIRM_TEXT);
+
                                 //Yeni şifre ayarlara geçiliyor
-                                boolean setPrivateKey = Helpers.config.setString("private_key", encryptedPrivateKey);
-                                boolean setPublicKey = Helpers.config.setString("public_key", encryptedPublicKey);
+                                boolean setPrivateKey = Helpers.config.setString(ConfigKeys.PRIVATE_KEY, encryptedPrivateKey);
+                                boolean setPublicKey = Helpers.config.setString(ConfigKeys.PUBLIC_KEY, encryptedPublicKey);
 
                                 //Şifre onaylama metni ayarlara geçiliyor
-                                boolean setConfirmPassword = Helpers.config.setString("confirm_password",
-                                        (String) aesHelper.encrypt(
+                                boolean setConfirmPassword = Helpers.config.setString(ConfigKeys.CONFIRM_TEXT,
+                                        aesHelper.encrypt(
                                                 _cryptHelper.quickEncrypt(
                                                         _cryptHelper.generateValidationText()
                                                 ),
-                                                password).getData()
+                                                password).getDataAsString()
                                 );
 
                                 if (!setPrivateKey || !setPublicKey || !setConfirmPassword) {
                                     //todo
+                                    //Yeni şifreler set edilirken sorun oluştu
+
+                                    //Tekrar deneniyor
+                                    setPrivateKey = Helpers.config.setString(ConfigKeys.PRIVATE_KEY, encryptedPrivateKey);
+                                    setPublicKey = Helpers.config.setString(ConfigKeys.PUBLIC_KEY, encryptedPublicKey);
+                                    setConfirmPassword = Helpers.config.setString(ConfigKeys.CONFIRM_TEXT,
+                                            aesHelper.encrypt(
+                                                    _cryptHelper.quickEncrypt(
+                                                            _cryptHelper.generateValidationText()
+                                                    ),
+                                                    password).getDataAsString()
+                                    );
+
+                                    if (!setPrivateKey || !setPublicKey || !setConfirmPassword) {
+                                        //Tekrar patladı
+
+                                        Helpers.config.setString(ConfigKeys.PRIVATE_KEY, _privateKey);
+                                        Helpers.config.setString(ConfigKeys.PUBLIC_KEY, _publicKey);
+                                        Helpers.config.setString(ConfigKeys.CONFIRM_TEXT, _confirmPassword);
+
+                                        new AlertDialogComponent()
+                                                .setTitle(R.string.title_failure_change_password)
+                                                .setMessage(R.string.message_failure_change_password_set_data)
+                                                .show();
+
+                                        return;
+                                    }
                                 }
 
 
@@ -426,15 +469,51 @@ public class SettingsPage extends PageAbstract implements PageInterface {
                                 Global.LIST_PASSWORDS_SOLID.clear();
                                 Global.LIST_PASSWORDS_SOLID.addAll(list);
 
-                                Helpers.logger.info("Liste temizlendi");
-
                                 //Adaptör uyarılıyor
                                 Global.PASSWORD_ADAPTER.notifyDataSetChanged();
 
                                 //Filtre yeniden yükleniyor
                                 Global.PAGE_HOME.filter("");
+
+                                new AlertDialogComponent()
+                                        .setTitle(R.string.title_success_change_password)
+                                        .setMessage(R.string.message_success_change_password)
+                                        .show();
                             } else {
-                                //todo
+                                //Hata alındı, dataların silinmesi gerekiyor
+
+                                //Geri dönmedeki hata sayısı
+                                int _errorCount = 0;
+
+                                for (int i = 0; i < indexProcess; i++) {
+                                    //Veriler şifreleniyor
+                                    _passwordModels.get(i).encrypt();
+
+                                    //Update işlemi yapılıyor
+                                    ResultObject resultRevertPassword = _passwordModels.get(i).update();
+
+                                    //Hata kontrolü yapılıyor
+                                    if (resultRevertPassword.isFailure()) {
+                                        _errorCount++;
+                                    }
+                                }
+
+                                if (_errorCount == 0) {
+                                    //Hata ile karşılaşıldı ve başarıyla geri dönüldü
+
+                                    new AlertDialogComponent()
+                                            .setTitle(R.string.title_failure_change_password)
+                                            .setMessage(R.string.message_failure_change_password_and_revert)
+                                            .show();
+
+                                } else {
+                                    //Hata ile karşılaşıldı ve dönüştede hata oluştu
+
+                                    new AlertDialogComponent()
+                                            .setTitle(R.string.title_failure_change_password)
+                                            .setMessage(R.string.message_failure_change_password_and_failure_revert)
+                                            .show();
+                                }
                             }
                         }
 

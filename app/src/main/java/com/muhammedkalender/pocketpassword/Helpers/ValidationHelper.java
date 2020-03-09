@@ -1,5 +1,6 @@
 package com.muhammedkalender.pocketpassword.Helpers;
 
+import com.muhammedkalender.pocketpassword.Constants.ConfigKeys;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
 import com.muhammedkalender.pocketpassword.Objects.ResultObject;
 
@@ -51,6 +52,6 @@ public class ValidationHelper {
         String encryptedData = (String) cryptHelper.encrypt(password, cryptHelper.getPrivateKey()).getData();
         encryptedData = (String) Helpers.aes.encrypt(encryptedData, password).getData();
 
-        return encryptedData == Helpers.config.getString("confirm_password");
+        return encryptedData == Helpers.config.getString(ConfigKeys.CONFIRM_TEXT);
     }
 }

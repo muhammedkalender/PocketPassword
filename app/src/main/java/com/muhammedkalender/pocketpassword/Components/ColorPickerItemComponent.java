@@ -12,12 +12,18 @@ import com.muhammedkalender.pocketpassword.Globals.Helpers;
 import com.muhammedkalender.pocketpassword.R;
 
 public class ColorPickerItemComponent {
+    //region Variables
+
     private ViewGroup viewParent;
     private int color;
     private boolean selected;
     private View view;
     private View.OnClickListener clickSelect;
     private int index;
+
+    //endregion
+
+    //region Constructors
 
     public ColorPickerItemComponent(
             ViewGroup viewParent,
@@ -34,6 +40,10 @@ public class ColorPickerItemComponent {
 
         initialize();
     }
+
+    //endregion
+
+    //region Initialize
 
     public ColorPickerItemComponent initialize() {
         LayoutInflater layoutInflater = (LayoutInflater) Global.CONTEXT.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -56,9 +66,21 @@ public class ColorPickerItemComponent {
         return this;
     }
 
+    //endregion
+
+    //region Getters & Setters
+
+    //region Getters
+
     public View getView() {
         return this.view;
     }
+
+    //endregion
+
+    //endregion
+
+    //region Secondary Functions
 
     public void setSelected() {
         Helpers.logger.info("SELECTED" + index);
@@ -71,5 +93,7 @@ public class ColorPickerItemComponent {
 
         this.view.findViewById(R.id.viewFrame).setBackgroundColor(Color.TRANSPARENT);
     }
+
+    //endregion
 
 }
