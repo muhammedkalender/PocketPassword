@@ -31,7 +31,6 @@
         android:layout_below="@id/appBar"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-
     <LinearLayout
         android:id="@+id/llMainPassword"
         android:layout_width="match_parent"
@@ -105,13 +104,14 @@
         android:background="@android:drawable/screen_background_dark_transparent"
         android:clickable="true"
         android:gravity="center"
-        android:visibility="gone">
+        android:visibility="gone"
+        android:focusable="true">
 
         <ProgressBar
             android:id="@+id/pbLoading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"></ProgressBar>
+            android:layout_centerInParent="true" />
 
         <TextView
             android:id="@+id/tvLoading"
@@ -120,7 +120,7 @@
             android:layout_below="@id/pbLoading"
             android:layout_centerInParent="true"
             android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:text="Yükleniyor, lÜtfen Bekleyin"
+            android:text="@string/loading"
             android:textStyle="bold" />
     </RelativeLayout>
 </RelativeLayout>

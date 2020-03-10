@@ -1,35 +1,18 @@
 package com.muhammedkalender.pocketpassword;
 
-import android.app.ActionBar;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.database.DataSetObserver;
-import android.graphics.Color;
 import android.os.Bundle;
 
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
 import android.provider.Settings;
-import android.util.Base64;
-import android.util.Log;
 import android.view.View;
-
-import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.hypertrack.hyperlog.HyperLog;
-import com.muhammedkalender.pocketpassword.Abstracts.ModelAbstract;
-import com.muhammedkalender.pocketpassword.Adapters.PasswordAdapter;
-import com.muhammedkalender.pocketpassword.Components.AlertDialogComponent;
 import com.muhammedkalender.pocketpassword.Components.CustomLogMessageFormat;
 import com.muhammedkalender.pocketpassword.Components.LoadingComponent;
 import com.muhammedkalender.pocketpassword.Components.SnackbarComponent;
@@ -50,52 +33,24 @@ import com.muhammedkalender.pocketpassword.Helpers.ValidationHelper;
 import com.muhammedkalender.pocketpassword.Models.CategoryModel;
 import com.muhammedkalender.pocketpassword.Models.PasswordModel;
 import com.muhammedkalender.pocketpassword.Objects.ColorObject;
-import com.muhammedkalender.pocketpassword.Objects.ColumnObject;
 import com.muhammedkalender.pocketpassword.Objects.ResultObject;
 import com.muhammedkalender.pocketpassword.ui.main.SectionsPagerAdapter;
-
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
-
 import android.view.Menu;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.security.Key;
-import java.security.KeyFactory;
 import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.MessageDigest;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.RSAPublicKeySpec;
-import java.security.spec.X509EncodedKeySpec;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-import java.util.logging.Logger;
-
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class MainActivity extends AppCompatActivity {
+    //region UI Components
 
     private AppBarConfiguration mAppBarConfiguration;
 
-    TextInputLayout tilMainPassword, tilMainPasswordRepeat;
-    TextInputEditText etMainPassword, etMainPasswordRepeat;
+    public TextInputLayout tilMainPassword, tilMainPasswordRepeat;
+    public TextInputEditText etMainPassword, etMainPasswordRepeat;
+
+    //endregion
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -239,8 +194,11 @@ public class MainActivity extends AppCompatActivity {
         tilMainPassword.setErrorEnabled(false);
 
         if (Helpers.config.getBoolean(ConfigKeys.REGISTER, false)) {
+            //region Is Registered
+
             etMainPassword.setImeOptions(EditorInfo.IME_ACTION_DONE);
             tilMainPasswordRepeat.setVisibility(View.GONE);
+            tilMainPassword.setPasswordVisibilityToggleEnabled(false);
 
             ((MaterialButton) findViewById(R.id.btnLogin)).setText(R.string.button_login);
             ((MaterialButton) findViewById(R.id.btnLogin)).setIcon(Helpers.resource.getDrawable(R.drawable.ic_person_24dp));
@@ -257,7 +215,11 @@ public class MainActivity extends AppCompatActivity {
                     login();
                 }
             });
+
+            //endregion
         } else {
+            //region Is First Login
+
             ((MaterialButton) findViewById(R.id.btnLogin)).setText(R.string.button_confirm);
 
             etMainPassword.setImeOptions(EditorInfo.IME_ACTION_NEXT);
@@ -397,6 +359,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             });
+
+            //endregion
         }
     }
 
@@ -435,6 +399,8 @@ public class MainActivity extends AppCompatActivity {
                     new ColorObject(Helpers.resource.getColor(R.color.brown), Helpers.resource.getColor(R.color.tintBrown)),
                     new ColorObject(Helpers.resource.getColor(R.color.green), Helpers.resource.getColor(R.color.tintGreen))
             };
+
+            //region Declare UI Components
 
             runOnUiThread(() ->{
                 if (resultDecryptRSAConfirmString.isFailure()) {
@@ -486,6 +452,8 @@ public class MainActivity extends AppCompatActivity {
 
                 Helpers.loading.hide();
             });
+
+            //endregion
         }).start();
     }
 
@@ -505,8 +473,4 @@ public class MainActivity extends AppCompatActivity {
     23 - Modellerdede insert vs.. çok sağlıklı değil kafada çizip gir
     24 - Boş uyarısı ( Eventi olamyan iemle öğre yok felan tarzı boş item ekleme )
     25 - Dialogları güncelle tasarımı tuhaf şuan -- https://developer.android.com/guide/topics/ui/dialogs
-    27 - Geri gelip uygulamayı açınca sapıtıyor ( kendini düzğün kapatmıyor kapat yada ona göre düzenle )(
-    28 - Önceden açık model varsa şifre değiştirince sorun oluşuyot ( kesin ondanmı belli değil )
-    29 - Kayıtta password toggle edilirse, logindede öyle geliyor arada resetlenmeli
-    30 - Şifre değiştirmede input next konmalı
  */
