@@ -18,15 +18,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-    //private static final int[] TAB_TITLES = new int[]{R.string.tab_text_1, R.string.tab_text_2, R.string.tab_text_1};
-    //@StringRes
     private static final ArrayList<String> TAB_TITLES = new ArrayList();
     private final Context mContext;
 
     public SectionsPagerAdapter(Context context, FragmentManager fm) {
         super(fm);
         mContext = context;
+
+        //Onbackle geri gelirse sekmeler sapıtabiliyor
+        TAB_TITLES.clear();
 
         TAB_TITLES.add(Helpers.resource.getString(R.string.tab_settings));
         TAB_TITLES.add(Helpers.resource.getString(R.string.tab_add_password));

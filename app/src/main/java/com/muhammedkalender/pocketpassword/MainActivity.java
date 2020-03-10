@@ -506,4 +506,7 @@ public class MainActivity extends AppCompatActivity {
     24 - Boş uyarısı ( Eventi olamyan iemle öğre yok felan tarzı boş item ekleme )
     25 - Dialogları güncelle tasarımı tuhaf şuan -- https://developer.android.com/guide/topics/ui/dialogs
     27 - Geri gelip uygulamayı açınca sapıtıyor ( kendini düzğün kapatmıyor kapat yada ona göre düzenle )(
+    28 - Önceden açık model varsa şifre değiştirince sorun oluşuyot ( kesin ondanmı belli değil )
+    29 - Kayıtta password toggle edilirse, logindede öyle geliyor arada resetlenmeli
+    30 - Şifre değiştirmede input next konmalı
  */
