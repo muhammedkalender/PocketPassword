@@ -1,14 +1,23 @@
 package com.muhammedkalender.pocketpassword;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import com.google.android.material.button.MaterialButton;
+
 import android.provider.Settings;
 import android.view.View;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -19,6 +28,7 @@ import com.muhammedkalender.pocketpassword.Components.SnackbarComponent;
 import com.muhammedkalender.pocketpassword.Constants.ColorConstants;
 import com.muhammedkalender.pocketpassword.Constants.ConfigKeys;
 import com.muhammedkalender.pocketpassword.Constants.ErrorCodeConstants;
+import com.muhammedkalender.pocketpassword.Constants.RequestCodeConstants;
 import com.muhammedkalender.pocketpassword.Globals.Config;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
 import com.muhammedkalender.pocketpassword.Helpers.AESHelper;
@@ -35,10 +45,16 @@ import com.muhammedkalender.pocketpassword.Models.PasswordModel;
 import com.muhammedkalender.pocketpassword.Objects.ColorObject;
 import com.muhammedkalender.pocketpassword.Objects.ResultObject;
 import com.muhammedkalender.pocketpassword.ui.main.SectionsPagerAdapter;
+import com.rustamg.filedialogs.FileDialog;
+import com.rustamg.filedialogs.OpenFileDialog;
+import com.rustamg.filedialogs.SaveFileDialog;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.view.Menu;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+
 import java.io.IOException;
 import java.security.KeyPair;
 
@@ -306,7 +322,7 @@ public class MainActivity extends AppCompatActivity {
                             ResultObject resultRSAEncrypt = cryptHelper.encrypt(confirmText, cryptHelper.getPrivateKey());
 
                             if (resultRSAEncrypt.isFailure()) {
-                                Helpers.logger.error(ErrorCodeConstants.REGISTER_RESULT_RSA,"HATA RSA");
+                                Helpers.logger.error(ErrorCodeConstants.REGISTER_RESULT_RSA, "HATA RSA");
 
                                 SnackbarComponent snackbarComponent = new SnackbarComponent(getWindow().getDecorView().getRootView(), R.string.register_failure, R.string.action_ok);
                                 snackbarComponent.show();
@@ -315,7 +331,7 @@ public class MainActivity extends AppCompatActivity {
                             ResultObject resultAESEncrypt = Helpers.aes.encrypt((String) resultRSAEncrypt.getData(), Global.PASSWORD);
 
                             if (resultAESEncrypt.isFailure()) {
-                                Helpers.logger.error(ErrorCodeConstants.REGISTER_RESULT_AES,"HATA AES");
+                                Helpers.logger.error(ErrorCodeConstants.REGISTER_RESULT_AES, "HATA AES");
 
                                 SnackbarComponent snackbarComponent = new SnackbarComponent(getWindow().getDecorView().getRootView(), R.string.register_failure_1, R.string.action_ok);
                                 snackbarComponent.show();
@@ -340,7 +356,7 @@ public class MainActivity extends AppCompatActivity {
                                     new CategoryModel(Helpers.resource.getString(R.string.category_service), Helpers.resource.getColor(R.color.deepOrange), Helpers.resource.getColor(R.color.tintDeepOrange), true),
                             };
 
-                            for (int i = 0; i < categoryModels.length; i++){
+                            for (int i = 0; i < categoryModels.length; i++) {
                                 categoryModels[i].insert();
                             }
 
@@ -402,7 +418,7 @@ public class MainActivity extends AppCompatActivity {
 
             //region Declare UI Components
 
-            runOnUiThread(() ->{
+            runOnUiThread(() -> {
                 if (resultDecryptRSAConfirmString.isFailure()) {
                     etMainPassword.setText(null);
                     tilMainPassword.setError(Helpers.resource.getString(R.string.password_wrong));
@@ -433,7 +449,7 @@ public class MainActivity extends AppCompatActivity {
                 Global.TAB_LAYOUT.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
                     @Override
                     public void onTabSelected(TabLayout.Tab tab) {
-                        if(tab.getPosition() == Config.TAB_SETTINGS_INDEX){
+                        if (tab.getPosition() == Config.TAB_SETTINGS_INDEX) {
                             Helpers.logger.info(tab.getPosition() + " Settingse girdimi");
                             Global.PAGE_SETTINGS.initialize(Global.PAGE_SETTINGS.getView());
                         }
