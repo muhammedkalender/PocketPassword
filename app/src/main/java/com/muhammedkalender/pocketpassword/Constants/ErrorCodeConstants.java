@@ -150,4 +150,12 @@ public class ErrorCodeConstants {
             RESULT_AS_INTEGER = 7001;
 
     //endregion
+
+    //region Backup
+
+    public static final int
+            BACKUP_EXPORT = 8000,
+            BACKUP_IMPORT = 8100;
+
+    //endregion
 }

@@ -78,6 +78,26 @@
                 android:text="@string/button_send_error_log"
                 app:icon="@drawable/ic_bug_report_24dp" />
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnExportData"
+                style="@style/FormButton"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:backgroundTint="@color/green"
+                android:textColor="@color/tintGreen"
+                android:text="@string/button_export_backup"
+                app:icon="@drawable/ic_file_download_24dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnImportData"
+                style="@style/FormButton"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:backgroundTint="@color/red"
+                android:textColor="@color/tintRed"
+                android:text="@string/button_import_backup"
+                app:icon="@drawable/ic_file_upload_24dp" />
+
             <LinearLayout
                 android:id="@+id/llMainPassword"
                 android:layout_width="match_parent"
@@ -158,7 +178,7 @@
         android:clickable="true"
         android:gravity="center"
         android:orientation="vertical"
-        android:visibility="visible"
+        android:visibility="gone"
         android:focusable="true">
 
         <com.google.android.material.textfield.TextInputLayout

@@ -139,5 +139,7 @@
     <string name="email_contact">contact@test.com</string>
     <string name="email_log_error_subject">Hata Logları</string>
     <string name="message_failure_change_password__pre_error"><![CDATA[Şifre değiştirilirken sorunla karşılaşıldı.\\nDaha sonra tekrar deneyin.\\n<b>Eğet sorun devam ediyorsa bize logları atabilir veya doğrudan yazabilirsiniz</b>]]></string>
+    <string name="button_export_backup">Yedek Al</string>
+    <string name="button_import_backup">Yedeği Yükle</string>
 
 </resources>
