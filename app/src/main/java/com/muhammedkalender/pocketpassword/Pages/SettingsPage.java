@@ -40,9 +40,6 @@ import com.muhammedkalender.pocketpassword.Objects.ColorObject;
 import com.muhammedkalender.pocketpassword.Objects.ResultObject;
 import com.muhammedkalender.pocketpassword.R;
 import com.muhammedkalender.pocketpassword.ui.main.SectionsPagerAdapter;
-import com.rustamg.filedialogs.FileDialog;
-import com.rustamg.filedialogs.OpenFileDialog;
-import com.rustamg.filedialogs.SaveFileDialog;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -619,51 +616,51 @@ public class SettingsPage extends PageAbstract implements PageInterface {
 
         //region Import Backup
 
-        this.viewRoot.findViewById(R.id.btnImportData).setOnClickListener(v -> {
-                    try {
-                        if (ContextCompat.checkSelfPermission(Global.CONTEXT, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                            ActivityCompat.requestPermissions((Activity) Global.CONTEXT,
-                                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                                    RequestCodeConstants.IMPORT_BACKUP_WANT_PERMISSION);
-
-                            return;
-                        }
-//todo
-
-                        FileDialog fileDialog = new OpenFileDialog();
-                        fileDialog.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.AppTheme);
-                        fileDialog.show(((MainActivity)Global.CONTEXT).getSupportFragmentManager(), "test");
-                    } catch (Exception e) {
-                        Helpers.logger.error(ErrorCodeConstants.BACKUP_IMPORT, e);
-                        //todo
-                    }
-                }
-        );
+//        this.viewRoot.findViewById(R.id.btnImportData).setOnClickListener(v -> {
+//                    try {
+//                        if (ContextCompat.checkSelfPermission(Global.CONTEXT, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                            ActivityCompat.requestPermissions((Activity) Global.CONTEXT,
+//                                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+//                                    RequestCodeConstants.IMPORT_BACKUP_WANT_PERMISSION);
+//
+//                            return;
+//                        }
+////todo
+//
+//                        FileDialog fileDialog = new OpenFileDialog();
+//                        fileDialog.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.AppTheme);
+//                        fileDialog.show(((MainActivity)Global.CONTEXT).getSupportFragmentManager(), "test");
+//                    } catch (Exception e) {
+//                        Helpers.logger.error(ErrorCodeConstants.BACKUP_IMPORT, e);
+//                        //todo
+//                    }
+//                }
+//        );
 
         //endregion
 
         //region Export Backup
 
-        this.viewRoot.findViewById(R.id.btnExportData).setOnClickListener(v -> {
-                    try {
-                        if (ContextCompat.checkSelfPermission(Global.CONTEXT, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                            ActivityCompat.requestPermissions((Activity) Global.CONTEXT,
-                                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                                    RequestCodeConstants.EXPORT_BACKUP_WANT_PERMISSION);
-
-                            return;
-                        }
-//todo
-
-                        FileDialog fileDialog = new SaveFileDialog();
-                        fileDialog.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.AppTheme);
-                        fileDialog.show(((MainActivity)Global.CONTEXT).getSupportFragmentManager(), "test");
-                    } catch (Exception e) {
-                        Helpers.logger.error(ErrorCodeConstants.BACKUP_EXPORT, e);
-                        //todo
-                    }
-                }
-        );
+//        this.viewRoot.findViewById(R.id.btnExportData).setOnClickListener(v -> {
+//                    try {
+//                        if (ContextCompat.checkSelfPermission(Global.CONTEXT, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                            ActivityCompat.requestPermissions((Activity) Global.CONTEXT,
+//                                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+//                                    RequestCodeConstants.EXPORT_BACKUP_WANT_PERMISSION);
+//
+//                            return;
+//                        }
+////todo
+//
+//                        FileDialog fileDialog = new SaveFileDialog();
+//                        fileDialog.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.AppTheme);
+//                        fileDialog.show(((MainActivity)Global.CONTEXT).getSupportFragmentManager(), "test");
+//                    } catch (Exception e) {
+//                        Helpers.logger.error(ErrorCodeConstants.BACKUP_EXPORT, e);
+//                        //todo
+//                    }
+//                }
+//        );
 
         //endregion
 
