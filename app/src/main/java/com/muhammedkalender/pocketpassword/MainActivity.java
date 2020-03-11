@@ -2,6 +2,7 @@ package com.muhammedkalender.pocketpassword;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
@@ -10,6 +11,7 @@ import com.google.android.material.button.MaterialButton;
 import android.provider.Settings;
 import android.view.View;
 
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
@@ -45,9 +47,6 @@ import com.muhammedkalender.pocketpassword.Models.PasswordModel;
 import com.muhammedkalender.pocketpassword.Objects.ColorObject;
 import com.muhammedkalender.pocketpassword.Objects.ResultObject;
 import com.muhammedkalender.pocketpassword.ui.main.SectionsPagerAdapter;
-import com.rustamg.filedialogs.FileDialog;
-import com.rustamg.filedialogs.OpenFileDialog;
-import com.rustamg.filedialogs.SaveFileDialog;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -55,8 +54,10 @@ import android.view.Menu;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 
+import java.io.File;
 import java.io.IOException;
 import java.security.KeyPair;
+
 
 public class MainActivity extends AppCompatActivity {
     //region UI Components
@@ -84,7 +85,9 @@ public class MainActivity extends AppCompatActivity {
         loadComponents();
 
         firstOpen();
+
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
