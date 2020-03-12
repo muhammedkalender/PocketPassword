@@ -141,5 +141,7 @@
     <string name="message_failure_change_password__pre_error"><![CDATA[Şifre değiştirilirken sorunla karşılaşıldı.\\nDaha sonra tekrar deneyin.\\n<b>Eğet sorun devam ediyorsa bize logları atabilir veya doğrudan yazabilirsiniz</b>]]></string>
     <string name="button_export_backup">Yedek Al</string>
     <string name="button_import_backup">Yedeği Yükle</string>
+    <string name="failure_export_data">Yedek alınırken sorun oluştu lütfen tekrar deneyin.</string>
+    <string name="failure_export_backup_oar">Yedek alma sırasında sorun oluştu</string>
 
 </resources>
