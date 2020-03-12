@@ -155,7 +155,9 @@ public class ErrorCodeConstants {
 
     public static final int
             BACKUP_EXPORT = 8000,
-            BACKUP_IMPORT = 8100;
+            BACKUP_IMPORT = 8100,
+            IMPORT_BACKUP_OAR = 8101,
+            EXPORT_BACKUP_OAR = 8102;
 
     //endregion
 }

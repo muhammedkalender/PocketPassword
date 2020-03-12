@@ -29,6 +29,7 @@
     <color name="tintGreen">#FFF</color>
     <color name="tintGrey">#FFF</color>
     <color name="tintIndigo">#FFF</color>
+    <color name="tintTeal">#FFF</color>
 
     <color name="snackbarBackground">#000</color>
     <color name="snackbarText">#FFF</color>

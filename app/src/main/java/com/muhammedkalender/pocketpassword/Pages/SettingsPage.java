@@ -11,6 +11,7 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -19,10 +20,13 @@ import androidx.fragment.app.DialogFragment;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.hypertrack.hyperlog.HLCallback;
 import com.hypertrack.hyperlog.HyperLog;
 import com.muhammedkalender.pocketpassword.Abstracts.PageAbstract;
 import com.muhammedkalender.pocketpassword.Components.AlertDialogComponent;
+import com.muhammedkalender.pocketpassword.Components.SnackbarComponent;
 import com.muhammedkalender.pocketpassword.Constants.ColorConstants;
 import com.muhammedkalender.pocketpassword.Constants.ConfigKeys;
 import com.muhammedkalender.pocketpassword.Constants.ErrorCodeConstants;
@@ -44,8 +48,11 @@ import com.muhammedkalender.pocketpassword.ui.main.SectionsPagerAdapter;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.crypto.spec.SecretKeySpec;
 
@@ -616,51 +623,77 @@ public class SettingsPage extends PageAbstract implements PageInterface {
 
         //region Import Backup
 
-//        this.viewRoot.findViewById(R.id.btnImportData).setOnClickListener(v -> {
-//                    try {
-//                        if (ContextCompat.checkSelfPermission(Global.CONTEXT, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-//                            ActivityCompat.requestPermissions((Activity) Global.CONTEXT,
-//                                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-//                                    RequestCodeConstants.IMPORT_BACKUP_WANT_PERMISSION);
-//
-//                            return;
-//                        }
-////todo
-//
-//                        FileDialog fileDialog = new OpenFileDialog();
-//                        fileDialog.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.AppTheme);
-//                        fileDialog.show(((MainActivity)Global.CONTEXT).getSupportFragmentManager(), "test");
-//                    } catch (Exception e) {
-//                        Helpers.logger.error(ErrorCodeConstants.BACKUP_IMPORT, e);
-//                        //todo
-//                    }
-//                }
-//        );
+        this.viewRoot.findViewById(R.id.btnImportData).setOnClickListener(v -> {
+                    try {
+                        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                        intent.addCategory(Intent.CATEGORY_OPENABLE);
+                        intent.setType("*/*");
+                        ((Activity) Global.CONTEXT).startActivityForResult(intent, RequestCodeConstants.IMPORT_BACKUP_SELECTED_FILE);
+                    } catch (Exception e) {
+                        Helpers.logger.error(ErrorCodeConstants.BACKUP_IMPORT, e);
+                        //todo
+                    }
+                }
+        );
 
         //endregion
 
         //region Export Backup
 
-//        this.viewRoot.findViewById(R.id.btnExportData).setOnClickListener(v -> {
-//                    try {
-//                        if (ContextCompat.checkSelfPermission(Global.CONTEXT, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-//                            ActivityCompat.requestPermissions((Activity) Global.CONTEXT,
-//                                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-//                                    RequestCodeConstants.EXPORT_BACKUP_WANT_PERMISSION);
-//
-//                            return;
-//                        }
-////todo
-//
-//                        FileDialog fileDialog = new SaveFileDialog();
-//                        fileDialog.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.AppTheme);
-//                        fileDialog.show(((MainActivity)Global.CONTEXT).getSupportFragmentManager(), "test");
-//                    } catch (Exception e) {
-//                        Helpers.logger.error(ErrorCodeConstants.BACKUP_EXPORT, e);
-//                        //todo
-//                    }
-//                }
-//        );
+        this.viewRoot.findViewById(R.id.btnExportData).setOnClickListener(v -> {
+                    try {
+                        String fileName = new SimpleDateFormat("yyyyMMdd", Locale.getDefault()).format(new Date()) + ".pocketpassword";
+
+                        Global.EXPORT_DATA = "oldumu acep"; //todo
+
+                        StringBuilder jsonFile = new StringBuilder();
+
+
+                        jsonFile.append("{");
+
+                        jsonFile.append(String.format("\"public_key\":\"%1$s\",",
+                                Helpers.config.getString(ConfigKeys.PUBLIC_KEY)));
+
+                        jsonFile.append(String.format("\"confirm_password\":\"%1$s\",",
+                                Helpers.config.getString(ConfigKeys.CONFIRM_TEXT)));
+
+                        jsonFile.append("\"passwords\":[");
+
+                        PasswordModel model = new PasswordModel();
+                        List<PasswordModel> passwordModels = model.selectActive();
+
+                        for (PasswordModel passwordModel : passwordModels) {
+                            passwordModel.encrypt();
+
+                            jsonFile.append(String.format("{\"name\":\"%1$s\", \"account\":\"%2$s\", \"password\":\"%3$s\", \"color\":\"%4$s\", \"tint\":\"%5$s\"},",
+                                    passwordModel.getName(),
+                                    passwordModel.getAccount(),
+                                    passwordModel.getPassword(),
+                                    passwordModel.getColor(),
+                                    passwordModel.getTintColor()));
+                        }
+
+                        jsonFile.append("]");
+
+                        jsonFile.append("}");
+
+                        Helpers.logger.info(jsonFile .toString());
+
+                        //Gson gsonPasswords = new Gson();
+                        Global.EXPORT_DATA = jsonFile.toString();
+
+                        Intent intentExport = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                        intentExport.addCategory(Intent.CATEGORY_OPENABLE);
+                        intentExport.setType("*/*");
+                        intentExport.putExtra(Intent.EXTRA_TITLE, fileName);
+
+                        ((Activity) Global.CONTEXT).startActivityForResult(intentExport, RequestCodeConstants.EXPORT_BACKUP_SELECTED_FILE);
+                    } catch (Exception e) {
+                        Helpers.logger.error(ErrorCodeConstants.BACKUP_EXPORT, e);
+                        Toast.makeText(Global.CONTEXT, R.string.failure_export_data, Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
 
         //endregion
 

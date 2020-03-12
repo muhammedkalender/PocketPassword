@@ -39,7 +39,7 @@ dependencies {
     implementation 'com.hypertrack:hyperlog:0.0.10'
     implementation 'androidx.annotation:annotation:1.0.2'
     androidTestImplementation "androidx.room:room-testing:$rootProject.roomVersion"
-
+    implementation 'com.google.code.gson:gson:2.8.6'
     testImplementation 'org.mockito:mockito-core:2.7.22'
     androidTestImplementation 'org.mockito:mockito-core:2.7.22'
 

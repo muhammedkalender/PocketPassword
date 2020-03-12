@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.google.android.material.button.MaterialButton;
@@ -23,6 +24,8 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.hypertrack.hyperlog.HyperLog;
 import com.muhammedkalender.pocketpassword.Components.CustomLogMessageFormat;
 import com.muhammedkalender.pocketpassword.Components.LoadingComponent;
@@ -53,9 +56,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Toast;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.security.KeyPair;
 
 
@@ -86,8 +94,56 @@ public class MainActivity extends AppCompatActivity {
 
         firstOpen();
 
+
     }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == RequestCodeConstants.EXPORT_BACKUP_SELECTED_FILE && resultCode == Activity.RESULT_OK) {
+            //https://stackoverflow.com/a/38568666
+            //https://stackoverflow.com/a/2509258
+            try {
+                Uri uri = data.getData();
+
+                OutputStream output = getApplicationContext().getContentResolver().openOutputStream(uri);
+
+                output.write(Global.EXPORT_DATA.getBytes());
+                output.flush();
+                output.close();
+
+                Global.EXPORT_DATA = "";
+            } catch (Exception e) {
+                Helpers.logger.error(ErrorCodeConstants.EXPORT_BACKUP_OAR, e);
+                Toast.makeText(this, R.string.failure_export_backup_oar, Toast.LENGTH_SHORT).show();
+            }
+        } else if (requestCode == RequestCodeConstants.IMPORT_BACKUP_SELECTED_FILE && resultCode == RESULT_OK) {
+            try {
+                Uri uri = data.getData();
+
+                StringBuilder stringBuilder = new StringBuilder();
+
+                BufferedReader r = new BufferedReader(new InputStreamReader(getContentResolver().openInputStream(uri)));
+
+                for (String line; (line = r.readLine()) != null; ) {
+                    stringBuilder.append(line).append('\n');
+                }
+
+                JsonObject jsonObject = new Gson().fromJson(stringBuilder.toString(), JsonObject.class);
+
+                Helpers.logger.info(jsonObject.get("public_key").getAsString());
+
+                //TODO
+                //Helpers.logger.info(stringBuilder.toString());
+            } catch (Exception e) {
+                Helpers.logger.error(ErrorCodeConstants.IMPORT_BACKUP_OAR, e);
+                Toast.makeText(this, "Error IMPORT", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -411,8 +467,10 @@ public class MainActivity extends AppCompatActivity {
             ColorConstants.colorItem = new ColorObject[]{
                     new ColorObject(Helpers.resource.getColor(R.color.lightBlue), Helpers.resource.getColor(R.color.tintLightBlue)), //Prımary Color
                     new ColorObject(Helpers.resource.getColor(R.color.pink), Helpers.resource.getColor(R.color.tintPink)),
+                    new ColorObject(Helpers.resource.getColor(R.color.teal), Helpers.resource.getColor(R.color.tintTeal)),
                     new ColorObject(Helpers.resource.getColor(R.color.amber), Helpers.resource.getColor(R.color.tintAmber)),
                     new ColorObject(Helpers.resource.getColor(R.color.red), Helpers.resource.getColor(R.color.tintRed)),
+                    new ColorObject(Helpers.resource.getColor(R.color.indigo), Helpers.resource.getColor(R.color.tintIndigo)),
                     new ColorObject(Helpers.resource.getColor(R.color.purple), Helpers.resource.getColor(R.color.tintPurple)),
                     new ColorObject(Helpers.resource.getColor(R.color.deepOrange), Helpers.resource.getColor(R.color.tintDeepOrange)),
                     new ColorObject(Helpers.resource.getColor(R.color.brown), Helpers.resource.getColor(R.color.tintBrown)),
