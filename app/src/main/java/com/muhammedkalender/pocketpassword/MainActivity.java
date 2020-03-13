@@ -1,21 +1,19 @@
 package com.muhammedkalender.pocketpassword;
 
-import android.Manifest;
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 
 import com.google.android.material.button.MaterialButton;
 
 import android.provider.Settings;
+import android.view.LayoutInflater;
 import android.view.View;
 
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.DialogFragment;
+import androidx.appcompat.app.AlertDialog;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -25,6 +23,8 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.hypertrack.hyperlog.HyperLog;
 import com.muhammedkalender.pocketpassword.Components.CustomLogMessageFormat;
@@ -59,9 +59,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.security.KeyPair;
@@ -132,6 +130,54 @@ public class MainActivity extends AppCompatActivity {
                 JsonObject jsonObject = new Gson().fromJson(stringBuilder.toString(), JsonObject.class);
 
                 Helpers.logger.info(jsonObject.get("public_key").getAsString());
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                // Get the layout inflater
+                LayoutInflater inflater = this.getLayoutInflater();
+
+                // Inflate and set the layout for the dialog
+                // Pass null as the parent view because its going in the dialog layout
+                builder.setView(inflater.inflate(R.layout.custom_import_dialog, null))
+                        // Add action buttons
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int id) {
+                                // sign in the user ...
+
+                                String password = "123456aA_"; //TODO
+
+                                Helpers.loading.show();
+
+                                new Thread(() -> {
+                                    String publicKey = jsonObject.get("public_key").getAsString();
+
+                                    AESHelper aesHelper = new AESHelper();
+                                    CryptHelper cryptHelper = new CryptHelper();
+
+                                    cryptHelper.setPublicKey(aesHelper.decrypt(publicKey, password).getDataAsString());
+
+                                    JsonArray passwords = jsonObject.get("passwords") .getAsJsonArray();
+
+                                    for(int i = 0; i < password.length(); i++){
+                                        JsonObject _password = passwords.get(i).getAsJsonObject();
+
+                                        Helpers.logger.info(_password.get("name").getAsString());
+//                                        Helpers.logger.info(_password.get("name").getAsString());
+                                    }
+
+
+                                    Helpers.loading.hide();
+
+                                }).start();
+                            }
+                        })
+                        .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+
+                            }
+                        });
+
+                builder.show();
 
                 //TODO
                 //Helpers.logger.info(stringBuilder.toString());
