@@ -58,11 +58,16 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.security.KeyPair;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -131,53 +136,89 @@ public class MainActivity extends AppCompatActivity {
 
                 Helpers.logger.info(jsonObject.get("public_key").getAsString());
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                // Get the layout inflater
                 LayoutInflater inflater = this.getLayoutInflater();
 
-                // Inflate and set the layout for the dialog
-                // Pass null as the parent view because its going in the dialog layout
-                builder.setView(inflater.inflate(R.layout.custom_import_dialog, null))
+                AlertDialog alertDialog = new AlertDialog.Builder(this)
+                        .setView(inflater.inflate(R.layout.custom_import_dialog, null))
                         // Add action buttons
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int id) {
-                                // sign in the user ...
-
-                                String password = "123456aA_"; //TODO
-
-                                Helpers.loading.show();
-
-                                new Thread(() -> {
-                                    String publicKey = jsonObject.get("public_key").getAsString();
-
-                                    AESHelper aesHelper = new AESHelper();
-                                    CryptHelper cryptHelper = new CryptHelper();
-
-                                    cryptHelper.setPublicKey(aesHelper.decrypt(publicKey, password).getDataAsString());
-
-                                    JsonArray passwords = jsonObject.get("passwords") .getAsJsonArray();
-
-                                    for(int i = 0; i < password.length(); i++){
-                                        JsonObject _password = passwords.get(i).getAsJsonObject();
-
-                                        Helpers.logger.info(_password.get("name").getAsString());
-//                                        Helpers.logger.info(_password.get("name").getAsString());
-                                    }
-
-
-                                    Helpers.loading.hide();
-
-                                }).start();
-                            }
-                        })
+                        .setPositiveButton("OK", null)
                         .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
 
                             }
-                        });
+                        })
+                        .show();
+                // Get the layout inflater
 
-                builder.show();
+
+                alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener((v) -> {
+                    // sign in the user ...
+
+                    String password = "123456aA_"; //TODO
+
+                    Helpers.loading.show();
+
+                    new Thread(() -> {
+                        String publicKey = jsonObject.get("public_key").getAsString();
+
+                        AESHelper aesHelper = new AESHelper();
+                        CryptHelper cryptHelper = new CryptHelper();
+
+                        cryptHelper.setPublicKey(aesHelper.decrypt(publicKey, password).getDataAsString());
+
+                        JsonArray passwords = jsonObject.get("passwords").getAsJsonArray();
+
+
+                        HashMap<PasswordModel, ResultObject> listFailure = new HashMap<>();
+
+                        for (int i = 0; i < passwords.size(); i++) {
+                            JsonElement _element = passwords.get(i);
+
+                            if (_element == null || _element.isJsonNull()) {
+                                continue;
+                            }
+
+                            JsonObject _password = _element.getAsJsonObject();
+
+                            Helpers.logger.info(_password.get("name").getAsString());
+
+                            PasswordModel _passwordModel = new PasswordModel(
+                                    _password.get("name").getAsString(),
+                                    _password.get("account").getAsString(),
+                                    _password.get("password").getAsString(),
+                                    _password.get("color").getAsInt(),
+                                    _password.get("tint").getAsInt()
+                            );
+
+                            _passwordModel.decrypt(cryptHelper);
+
+                            ResultObject resultInsert = _passwordModel.insert();
+
+                            if (resultInsert.isFailure()) {
+                                listFailure.put(_passwordModel, resultInsert);
+                            }
+                        }
+
+                        Helpers.loading.hide();
+
+                        alertDialog.dismiss();
+
+                        if(listFailure.size() == 0){
+                            SnackbarComponent.direct(Global.PAGE_SETTINGS.getView(),R.string.success_insert_backup, R.string.action_confirm);
+                        }else{
+                            SnackbarComponent.direct(
+                                    Global.PAGE_SETTINGS.getView(),
+                                    Helpers.resource.getString(
+                                            R.string.failure_insert_backup,
+                                            "",
+                                            listFailure.size()
+                                    ),
+                                    R.string.action_confirm
+                            );
+                        }
+
+                    }).start();
+                });
 
                 //TODO
                 //Helpers.logger.info(stringBuilder.toString());

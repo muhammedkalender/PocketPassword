@@ -77,6 +77,26 @@ public class SnackbarComponent {
         init();
     }
 
+    public SnackbarComponent(View view, int resMessage, String action){
+        this.view = view;
+        this.message = Helpers.resource.getString(resMessage);
+        this.action = action;
+
+        this.listenerAction = null;
+
+        init();
+    }
+
+    public SnackbarComponent(View view, String message, int resAction){
+        this.view = view;
+        this.message = message;
+        this.action = Helpers.resource.getString(resAction);
+
+        this.listenerAction = null;
+
+        init();
+    }
+
     //endregion
 
     public void show(){
@@ -138,6 +158,18 @@ public class SnackbarComponent {
     public static void direct(View view, String message, String action){
         ((Activity) Global.CONTEXT).runOnUiThread(() -> {
             new SnackbarComponent(view, message, action).show();
+        });
+    }
+
+    public static void direct(View view,  int resMessage, String action){
+        ((Activity) Global.CONTEXT).runOnUiThread(() -> {
+            new SnackbarComponent(view, resMessage, action).show();
+        });
+    }
+
+    public static void direct(View view,  String message, int resAction){
+        ((Activity) Global.CONTEXT).runOnUiThread(() -> {
+            new SnackbarComponent(view, message, resAction).show();
         });
     }
 

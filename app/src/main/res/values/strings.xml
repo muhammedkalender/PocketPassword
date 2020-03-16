@@ -143,5 +143,8 @@
     <string name="button_import_backup">Yedeği Yükle</string>
     <string name="failure_export_data">Yedek alınırken sorun oluştu lütfen tekrar deneyin.</string>
     <string name="failure_export_backup_oar">Yedek alma sırasında sorun oluştu</string>
+    <string name="action_confirm">Onayla</string>
+    <string name="success_insert_backup">Sorunsuz bir şekilde yedek içeri aktarıldı</string>
+    <string name="failure_insert_backup">Şifreler içeri aktarılırken sorun oluştu.\\nToplam %1$s şifre aktarılamadı.</string>
 
 </resources>
