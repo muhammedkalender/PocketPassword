@@ -8,6 +8,7 @@ import com.muhammedkalender.pocketpassword.Constants.ErrorCodeConstants;
 import com.muhammedkalender.pocketpassword.Constants.SQLConstants;
 import com.muhammedkalender.pocketpassword.Global;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
+import com.muhammedkalender.pocketpassword.Helpers.CryptHelper;
 import com.muhammedkalender.pocketpassword.Interfaces.ModelInterface;
 import com.muhammedkalender.pocketpassword.Objects.ColumnObject;
 import com.muhammedkalender.pocketpassword.Objects.ResultObject;
@@ -198,6 +199,10 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
 
     public ResultObject insert() {
         try {
+            if(isDecrypted()){
+                encrypt();
+            }
+
             return Helpers.database.insert("INSERT INTO passwords (password_name, password_account, password_password, password_color, password_tint_color, password_category) VALUES ('" + name + "', '" + Helpers.crypt.quickEncrypt(account) + "', '" + Helpers.crypt.quickEncrypt(password) + "', '" + this.color + "', '" + this.tintColor + "', '" + this.categoryID + "')");
         } catch (Exception e) {
             return new ResultObject(ErrorCodeConstants.MODEL_PASSWORD_INSERT)
@@ -413,16 +418,25 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
     //region Quick Encrypt & Decrypt
 
     public void decrypt() {
+        decrypt(Helpers.crypt);
+    }
+
+    public void decrypt(CryptHelper cryptHelper) {
         if (isDecrypted()) {
             return;
         }
 
-        this.account = Helpers.crypt.quickDecrypt(this.account);
-        this.password = Helpers.crypt.quickDecrypt(this.password);
+        this.account = cryptHelper.quickDecrypt(this.account);
+        this.password = cryptHelper.quickDecrypt(this.password);
         this.decrypted = true;
     }
 
-    public void encrypt() {
+    public void encrypt(){
+        encrypt(Helpers.crypt);
+    }
+
+
+    public void encrypt(CryptHelper cryptHelper) {
         if (!isDecrypted()) {
             return;
         }
