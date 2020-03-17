@@ -104,6 +104,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == RequestCodeConstants.EXPORT_BACKUP_SELECTED_FILE && resultCode == Activity.RESULT_OK) {
+            //region Export Backup
+
             //https://stackoverflow.com/a/38568666
             //https://stackoverflow.com/a/2509258
             try {
@@ -120,8 +122,13 @@ public class MainActivity extends AppCompatActivity {
                 Helpers.logger.error(ErrorCodeConstants.EXPORT_BACKUP_OAR, e);
                 Toast.makeText(this, R.string.failure_export_backup_oar, Toast.LENGTH_SHORT).show();
             }
+
+            //endregion
         } else if (requestCode == RequestCodeConstants.IMPORT_BACKUP_SELECTED_FILE && resultCode == RESULT_OK) {
+            //region Import Backup
             try {
+                //region Dialog Builder & File Check
+
                 Uri uri = data.getData();
 
                 StringBuilder stringBuilder = new StringBuilder();
@@ -140,7 +147,6 @@ public class MainActivity extends AppCompatActivity {
 
                 AlertDialog alertDialog = new AlertDialog.Builder(this)
                         .setView(inflater.inflate(R.layout.custom_import_dialog, null))
-                        // Add action buttons
                         .setPositiveButton("OK", null)
                         .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
@@ -148,26 +154,77 @@ public class MainActivity extends AppCompatActivity {
                             }
                         })
                         .show();
-                // Get the layout inflater
 
+                //endregion
 
                 alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener((v) -> {
-                    // sign in the user ...
+                    //region Input Check
 
-                    String password = "123456aA_"; //TODO
+                    TextInputEditText etImportPassword = alertDialog.findViewById(R.id.etImportPassword);
+                    TextInputLayout tilImportPassword = alertDialog.findViewById(R.id.tilImportPassword);
+
+                    if (etImportPassword.getText() == null || etImportPassword.getText().toString().equals("")) {
+                        tilImportPassword.setError(Helpers.resource.getString(R.string.not_null, "", Helpers.resource.getString(R.string.password)));
+
+                        return;
+                    }
+
+                    String password = etImportPassword.getText().toString();
+
+                    if (password.length() < 8) {
+                        tilImportPassword.setError(Helpers.resource.getString(R.string.min_length, "", Helpers.resource.getString(R.string.password), 8));
+
+                        return;
+                    } else if (password.length() > 32) {
+                        tilImportPassword.setError(Helpers.resource.getString(R.string.max_length, "", Helpers.resource.getString(R.string.password), 32));
+
+                        return;
+                    } else if (!Helpers.validation.checkPassword(password, ValidationHelper.PASSWORD_STRONG)) {
+                        tilImportPassword.setError(Helpers.resource.getString(R.string.password_must_strong));
+
+                        return;
+                    } else {
+                        tilImportPassword.setErrorEnabled(false);
+
+                        if (etImportPassword.getText() == null || etImportPassword.getText().toString().equals("")) {
+                            tilImportPassword.setError(Helpers.resource.getString(R.string.not_null, "", Helpers.resource.getString(R.string.password)));
+
+                            return;
+                        }
+                    }
+
+                    //endregion
 
                     Helpers.loading.show();
 
+                    Helpers.system.hideSoftKeyboard();
+
                     new Thread(() -> {
+                        //region Password Check
+
                         String publicKey = jsonObject.get("public_key").getAsString();
 
                         AESHelper aesHelper = new AESHelper();
+
+                        if (!jsonObject.get("confirm_password").getAsString().equals(aesHelper.encrypt(Config.EXPORT_CONFIRM_TEXT, password).getDataAsString())) {
+                            runOnUiThread(() -> {
+                                tilImportPassword.setError(Helpers.resource.getString(R.string.password_wrong));
+                            });
+
+                            Helpers.loading.hide();
+
+                            return;
+                        }
+
+                        //endregion
+
+                        alertDialog.dismiss();
+
                         CryptHelper cryptHelper = new CryptHelper();
 
                         cryptHelper.setPublicKey(aesHelper.decrypt(publicKey, password).getDataAsString());
 
                         JsonArray passwords = jsonObject.get("passwords").getAsJsonArray();
-
 
                         HashMap<PasswordModel, ResultObject> listFailure = new HashMap<>();
 
@@ -187,7 +244,8 @@ public class MainActivity extends AppCompatActivity {
                                     _password.get("account").getAsString(),
                                     _password.get("password").getAsString(),
                                     _password.get("color").getAsInt(),
-                                    _password.get("tint").getAsInt()
+                                    _password.get("tint").getAsInt(),
+                                    _password.get("category").getAsInt()
                             );
 
                             _passwordModel.decrypt(cryptHelper);
@@ -196,16 +254,28 @@ public class MainActivity extends AppCompatActivity {
 
                             if (resultInsert.isFailure()) {
                                 listFailure.put(_passwordModel, resultInsert);
+                            } else {
+                                _passwordModel.setId((int) resultInsert.getData());
+
+                                _passwordModel.decrypt(cryptHelper);
+
+                                Global.LIST_PASSWORDS.add(_passwordModel);
+                                Global.LIST_PASSWORDS_SOLID.add(_passwordModel);
                             }
                         }
+
+                        //region After Process
+
+                        Global.PASSWORD_ADAPTER.notifyDataSetChanged();
+                        Global.PAGE_HOME.filter("");
 
                         Helpers.loading.hide();
 
                         alertDialog.dismiss();
 
-                        if(listFailure.size() == 0){
-                            SnackbarComponent.direct(Global.PAGE_SETTINGS.getView(),R.string.success_insert_backup, R.string.action_confirm);
-                        }else{
+                        if (listFailure.size() == 0) {
+                            SnackbarComponent.direct(Global.PAGE_SETTINGS.getView(), R.string.success_insert_backup, R.string.action_confirm);
+                        } else {
                             SnackbarComponent.direct(
                                     Global.PAGE_SETTINGS.getView(),
                                     Helpers.resource.getString(
@@ -214,18 +284,21 @@ public class MainActivity extends AppCompatActivity {
                                             listFailure.size()
                                     ),
                                     R.string.action_confirm
+                                    , v1 -> {
+                                        runOnUiThread(() -> Global.TAB_LAYOUT.getTabAt(Config.TAB_HOME_INDEX).select());
+                                    }
                             );
                         }
 
+                        //endregion
                     }).start();
                 });
-
-                //TODO
-                //Helpers.logger.info(stringBuilder.toString());
             } catch (Exception e) {
                 Helpers.logger.error(ErrorCodeConstants.IMPORT_BACKUP_OAR, e);
                 Toast.makeText(this, "Error IMPORT", Toast.LENGTH_SHORT).show();
             }
+
+            //endregion
         }
 
         super.onActivityResult(requestCode, resultCode, data);
@@ -627,8 +700,6 @@ public class MainActivity extends AppCompatActivity {
 /*
     TODO
     9 - Model üzerinden validation ? mesajı felan outpu verebilir direkt
-    10 - Export | Şifreli hallerini export et
-    11 - İmport | Şifreyi sor çöz, dbye import et
     15 - Parmak İzi
     16 - Şifre uygulaması ( siteye girdiğinde buraya soracak felan )
     19 - Hata mesajları - kontrolleri
@@ -637,4 +708,12 @@ public class MainActivity extends AppCompatActivity {
     23 - Modellerdede insert vs.. çok sağlıklı değil kafada çizip gir
     24 - Boş uyarısı ( Eventi olamyan iemle öğre yok felan tarzı boş item ekleme )
     25 - Dialogları güncelle tasarımı tuhaf şuan -- https://developer.android.com/guide/topics/ui/dialogs
+    26 - İnputlarda hata olunca refresh gibi flash çakıyor
+    27 - Dialog butonlarının tasarımı değişekcek ( mavi - siyah pek şı kdeğil )
+    28- Yedek al işlem sonucu mesaj ( Export )
+    26 - Şifre Tmportun inputunda yeni şçifre yazıyor dil güncelle
+    27 - Onayladna sonra ana sayfaua at ( import - snackbar onay )
+    28 - Aramada keyboard kayboluyor ( loading de keybard hide ı kapat )
+    29 - Şifre sildikten sonramıne hata aldım ama nasıl aldığımı bilmiyorum
+    30 - Loadinge timing koyulabilirmi ? bekliyip bi süre sonra açsa yoksa refresh gibi gözüküyor
  */

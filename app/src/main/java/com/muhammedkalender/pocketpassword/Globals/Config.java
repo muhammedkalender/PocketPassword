@@ -17,6 +17,8 @@ public class Config {
 
     public static final int RSA_KEY_SIZE = 4096;
 
+    public static final String EXPORT_CONFIRM_TEXT = "kKXBmMyR%>}345gaOP._-8dWN7fX";
+
     public static boolean CONFIG_ONLY_LOGIN = true;
     public static boolean CONFIG_HIDE_VIEW = true;
 
