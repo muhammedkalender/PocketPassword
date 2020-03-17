@@ -109,6 +109,18 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
         this.active = active;
     }
 
+    public PasswordModel(String name, String account, String password, int color, int tintColor, int categoryID, boolean active) {
+        initTable();
+
+        this.name = name;
+        this.account = account;
+        this.password = password;
+        this.color = color;
+        this.tintColor = tintColor;
+        this.categoryID = categoryID;
+        this.active = active;
+    }
+
     //endregion
 
     //region Initializer
@@ -199,10 +211,6 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
 
     public ResultObject insert() {
         try {
-            if(isDecrypted()){
-                encrypt();
-            }
-
             return Helpers.database.insert("INSERT INTO passwords (password_name, password_account, password_password, password_color, password_tint_color, password_category) VALUES ('" + name + "', '" + Helpers.crypt.quickEncrypt(account) + "', '" + Helpers.crypt.quickEncrypt(password) + "', '" + this.color + "', '" + this.tintColor + "', '" + this.categoryID + "')");
         } catch (Exception e) {
             return new ResultObject(ErrorCodeConstants.MODEL_PASSWORD_INSERT)
@@ -217,7 +225,7 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
 
     @Override
     public List<PasswordModel> selectActive() {
-        ResultObject select = Helpers.database.cursor("SELECT * FROM " + table + " WHERE " + prefix + "_active = 1");
+        ResultObject select = Helpers.database.cursor("SELECT * FROM " + table + " WHERE " + prefix + "_active = 1 ORDER BY " + prefix + "_id DESC");
 
         if (select.isSuccess()) {
             Cursor cursor = (Cursor) select.getData();

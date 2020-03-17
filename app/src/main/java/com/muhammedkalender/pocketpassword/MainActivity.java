@@ -118,6 +118,11 @@ public class MainActivity extends AppCompatActivity {
                 output.close();
 
                 Global.EXPORT_DATA = "";
+
+                SnackbarComponent.direct(
+                        findViewById(android.R.id.content),
+                        R.string.success_export_backup
+                );
             } catch (Exception e) {
                 Helpers.logger.error(ErrorCodeConstants.EXPORT_BACKUP_OAR, e);
                 Toast.makeText(this, R.string.failure_export_backup_oar, Toast.LENGTH_SHORT).show();
@@ -216,6 +221,8 @@ public class MainActivity extends AppCompatActivity {
                             return;
                         }
 
+                        Helpers.system.hideSoftKeyboard();
+
                         //endregion
 
                         alertDialog.dismiss();
@@ -245,10 +252,13 @@ public class MainActivity extends AppCompatActivity {
                                     _password.get("password").getAsString(),
                                     _password.get("color").getAsInt(),
                                     _password.get("tint").getAsInt(),
-                                    _password.get("category").getAsInt()
+                                    _password.get("category").getAsInt(),
+                                    _password.get("active").getAsBoolean()
                             );
 
-                            _passwordModel.decrypt(cryptHelper);
+                            Helpers.logger.info(-9999, _passwordModel.getDecryptedAccount());
+
+                            _passwordModel.encrypt(); //todo var burda bi bokluk
 
                             ResultObject resultInsert = _passwordModel.insert();
 
@@ -272,6 +282,8 @@ public class MainActivity extends AppCompatActivity {
                         Helpers.loading.hide();
 
                         alertDialog.dismiss();
+
+                        Helpers.system.hideSoftKeyboard();
 
                         if (listFailure.size() == 0) {
                             SnackbarComponent.direct(Global.PAGE_SETTINGS.getView(), R.string.success_insert_backup, R.string.action_confirm);
@@ -710,9 +722,10 @@ public class MainActivity extends AppCompatActivity {
     25 - Dialogları güncelle tasarımı tuhaf şuan -- https://developer.android.com/guide/topics/ui/dialogs
     26 - İnputlarda hata olunca refresh gibi flash çakıyor
     27 - Dialog butonlarının tasarımı değişekcek ( mavi - siyah pek şı kdeğil )
-    28- Yedek al işlem sonucu mesaj ( Export )
-    26 - Şifre Tmportun inputunda yeni şçifre yazıyor dil güncelle
     27 - Onayladna sonra ana sayfaua at ( import - snackbar onay )
-    28 - Aramada keyboard kayboluyor ( loading de keybard hide ı kapat )
     29 - Şifre sildikten sonramıne hata aldım ama nasıl aldığımı bilmiyorum
+    30 - Loading varken on back pressi disable et
+    31 - Şifre değiştirdi şifreler kend iarasında dönüyor, butona gitmiyor ( go next )
+    32 - Şifre dğeiştirtmede günceli değil select ile komple seç ( active galiba şuan )
+    33 - Şifre değiştirip import edince ve swonra şifre değiştirip güncelelince patlıyormu ?
  */
