@@ -332,7 +332,7 @@ public class SettingsPage extends PageAbstract implements PageInterface {
                         //Şifrelerin listesi çekiliyor
                         //Mantık : Şifre listesi > Şifre Decode > Yeni Şifre İle Encode
                         PasswordModel passwordModelHelper = new PasswordModel();
-                        List<PasswordModel> passwordModels = passwordModelHelper.selectActive();
+                        List<PasswordModel> passwordModels = passwordModelHelper.select();
 
                         //Hata durumunda geri dönebilmek için, modellerin yedeği alınıyor
                         List<PasswordModel> _passwordModels = passwordModels;
@@ -496,7 +496,7 @@ public class SettingsPage extends PageAbstract implements PageInterface {
                                 PasswordModel passwordModel = new PasswordModel();
 
                                 //Yeni veriler veritabanından çekiliyor
-                                List<PasswordModel> list = passwordModel.selectActive();
+                                List<PasswordModel> list = passwordModel.select();
 
                                 //Listeler temizlenip yeni veriler çekiliyor
                                 Global.LIST_PASSWORDS.clear();
@@ -657,25 +657,27 @@ public class SettingsPage extends PageAbstract implements PageInterface {
                         jsonFile.append("\"passwords\":[");
 
                         PasswordModel model = new PasswordModel();
-                        List<PasswordModel> passwordModels = model.selectActive();
+                        List<PasswordModel> passwordModels = model.select();
 
                         for (PasswordModel passwordModel : passwordModels) {
                             passwordModel.encrypt();
 
-                            jsonFile.append(String.format("{\"name\":\"%1$s\", \"account\":\"%2$s\", \"password\":\"%3$s\", \"category\"=\"%4$s\", \"color\":\"%5$s\", \"tint\":\"%6$s\"},",
+                            jsonFile.append(String.format("{\"name\":\"%1$s\", \"account\":\"%2$s\", \"password\":\"%3$s\", \"category\"=\"%4$s\", \"color\":\"%5$s\", \"tint\":\"%6$s\", \"active\":\"%7$i\"},",
                                     passwordModel.getName(),
                                     passwordModel.getAccount(),
                                     passwordModel.getPassword(),
                                     passwordModel.getCategoryID(),
                                     passwordModel.getColor(),
-                                    passwordModel.getTintColor()));
+                                    passwordModel.getTintColor(),
+                                    passwordModel.isActive() ? '1' : '0')
+                            );
                         }
 
                         jsonFile.append("]");
 
                         jsonFile.append("}");
 
-                        Helpers.logger.info(jsonFile .toString());
+                        Helpers.logger.info(jsonFile.toString());
 
                         //Gson gsonPasswords = new Gson();
                         Global.EXPORT_DATA = jsonFile.toString();
