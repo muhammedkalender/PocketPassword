@@ -53,19 +53,33 @@ public class LoadingComponent {
 
     public void show(int resource) {
         try {
-            show(Helpers.resource.getString(resource));
+            show(Helpers.resource.getString(resource), true);
         } catch (Exception e) {
             Helpers.logger.error(ErrorCodeConstants.LOADING_SHOW_WITH_RESOURCE, e);
         }
     }
 
-    public void show(String message) {
+    public void show(boolean hideKeyboard){
+        show(defaultMessage, hideKeyboard);
+    }
+
+    public void show(String message){
+        show(message, true);
+    }
+
+    public void show(int resource, boolean hideKeyboard){
+        show(Helpers.resource.getString(resource), hideKeyboard);
+    }
+
+    public void show(String message, boolean hideKeyboard) {
         try {
             rlLoading.post(() -> {
                 if (rlLoading.getVisibility() != View.VISIBLE) {
                     rlLoading.setVisibility(View.VISIBLE);
 
-                    Helpers.system.hideSoftKeyboard();
+                    if(hideKeyboard){
+                        Helpers.system.hideSoftKeyboard();
+                    }
                 }
             });
         } catch (Exception e) {

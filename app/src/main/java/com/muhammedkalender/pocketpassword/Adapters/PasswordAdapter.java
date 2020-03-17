@@ -53,9 +53,7 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordListHolder> {
 
         final PasswordModel passwordModel = Global.LIST_PASSWORDS_SOLID.get(Helpers.list.findIndexFromTempIndex(position));
 
-        if(!passwordModel.isDecrypted()){
-            passwordModel.decrypt();
-        }
+        passwordModel.decrypt();
 
         holder.tvName.setText(passwordModel.getName());
 

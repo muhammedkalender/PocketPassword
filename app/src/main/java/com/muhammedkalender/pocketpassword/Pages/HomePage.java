@@ -156,7 +156,7 @@ public class HomePage extends PageAbstract implements PageInterface {
 
     public void filter(final String keyword){
         new Thread(() -> {
-            Helpers.loading.show();
+            Helpers.loading.show(false);
 
             String _keyword = keyword;
 

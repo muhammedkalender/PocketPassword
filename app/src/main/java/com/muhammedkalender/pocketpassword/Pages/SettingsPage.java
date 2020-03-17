@@ -644,10 +644,7 @@ public class SettingsPage extends PageAbstract implements PageInterface {
                     try {
                         String fileName = new SimpleDateFormat("yyyyMMdd", Locale.getDefault()).format(new Date()) + ".pocketpassword";
 
-                        Global.EXPORT_DATA = "oldumu acep"; //todo
-
                         StringBuilder jsonFile = new StringBuilder();
-
 
                         jsonFile.append("{");
 
@@ -655,7 +652,7 @@ public class SettingsPage extends PageAbstract implements PageInterface {
                                 Helpers.config.getString(ConfigKeys.PUBLIC_KEY)));
 
                         jsonFile.append(String.format("\"confirm_password\":\"%1$s\",",
-                                Helpers.config.getString(ConfigKeys.CONFIRM_TEXT)));
+                                Helpers.aes.encrypt(Config.EXPORT_CONFIRM_TEXT, Global.PASSWORD).getDataAsString()));
 
                         jsonFile.append("\"passwords\":[");
 
@@ -665,10 +662,11 @@ public class SettingsPage extends PageAbstract implements PageInterface {
                         for (PasswordModel passwordModel : passwordModels) {
                             passwordModel.encrypt();
 
-                            jsonFile.append(String.format("{\"name\":\"%1$s\", \"account\":\"%2$s\", \"password\":\"%3$s\", \"color\":\"%4$s\", \"tint\":\"%5$s\"},",
+                            jsonFile.append(String.format("{\"name\":\"%1$s\", \"account\":\"%2$s\", \"password\":\"%3$s\", \"category\"=\"%4$s\", \"color\":\"%5$s\", \"tint\":\"%6$s\"},",
                                     passwordModel.getName(),
                                     passwordModel.getAccount(),
                                     passwordModel.getPassword(),
+                                    passwordModel.getCategoryID(),
                                     passwordModel.getColor(),
                                     passwordModel.getTintColor()));
                         }
@@ -689,6 +687,7 @@ public class SettingsPage extends PageAbstract implements PageInterface {
 
                         ((Activity) Global.CONTEXT).startActivityForResult(intentExport, RequestCodeConstants.EXPORT_BACKUP_SELECTED_FILE);
                     } catch (Exception e) {
+                        Global.EXPORT_DATA = "";
                         Helpers.logger.error(ErrorCodeConstants.BACKUP_EXPORT, e);
                         Toast.makeText(Global.CONTEXT, R.string.failure_export_data, Toast.LENGTH_SHORT).show();
                     }

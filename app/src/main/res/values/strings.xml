@@ -138,13 +138,21 @@
     <string name="email_log_info">info@test.com</string>
     <string name="email_contact">contact@test.com</string>
     <string name="email_log_error_subject">Hata Logları</string>
+
     <string name="message_failure_change_password__pre_error"><![CDATA[Şifre değiştirilirken sorunla karşılaşıldı.\\nDaha sonra tekrar deneyin.\\n<b>Eğet sorun devam ediyorsa bize logları atabilir veya doğrudan yazabilirsiniz</b>]]></string>
+
     <string name="button_export_backup">Yedek Al</string>
     <string name="button_import_backup">Yedeği Yükle</string>
+
     <string name="failure_export_data">Yedek alınırken sorun oluştu lütfen tekrar deneyin.</string>
     <string name="failure_export_backup_oar">Yedek alma sırasında sorun oluştu</string>
+
     <string name="action_confirm">Onayla</string>
+
     <string name="success_insert_backup">Sorunsuz bir şekilde yedek içeri aktarıldı</string>
     <string name="failure_insert_backup">Şifreler içeri aktarılırken sorun oluştu.\\nToplam %1$s şifre aktarılamadı.</string>
+
+    <string name="hint_password_import">Yedeğin Şifresi</string>
+    <string name="input_password_import">Yedek oluşturulduğu zaman kullandığınız şifreyi giriniz</string>
 
 </resources>
