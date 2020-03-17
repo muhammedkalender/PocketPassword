@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.muhammedkalender.pocketpassword.Constants.ErrorCodeConstants;
 import com.muhammedkalender.pocketpassword.Global;
+import com.muhammedkalender.pocketpassword.Globals.Config;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
 import com.muhammedkalender.pocketpassword.R;
 
@@ -28,6 +29,8 @@ public class LoadingComponent {
     private ProgressBar pbLoading;
 
     private String defaultMessage;
+
+    private boolean isShowing = false;
 
     //endregion
 
@@ -51,43 +54,81 @@ public class LoadingComponent {
         }
     }
 
+    public void showDirect() {
+        show(defaultMessage, true, true);
+    }
+
+    public void showDelayedWithKeyboard() {
+        show(defaultMessage, false, false);
+    }
+
     public void show(int resource) {
         try {
-            show(Helpers.resource.getString(resource), true);
+            show(Helpers.resource.getString(resource), true, true);
         } catch (Exception e) {
             Helpers.logger.error(ErrorCodeConstants.LOADING_SHOW_WITH_RESOURCE, e);
         }
     }
 
-    public void show(boolean hideKeyboard){
-        show(defaultMessage, hideKeyboard);
+    public void show(boolean hideKeyboard) {
+        show(defaultMessage, hideKeyboard, true);
     }
 
-    public void show(String message){
-        show(message, true);
+    public void show(String message) {
+        show(message, true, true);
     }
 
-    public void show(int resource, boolean hideKeyboard){
-        show(Helpers.resource.getString(resource), hideKeyboard);
+    public void show(int resource, boolean hideKeyboard) {
+        show(Helpers.resource.getString(resource), hideKeyboard, true);
     }
 
-    public void show(String message, boolean hideKeyboard) {
+    public void show(int resource, boolean hideKeyboard, boolean showDirect) {
+        show(Helpers.resource.getString(resource), hideKeyboard, showDirect);
+    }
+
+    public void show(String message, boolean hideKeyboard, boolean showDirect) {
+        if (!showDirect && isShowing) {
+            return;
+        }
+
+        isShowing = true;
+
         try {
-            rlLoading.post(() -> {
-                if (rlLoading.getVisibility() != View.VISIBLE) {
-                    rlLoading.setVisibility(View.VISIBLE);
+            if(showDirect){
+                rlLoading.post(() -> {
+                    if (rlLoading.getVisibility() != View.VISIBLE) {
+                        rlLoading.setVisibility(View.VISIBLE);
 
-                    if(hideKeyboard){
-                        Helpers.system.hideSoftKeyboard();
+                        if (hideKeyboard) {
+                            Helpers.system.hideSoftKeyboard();
+                        }
                     }
-                }
-            });
+                });
+            }else{
+                rlLoading.postDelayed(() -> {
+                    if (rlLoading.getVisibility() != View.VISIBLE) {
+                        if(isShowing){
+                            rlLoading.setVisibility(View.VISIBLE);
+                        }
+
+                        if (hideKeyboard) {
+                            Helpers.system.hideSoftKeyboard();
+                        }
+                    }
+                }, Config.LOADING_SHOW_DELAY);
+            }
         } catch (Exception e) {
             Helpers.logger.error(ErrorCodeConstants.LOADING_SHOW_WITH_MESSAGE, e);
         }
     }
 
     public void hide() {
+        if(!isShowing){
+            return;
+        }
+
+        isShowing = false;
+
         try {
             rlLoading.post(() -> {
                 if (rlLoading.getVisibility() == View.VISIBLE) {

@@ -715,5 +715,4 @@ public class MainActivity extends AppCompatActivity {
     27 - Onayladna sonra ana sayfaua at ( import - snackbar onay )
     28 - Aramada keyboard kayboluyor ( loading de keybard hide ı kapat )
     29 - Şifre sildikten sonramıne hata aldım ama nasıl aldığımı bilmiyorum
-    30 - Loadinge timing koyulabilirmi ? bekliyip bi süre sonra açsa yoksa refresh gibi gözüküyor
  */

@@ -25,6 +25,8 @@ public class Config {
     public static boolean CONFIG_ENABLE_INFO_LOG= true;
     public static boolean CONFIG_ENABLE_ERROR_LOG = true;
 
+    public static int LOADING_SHOW_DELAY = 300;
+
     public static void initConfig(){
         CONFIG_ONLY_LOGIN = Helpers.config.getBoolean("only_login", CONFIG_ONLY_LOGIN);
         CONFIG_HIDE_VIEW = Helpers.config.getBoolean("hide_view", CONFIG_HIDE_VIEW);
