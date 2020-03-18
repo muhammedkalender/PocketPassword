@@ -490,6 +490,9 @@ public class SettingsPage extends PageAbstract implements PageInterface {
 
                                 //region Yeniden Başlatmaya İhtiyaç Duymamak İçin Değişkenler Güncelleniyor
 
+                                //Global yeni şifre geçiliyor
+                                Global.PASSWORD = password;
+
                                 //Global çözücü değiştiriliyor
                                 Helpers.crypt = _cryptHelper;
 
@@ -560,11 +563,13 @@ public class SettingsPage extends PageAbstract implements PageInterface {
 
                         Helpers.loading.hide();
                     } catch (Exception e) {
+                        Helpers.loading.hide();
                         Helpers.logger.error(ErrorCodeConstants.SETTINGS_CHANGE_PASSWORD_ON_THREAD, e);
                     }
                 }).start();
 
             } catch (Exception e) {
+                Helpers.loading.hide();
                 Helpers.logger.error(ErrorCodeConstants.SETTINGS_CHANGE_PASSWORD, e);
             }
         });
@@ -654,6 +659,8 @@ public class SettingsPage extends PageAbstract implements PageInterface {
                         jsonFile.append(String.format("\"confirm_password\":\"%1$s\",",
                                 Helpers.aes.encrypt(Config.EXPORT_CONFIRM_TEXT, Global.PASSWORD).getDataAsString()));
 
+                        Helpers.logger.var("Export Şifre", Global.PASSWORD);
+
                         jsonFile.append("\"passwords\":[");
 
                         PasswordModel model = new PasswordModel();
@@ -662,7 +669,7 @@ public class SettingsPage extends PageAbstract implements PageInterface {
                         for (PasswordModel passwordModel : passwordModels) {
                             passwordModel.encrypt();
 
-                            jsonFile.append(String.format("{\"name\":\"%1$s\", \"account\":\"%2$s\", \"password\":\"%3$s\", \"category\"=\"%4$s\", \"color\":\"%5$s\", \"tint\":\"%6$s\", \"active\":\"%7$i\"},",
+                            jsonFile.append(String.format("{\"name\":\"%1$s\", \"account\":\"%2$s\", \"password\":\"%3$s\", \"category\"=\"%4$s\", \"color\":\"%5$s\", \"tint\":\"%6$s\", \"active\":\"%7$s\"},",
                                     passwordModel.getName(),
                                     passwordModel.getAccount(),
                                     passwordModel.getPassword(),

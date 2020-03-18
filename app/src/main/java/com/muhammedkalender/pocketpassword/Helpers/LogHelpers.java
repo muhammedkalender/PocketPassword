@@ -60,5 +60,22 @@ public class LogHelpers {
         }
     }
 
-    //endregion
+    public void info(String prefix, String message){
+        info(0, String.format(prefix, message));
+    }
+
+    public void var(String prefix, String value){
+        if(!Config.CONFIG_ENABLE_VAR_LOG){
+            return;
+        }
+
+        try{
+            Log.e("VAR_" + prefix, value);
+        }catch (Exception e){
+            //todo
+        }
+    }
+
+
+        //endregion
 }
