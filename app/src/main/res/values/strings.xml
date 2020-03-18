@@ -155,5 +155,6 @@
     <string name="hint_password_import">Yedeğin Şifresi</string>
     <string name="input_password_import">Yedek oluşturulduğu zaman kullandığınız şifreyi giriniz</string>
     <string name="success_export_backup">Başarıyla yedek alındı</string>
+    <string name="failure_export_null">Hiç şifreniz yok veya bir sorun oluştu</string>
 
 </resources>
