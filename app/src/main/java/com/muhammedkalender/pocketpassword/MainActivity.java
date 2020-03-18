@@ -463,9 +463,6 @@ public class MainActivity extends AppCompatActivity {
             tilMainPassword.setHelperText(Helpers.resource.getString(R.string.input_login_password));
             tilMainPassword.setHint(Helpers.resource.getString(R.string.hint_password_edit));
 
-            //TODO [TEST]
-            etMainPassword.setText("123456aA_");
-
             findViewById(R.id.btnLogin).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -733,4 +730,7 @@ public class MainActivity extends AppCompatActivity {
     26 - İnputlarda hata olunca refresh gibi flash çakıyor
     27 - Dialog butonlarının tasarımı değişekcek ( mavi - siyah pek şı kdeğil )
     27 - Onayladna sonra ana sayfaua at ( import - snackbar onay )
+    28 - Renk seçildiğinde inputların kenarlarının rengini dğeişmesi ?
+    29 - Kayıt yazım yanlışı ( şfr gibi bişey yazıyor )
+    30 - Giriş footer tarzı contact us - site linki vs..
  */

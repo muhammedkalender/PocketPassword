@@ -122,7 +122,8 @@ public class ErrorCodeConstants {
     //region Logger
 
     public static final int
-            LOGGER_INFO_WITH_MESSAGE = 5000;
+            LOGGER_INFO_WITH_MESSAGE = 5000,
+            LOGGER_VAR = 5001;
 
     //endregion
 

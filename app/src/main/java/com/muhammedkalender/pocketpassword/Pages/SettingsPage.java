@@ -90,17 +90,17 @@ public class SettingsPage extends PageAbstract implements PageInterface {
 
         //region Switches
 
-        switchOnlyLogin = this.viewRoot.findViewById(R.id.switchOnlyLogin);
-        switchOnlyLogin.setChecked(Config.CONFIG_ONLY_LOGIN);
-        switchOnlyLogin.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (Helpers.config.setBoolean("only_login", isChecked)) {
-                Config.CONFIG_ONLY_LOGIN = isChecked;
-
-                buttonView.setChecked(isChecked);
-            } else {
-                buttonView.setChecked(!isChecked);
-            }
-        });
+// TODO       switchOnlyLogin = this.viewRoot.findViewById(R.id.switchOnlyLogin);
+//        switchOnlyLogin.setChecked(Config.CONFIG_ONLY_LOGIN);
+//        switchOnlyLogin.setOnCheckedChangeListener((buttonView, isChecked) -> {
+//            if (Helpers.config.setBoolean("only_login", isChecked)) {
+//                Config.CONFIG_ONLY_LOGIN = isChecked;
+//
+//                buttonView.setChecked(isChecked);
+//            } else {
+//                buttonView.setChecked(!isChecked);
+//            }
+//        });
 
         switchHideView = this.viewRoot.findViewById(R.id.switchHideView);
         switchHideView.setChecked(Config.CONFIG_HIDE_VIEW);
