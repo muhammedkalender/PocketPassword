@@ -30,7 +30,7 @@ public class LoadingComponent {
 
     private String defaultMessage;
 
-    private boolean isShowing = false;
+    public boolean isShowing = false;
 
     //endregion
 

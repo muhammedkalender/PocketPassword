@@ -220,7 +220,35 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
 
     @Override
     public List select() {
-        return null;
+        ResultObject select = Helpers.database.cursor("SELECT * FROM " + table + " ORDER BY " + prefix + "_id DESC");
+
+        if (select.isSuccess()) {
+            Cursor cursor = (Cursor) select.getData();
+
+            Helpers.logger.info(String.format("Selected %1$s password from all", cursor.getCount()));
+
+            List passwords = new ArrayList();
+
+            while (cursor.moveToNext()) {
+                passwords.add(new PasswordModel(
+                        cursor.getInt(cursor.getColumnIndex(prefix + "_id")),
+                        cursor.getString(cursor.getColumnIndex(prefix + "_name")),
+                        cursor.getString(cursor.getColumnIndex(prefix + "_account")),
+                        cursor.getString(cursor.getColumnIndex(prefix + "_password")),
+                        Integer.parseInt(cursor.getString(cursor.getColumnIndex(prefix + "_color"))),
+                        Integer.parseInt(cursor.getString(cursor.getColumnIndex(prefix + "_tint_color"))),
+                        Integer.parseInt(cursor.getString(cursor.getColumnIndex(prefix + "_category"))),
+                        cursor.getInt(cursor.getColumnIndex(prefix + "_active")) == 1
+
+                ));
+            }
+
+            return passwords;
+        } else {
+            Toast.makeText(Global.CONTEXT, R.string.failure_load_list, Toast.LENGTH_SHORT).show();
+
+            return new ArrayList();
+        }
     }
 
     @Override
@@ -433,6 +461,8 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
         if (isDecrypted()) {
             return;
         }
+
+        Helpers.logger.info("Model Decrypt Girildi");
 
         this.account = cryptHelper.quickDecrypt(this.account);
         this.password = cryptHelper.quickDecrypt(this.password);

@@ -148,7 +148,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="textPassword"
-                        android:imeOptions="actionNext"
+                        android:imeOptions="actionDone"
                         android:maxLength="@integer/password_max_length"
                         android:maxLines="1" />
 

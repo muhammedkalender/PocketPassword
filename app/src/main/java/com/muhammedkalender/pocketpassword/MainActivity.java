@@ -199,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     //endregion
-
+                    Helpers.logger.var("Import Şifre", password);
                     Helpers.loading.show();
 
                     Helpers.system.hideSoftKeyboard();
@@ -253,12 +253,18 @@ public class MainActivity extends AppCompatActivity {
                                     _password.get("color").getAsInt(),
                                     _password.get("tint").getAsInt(),
                                     _password.get("category").getAsInt(),
-                                    _password.get("active").getAsBoolean()
+                                    _password.get("active").getAsInt() == 1
                             );
 
-                            Helpers.logger.info(-9999, _passwordModel.getDecryptedAccount());
+                            Helpers.logger.var("Yedek Yükleme Saf Şifre", _passwordModel.getPassword());
+
+                            _passwordModel.decrypt(cryptHelper);
+
+                            Helpers.logger.var("Yedek Yükleme Çözülmüş Şifre", _passwordModel.getPassword());
 
                             _passwordModel.encrypt(); //todo var burda bi bokluk
+
+                            Helpers.logger.var("Yedek Yükleme Şifrelenmiş Şifre", _passwordModel.getPassword());
 
                             ResultObject resultInsert = _passwordModel.insert();
 
@@ -267,7 +273,7 @@ public class MainActivity extends AppCompatActivity {
                             } else {
                                 _passwordModel.setId((int) resultInsert.getData());
 
-                                _passwordModel.decrypt(cryptHelper);
+                                _passwordModel.decrypt();
 
                                 Global.LIST_PASSWORDS.add(_passwordModel);
                                 Global.LIST_PASSWORDS_SOLID.add(_passwordModel);
@@ -334,6 +340,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        if(Helpers.loading.isShowing){
+            return;
+        }
+
         if (Global.TAB_LAYOUT.getSelectedTabPosition() == Config.TAB_HOME_INDEX) {
             super.onBackPressed();
         } else {
@@ -724,8 +734,8 @@ public class MainActivity extends AppCompatActivity {
     27 - Dialog butonlarının tasarımı değişekcek ( mavi - siyah pek şı kdeğil )
     27 - Onayladna sonra ana sayfaua at ( import - snackbar onay )
     29 - Şifre sildikten sonramıne hata aldım ama nasıl aldığımı bilmiyorum
-    30 - Loading varken on back pressi disable et
     31 - Şifre değiştirdi şifreler kend iarasında dönüyor, butona gitmiyor ( go next )
-    32 - Şifre dğeiştirtmede günceli değil select ile komple seç ( active galiba şuan )
     33 - Şifre değiştirip import edince ve swonra şifre değiştirip güncelelince patlıyormu ?
+    34 - Exportta 0 gelirse uyar
+    36 - AES / ARSA ÖZEL karakter kontrolü
  */
