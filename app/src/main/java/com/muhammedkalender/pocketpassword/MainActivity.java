@@ -733,5 +733,4 @@ public class MainActivity extends AppCompatActivity {
     26 - İnputlarda hata olunca refresh gibi flash çakıyor
     27 - Dialog butonlarının tasarımı değişekcek ( mavi - siyah pek şı kdeğil )
     27 - Onayladna sonra ana sayfaua at ( import - snackbar onay )
-    36 - AES / ARSA ÖZEL karakter kontrolü
  */
