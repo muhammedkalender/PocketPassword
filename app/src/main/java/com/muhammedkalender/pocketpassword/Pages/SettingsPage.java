@@ -666,6 +666,14 @@ public class SettingsPage extends PageAbstract implements PageInterface {
                         PasswordModel model = new PasswordModel();
                         List<PasswordModel> passwordModels = model.select();
 
+                        if(passwordModels.size() == 0){
+                            Toast.makeText(Global.CONTEXT, R.string.failure_export_null, Toast.LENGTH_LONG).show();
+
+                            Helpers.loading.hide();
+
+                            return;
+                        }
+
                         for (PasswordModel passwordModel : passwordModels) {
                             passwordModel.encrypt();
 

@@ -733,9 +733,5 @@ public class MainActivity extends AppCompatActivity {
     26 - İnputlarda hata olunca refresh gibi flash çakıyor
     27 - Dialog butonlarının tasarımı değişekcek ( mavi - siyah pek şı kdeğil )
     27 - Onayladna sonra ana sayfaua at ( import - snackbar onay )
-    29 - Şifre sildikten sonramıne hata aldım ama nasıl aldığımı bilmiyorum
-    31 - Şifre değiştirdi şifreler kend iarasında dönüyor, butona gitmiyor ( go next )
-    33 - Şifre değiştirip import edince ve swonra şifre değiştirip güncelelince patlıyormu ?
-    34 - Exportta 0 gelirse uyar
     36 - AES / ARSA ÖZEL karakter kontrolü
  */
