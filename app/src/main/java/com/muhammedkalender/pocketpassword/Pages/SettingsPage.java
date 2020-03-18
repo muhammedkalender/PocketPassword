@@ -664,15 +664,17 @@ public class SettingsPage extends PageAbstract implements PageInterface {
                         jsonFile.append("\"passwords\":[");
 
                         PasswordModel model = new PasswordModel();
-                        List<PasswordModel> passwordModels = model.select();
+                        int sizeActive = model.selectActive().size();
 
-                        if(passwordModels.size() == 0){
+                        if(sizeActive == 0){
                             Toast.makeText(Global.CONTEXT, R.string.failure_export_null, Toast.LENGTH_LONG).show();
 
                             Helpers.loading.hide();
 
                             return;
                         }
+
+                        List<PasswordModel> passwordModels = model.select();
 
                         for (PasswordModel passwordModel : passwordModels) {
                             passwordModel.encrypt();
@@ -694,7 +696,6 @@ public class SettingsPage extends PageAbstract implements PageInterface {
 
                         Helpers.logger.info(jsonFile.toString());
 
-                        //Gson gsonPasswords = new Gson();
                         Global.EXPORT_DATA = jsonFile.toString();
 
                         Intent intentExport = new Intent(Intent.ACTION_CREATE_DOCUMENT);

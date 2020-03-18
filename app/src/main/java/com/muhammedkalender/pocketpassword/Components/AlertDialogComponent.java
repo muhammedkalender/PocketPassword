@@ -95,7 +95,7 @@ public class AlertDialogComponent {
     //region Primary Methods
 
     public void show() {
-        dialogBuilder = new AlertDialog.Builder(Global.CONTEXT, R.style.Theme_MaterialComponents);
+        dialogBuilder = new AlertDialog.Builder(Global.CONTEXT, R.style.ThemeOverlay_MaterialComponents_Dark);
         dialogBuilder.setTitle(title);
         dialogBuilder.setMessage(message);
 
