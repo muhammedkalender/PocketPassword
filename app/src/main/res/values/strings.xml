@@ -108,6 +108,9 @@
     <string name="category_computer">Bilgisayar</string>
     <string name="category_service">Servisler</string>
     <string name="category_other">Diğerleri</string>
+    <string name="category_e_commerce">E - Ticaret</string>
+    <string name="category_governor">Resmi</string>
+    <string name="category_licence">Lisans</string>
     <string name="select_category">Bir kategori seçiniz</string>
 
     <string name="select_category_cancel">Vazgeç</string>

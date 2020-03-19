@@ -578,6 +578,9 @@ public class MainActivity extends AppCompatActivity {
                                     new CategoryModel(Helpers.resource.getString(R.string.category_app), Helpers.resource.getColor(R.color.red), Helpers.resource.getColor(R.color.tintRed), true),
                                     new CategoryModel(Helpers.resource.getString(R.string.category_computer), Helpers.resource.getColor(R.color.green), Helpers.resource.getColor(R.color.tintGreen), true),
                                     new CategoryModel(Helpers.resource.getString(R.string.category_service), Helpers.resource.getColor(R.color.deepOrange), Helpers.resource.getColor(R.color.tintDeepOrange), true),
+                                    new CategoryModel(Helpers.resource.getString(R.string.category_e_commerce), Helpers.resource.getColor(R.color.teal), Helpers.resource.getColor(R.color.tintTeal), true),
+                                    new CategoryModel(Helpers.resource.getString(R.string.category_governor), Helpers.resource.getColor(R.color.purple), Helpers.resource.getColor(R.color.tintPurple), true),
+                                    new CategoryModel(Helpers.resource.getString(R.string.category_licence), Helpers.resource.getColor(R.color.brown), Helpers.resource.getColor(R.color.tintBrown), true)
                             };
 
                             for (int i = 0; i < categoryModels.length; i++) {
@@ -639,7 +642,6 @@ public class MainActivity extends AppCompatActivity {
                     new ColorObject(Helpers.resource.getColor(R.color.purple), Helpers.resource.getColor(R.color.tintPurple)),
                     new ColorObject(Helpers.resource.getColor(R.color.deepOrange), Helpers.resource.getColor(R.color.tintDeepOrange)),
                     new ColorObject(Helpers.resource.getColor(R.color.brown), Helpers.resource.getColor(R.color.tintBrown)),
-                    new ColorObject(Helpers.resource.getColor(R.color.green), Helpers.resource.getColor(R.color.tintGreen))
             };
 
             //region Declare UI Components
@@ -723,8 +725,6 @@ public class MainActivity extends AppCompatActivity {
     33 - Toastlarda kopyalama işlemlerinde vs.. daha b elirgin yap, ismin ilk 16 karakteri vs...
     34 - Lisanslar vs.. tazı kategoride olabilir :) pratik olur öyle
     36 - Şifre değiştirmede uyaruı ( veriler gidebilir diye )
-    37 - İmprotta uyarı veriler gidebilir diye
-    38 - Exportta uyarı veriler gidebilir diye
-    40 - Şifre düzenleme hatalar şifre değiştirincede duruyoır ( sıfırlaması lazım ) ?
+    40 - Şifre düzenleme hatalar şifre değiştirincede duruyoır ( sıfırlaması lazım ) ? İnput Hataları
 
  */
