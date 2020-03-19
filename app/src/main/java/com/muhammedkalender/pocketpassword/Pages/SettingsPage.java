@@ -258,298 +258,18 @@ public class SettingsPage extends PageAbstract implements PageInterface {
                     }
                 }
 
-                ((Activity) Global.CONTEXT).runOnUiThread(() -> {
-                    etChangePassword.setText("");
-                    tilChangePassword.setErrorEnabled(false);
-                    etChangePasswordRepeat.setText("");
-                    tilChangePasswordRepeat.setErrorEnabled(false);
+                AlertDialog.Builder alert = new AlertDialog.Builder(Global.CONTEXT);
+                alert.setTitle(R.string.dialog_change_password_title);
+                alert.setMessage(R.string.dialog_change_password);
+                alert.setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
+                    changePassword(password);
+
+                    dialog.dismiss();
                 });
 
-                Helpers.loading.show();
+                alert.setNeutralButton(R.string.dialog_cancel, (dialog, which) -> dialog.dismiss());
 
-                //endregion
-
-                new Thread(() -> {
-                    try {
-                        //region Ön Şifrelem Elemanları Ayarlarnıyor
-
-                        //Yeni şifreler türetiliyor
-                        CryptHelper cryptHelper = new CryptHelper();
-                        cryptHelper.generateKeys();
-
-                        AESHelper aesHelper = new AESHelper();
-
-                        String encryptedPrivateKey = (String) aesHelper.encrypt(
-                                ((String) cryptHelper.keyToString(cryptHelper.getPrivateKey()).getData())
-                                , password).getData();
-
-                        //cryptHelper.setPrivateKey((String) aesHelper.decrypt(encryptedPrivateKey, password).getData());
-
-                        String encryptedPublicKey = (String) aesHelper.encrypt(
-                                ((String) cryptHelper.keyToString(cryptHelper.getPublicKey()).getData())
-                                , password).getData();
-
-                        //cryptHelper.setPublicKey((String) aesHelper.decrypt(encryptedPublicKey, password).getData());
-
-
-                        //Yeni şifrelerle hazırlanmış şifreleme sınıfı
-                        //Decode - Encode sırasında problem oluşursah ata almak için ayrı sınıf kullanılıyor
-                        CryptHelper _cryptHelper = new CryptHelper();
-                        _cryptHelper.setPublicKey(
-                                (String) aesHelper.decrypt(
-                                        encryptedPublicKey, password
-                                ).getData()
-                        );
-
-                        _cryptHelper.setPrivateKey(
-                                (String) aesHelper.decrypt(
-                                        encryptedPrivateKey, password
-                                ).getData()
-                        );
-
-                        //endregion
-
-                        //region Listeler Çıkartılıyor
-
-                        //Şifrelerin listesi çekiliyor
-                        //Mantık : Şifre listesi > Şifre Decode > Yeni Şifre İle Encode
-                        PasswordModel passwordModelHelper = new PasswordModel();
-                        List<PasswordModel> passwordModels = passwordModelHelper.select();
-
-                        //Hata durumunda geri dönebilmek için, modellerin yedeği alınıyor
-                        List<PasswordModel> _passwordModels = passwordModels;
-
-
-                        //Hata oluşursa listeye ve sayaça işliyecek
-                        int errorCount = 0, indexProcess = 0;
-                        List<PasswordModel> listFailureModels = new ArrayList<>();
-                        boolean[] isProcessed = new boolean[passwordModels.size()];
-
-                        //endregion
-
-                        //region Şifreleme Deneniyor
-
-                        for (PasswordModel passwordModel : passwordModels) {
-                            //Hesap & Şifre decode ediliyor
-                            passwordModel.decrypt();
-
-                            //Hesap & Şifre yeni şifre ile encode ediliyor
-                            ResultObject resultEncryptAccount = _cryptHelper.encrypt(passwordModel.getAccount());
-                            ResultObject resultEncryptPassword = _cryptHelper.encrypt(passwordModel.getPassword());
-
-                            //Hata kontrolü
-                            if (resultEncryptAccount.isFailure() || resultEncryptPassword.isFailure()) {
-                                errorCount++;
-                                listFailureModels.add(passwordModel);
-                            }
-                        }
-
-                        //endregion
-
-                        //Ön Deoode ve Encode işlemi gibi düşünülebilir
-                        //Muhtemelen şimdiki işlem sırasındada hata alınmayacak, önceden denenmiş oldu
-                        if (errorCount != 0) {
-                            //region Ön Denemede Hata Oluştu
-
-                            //Ön denemede sorun oluştu, muhtemelen asıl denemedede sorun oluşacak, işlem iptal ediliyor
-
-                            new AlertDialogComponent()
-                                    .setTitle(R.string.title_failure_change_password)
-                                    .setMessage(R.string.message_failure_change_password__pre_error)
-                                    .show();
-
-                            Helpers.loading.hide();
-
-                            return;
-
-                            //endregion
-                        } else {
-                            //region Şifreler güncelleniyor
-
-                            //Yeni işlemlerde hata kontrolü yapabilmek için liste ve sayaç sıfırlanıyor
-                            listFailureModels.clear();
-                            errorCount = 0;
-
-                            for (PasswordModel passwordModel : passwordModels) {
-                                //Öncelikle şifreli veriler çözülüyor
-                                passwordModel.decrypt();
-
-                                //Hesap & Şifre şifreleniyor
-                                ResultObject resultEncryptAccount = _cryptHelper.encrypt(passwordModel.getAccount());
-                                ResultObject resultEncryptPassword = _cryptHelper.encrypt(passwordModel.getPassword());
-
-                                if (resultEncryptAccount.isFailure() || resultEncryptPassword.isFailure()) {
-                                    errorCount++;
-                                    listFailureModels.add(passwordModel);
-
-                                    continue;
-                                }
-
-                                //Yeniden şifrelenmiş Hesap & Şifre String olarak alınıyor
-                                String strEncryptedAccount = resultEncryptAccount.getDataAsString();
-                                String strEncryptedPassword = resultEncryptPassword.getDataAsString();
-
-                                //Manuel olarak şifreli veriler girileceğindne modelin çözümü false yapılıyor
-                                passwordModel.setDecrypted(false);
-
-                                //Şifreli veriler modele aktarılıyor
-                                passwordModel.setAccount(strEncryptedAccount);
-                                passwordModel.setPassword(strEncryptedPassword);
-
-                                //Update ile yeni veriler veritabanına aktarılıyor
-                                ResultObject resultUpdate = passwordModel.update();
-
-                                if (resultUpdate.isFailure()) {
-                                    //İlgili modelin işlendiğini işaretliyoruz, hata durumunda geri dönmek için
-                                    errorCount++;
-                                    listFailureModels.add(passwordModel);
-                                    isProcessed[indexProcess++] = true;
-                                } else {
-                                    //İlgili modelin işlendiğini işaretliyoruz, hata durumunda geri dönmek için
-                                    isProcessed[indexProcess++] = true;
-                                }
-                            }
-
-                            //endregion
-
-                            if (errorCount == 0) {
-                                //Hata olmadan tüm veriler aktarıldı demek
-
-                                //region region Keyler Ayarlanıyor
-
-                                //Set edilecek dataların yedeği
-
-                                String _privateKey = Helpers.config.getString(ConfigKeys.PRIVATE_KEY);
-                                String _publicKey = Helpers.config.getString(ConfigKeys.PUBLIC_KEY);
-                                String _confirmPassword = Helpers.config.getString(ConfigKeys.CONFIRM_TEXT);
-
-                                //Yeni şifre ayarlara geçiliyor
-                                boolean setPrivateKey = Helpers.config.setString(ConfigKeys.PRIVATE_KEY, encryptedPrivateKey);
-                                boolean setPublicKey = Helpers.config.setString(ConfigKeys.PUBLIC_KEY, encryptedPublicKey);
-
-                                //Şifre onaylama metni ayarlara geçiliyor
-                                boolean setConfirmPassword = Helpers.config.setString(ConfigKeys.CONFIRM_TEXT,
-                                        aesHelper.encrypt(
-                                                _cryptHelper.quickEncrypt(
-                                                        _cryptHelper.generateValidationText()
-                                                ),
-                                                password).getDataAsString()
-                                );
-
-                                if (!setPrivateKey || !setPublicKey || !setConfirmPassword) {
-                                    //Yeni şifreler set edilirken sorun oluştu
-
-                                    //Tekrar deneniyor
-                                    setPrivateKey = Helpers.config.setString(ConfigKeys.PRIVATE_KEY, encryptedPrivateKey);
-                                    setPublicKey = Helpers.config.setString(ConfigKeys.PUBLIC_KEY, encryptedPublicKey);
-                                    setConfirmPassword = Helpers.config.setString(ConfigKeys.CONFIRM_TEXT,
-                                            aesHelper.encrypt(
-                                                    _cryptHelper.quickEncrypt(
-                                                            _cryptHelper.generateValidationText()
-                                                    ),
-                                                    password).getDataAsString()
-                                    );
-
-                                    if (!setPrivateKey || !setPublicKey || !setConfirmPassword) {
-                                        //Tekrar patladı
-
-                                        Helpers.config.setString(ConfigKeys.PRIVATE_KEY, _privateKey);
-                                        Helpers.config.setString(ConfigKeys.PUBLIC_KEY, _publicKey);
-                                        Helpers.config.setString(ConfigKeys.CONFIRM_TEXT, _confirmPassword);
-
-                                        new AlertDialogComponent()
-                                                .setTitle(R.string.title_failure_change_password)
-                                                .setMessage(R.string.message_failure_change_password_set_data)
-                                                .show();
-
-                                        Helpers.loading.hide();
-
-                                        return;
-                                    }
-                                }
-
-                                //endregion
-
-                                //region Yeniden Başlatmaya İhtiyaç Duymamak İçin Değişkenler Güncelleniyor
-
-                                //Global yeni şifre geçiliyor
-                                Global.PASSWORD = password;
-
-                                //Global çözücü değiştiriliyor
-                                Helpers.crypt = _cryptHelper;
-
-                                PasswordModel passwordModel = new PasswordModel();
-
-                                //Yeni veriler veritabanından çekiliyor
-                                List<PasswordModel> list = passwordModel.selectActive();
-
-                                //Listeler temizlenip yeni veriler çekiliyor
-                                Global.LIST_PASSWORDS.clear();
-                                Global.LIST_PASSWORDS.addAll(list);
-                                Global.LIST_PASSWORDS_SOLID.clear();
-                                Global.LIST_PASSWORDS_SOLID.addAll(list);
-
-                                //Adaptör uyarılıyor
-                                Global.PASSWORD_ADAPTER.notifyDataSetChanged();
-
-                                //Filtre yeniden yükleniyor
-                                Global.PAGE_HOME.filter("");
-
-                                //endregion
-
-                                new AlertDialogComponent()
-                                        .setTitle(R.string.title_success_change_password)
-                                        .setMessage(R.string.message_success_change_password)
-                                        .show();
-                            } else {
-                                //Hata alındı, dataların silinmesi gerekiyor
-
-                                //region Geri Dönme Deneniyor
-
-                                //Geri dönmedeki hata sayısı
-                                int _errorCount = 0;
-
-                                for (int i = 0; i < indexProcess; i++) {
-                                    //Veriler şifreleniyor
-                                    _passwordModels.get(i).encrypt();
-
-                                    //Update işlemi yapılıyor
-                                    ResultObject resultRevertPassword = _passwordModels.get(i).update();
-
-                                    //Hata kontrolü yapılıyor
-                                    if (resultRevertPassword.isFailure()) {
-                                        _errorCount++;
-                                    }
-                                }
-
-                                if (_errorCount == 0) {
-                                    //Hata ile karşılaşıldı ve başarıyla geri dönüldü
-
-                                    new AlertDialogComponent()
-                                            .setTitle(R.string.title_failure_change_password)
-                                            .setMessage(R.string.message_failure_change_password_and_revert)
-                                            .show();
-
-                                } else {
-                                    //Hata ile karşılaşıldı ve dönüştede hata oluştu
-
-                                    new AlertDialogComponent()
-                                            .setTitle(R.string.title_failure_change_password)
-                                            .setMessage(R.string.message_failure_change_password_and_failure_revert)
-                                            .show();
-                                }
-
-                                //endregion
-                            }
-                        }
-
-                        Helpers.loading.hide();
-                    } catch (Exception e) {
-                        Helpers.loading.hide();
-                        Helpers.logger.error(ErrorCodeConstants.SETTINGS_CHANGE_PASSWORD_ON_THREAD, e);
-                    }
-                }).start();
-
+                alert.show();
             } catch (Exception e) {
                 Helpers.loading.hide();
                 Helpers.logger.error(ErrorCodeConstants.SETTINGS_CHANGE_PASSWORD, e);
@@ -734,6 +454,304 @@ public class SettingsPage extends PageAbstract implements PageInterface {
             Helpers.logger.error(ErrorCodeConstants.BACKUP_IMPORT, e);
             //todo
         }
+    }
+
+    //endregion
+
+    //region Password
+
+    public void changePassword(String password) {
+        ((Activity) Global.CONTEXT).runOnUiThread(() -> {
+            etChangePassword.setText("");
+            tilChangePassword.setErrorEnabled(false);
+            etChangePasswordRepeat.setText("");
+            tilChangePasswordRepeat.setErrorEnabled(false);
+        });
+
+        Helpers.loading.show();
+
+        //endregion
+
+        new Thread(() -> {
+            try {
+                //region Ön Şifrelem Elemanları Ayarlarnıyor
+
+                //Yeni şifreler türetiliyor
+                CryptHelper cryptHelper = new CryptHelper();
+                cryptHelper.generateKeys();
+
+                AESHelper aesHelper = new AESHelper();
+
+                String encryptedPrivateKey = (String) aesHelper.encrypt(
+                        ((String) cryptHelper.keyToString(cryptHelper.getPrivateKey()).getData())
+                        , password).getData();
+
+                //cryptHelper.setPrivateKey((String) aesHelper.decrypt(encryptedPrivateKey, password).getData());
+
+                String encryptedPublicKey = (String) aesHelper.encrypt(
+                        ((String) cryptHelper.keyToString(cryptHelper.getPublicKey()).getData())
+                        , password).getData();
+
+                //cryptHelper.setPublicKey((String) aesHelper.decrypt(encryptedPublicKey, password).getData());
+
+
+                //Yeni şifrelerle hazırlanmış şifreleme sınıfı
+                //Decode - Encode sırasında problem oluşursah ata almak için ayrı sınıf kullanılıyor
+                CryptHelper _cryptHelper = new CryptHelper();
+                _cryptHelper.setPublicKey(
+                        (String) aesHelper.decrypt(
+                                encryptedPublicKey, password
+                        ).getData()
+                );
+
+                _cryptHelper.setPrivateKey(
+                        (String) aesHelper.decrypt(
+                                encryptedPrivateKey, password
+                        ).getData()
+                );
+
+                //endregion
+
+                //region Listeler Çıkartılıyor
+
+                //Şifrelerin listesi çekiliyor
+                //Mantık : Şifre listesi > Şifre Decode > Yeni Şifre İle Encode
+                PasswordModel passwordModelHelper = new PasswordModel();
+                List<PasswordModel> passwordModels = passwordModelHelper.select();
+
+                //Hata durumunda geri dönebilmek için, modellerin yedeği alınıyor
+                List<PasswordModel> _passwordModels = passwordModels;
+
+
+                //Hata oluşursa listeye ve sayaça işliyecek
+                int errorCount = 0, indexProcess = 0;
+                List<PasswordModel> listFailureModels = new ArrayList<>();
+                boolean[] isProcessed = new boolean[passwordModels.size()];
+
+                //endregion
+
+                //region Şifreleme Deneniyor
+
+                for (PasswordModel passwordModel : passwordModels) {
+                    //Hesap & Şifre decode ediliyor
+                    passwordModel.decrypt();
+
+                    //Hesap & Şifre yeni şifre ile encode ediliyor
+                    ResultObject resultEncryptAccount = _cryptHelper.encrypt(passwordModel.getAccount());
+                    ResultObject resultEncryptPassword = _cryptHelper.encrypt(passwordModel.getPassword());
+
+                    //Hata kontrolü
+                    if (resultEncryptAccount.isFailure() || resultEncryptPassword.isFailure()) {
+                        errorCount++;
+                        listFailureModels.add(passwordModel);
+                    }
+                }
+
+                //endregion
+
+                //Ön Deoode ve Encode işlemi gibi düşünülebilir
+                //Muhtemelen şimdiki işlem sırasındada hata alınmayacak, önceden denenmiş oldu
+                if (errorCount != 0) {
+                    //region Ön Denemede Hata Oluştu
+
+                    //Ön denemede sorun oluştu, muhtemelen asıl denemedede sorun oluşacak, işlem iptal ediliyor
+
+                    new AlertDialogComponent()
+                            .setTitle(R.string.title_failure_change_password)
+                            .setMessage(R.string.message_failure_change_password__pre_error)
+                            .show();
+
+                    Helpers.loading.hide();
+
+                    return;
+
+                    //endregion
+                } else {
+                    //region Şifreler güncelleniyor
+
+                    //Yeni işlemlerde hata kontrolü yapabilmek için liste ve sayaç sıfırlanıyor
+                    listFailureModels.clear();
+                    errorCount = 0;
+
+                    for (PasswordModel passwordModel : passwordModels) {
+                        //Öncelikle şifreli veriler çözülüyor
+                        passwordModel.decrypt();
+
+                        //Hesap & Şifre şifreleniyor
+                        ResultObject resultEncryptAccount = _cryptHelper.encrypt(passwordModel.getAccount());
+                        ResultObject resultEncryptPassword = _cryptHelper.encrypt(passwordModel.getPassword());
+
+                        if (resultEncryptAccount.isFailure() || resultEncryptPassword.isFailure()) {
+                            errorCount++;
+                            listFailureModels.add(passwordModel);
+
+                            continue;
+                        }
+
+                        //Yeniden şifrelenmiş Hesap & Şifre String olarak alınıyor
+                        String strEncryptedAccount = resultEncryptAccount.getDataAsString();
+                        String strEncryptedPassword = resultEncryptPassword.getDataAsString();
+
+                        //Manuel olarak şifreli veriler girileceğindne modelin çözümü false yapılıyor
+                        passwordModel.setDecrypted(false);
+
+                        //Şifreli veriler modele aktarılıyor
+                        passwordModel.setAccount(strEncryptedAccount);
+                        passwordModel.setPassword(strEncryptedPassword);
+
+                        //Update ile yeni veriler veritabanına aktarılıyor
+                        ResultObject resultUpdate = passwordModel.update();
+
+                        if (resultUpdate.isFailure()) {
+                            //İlgili modelin işlendiğini işaretliyoruz, hata durumunda geri dönmek için
+                            errorCount++;
+                            listFailureModels.add(passwordModel);
+                            isProcessed[indexProcess++] = true;
+                        } else {
+                            //İlgili modelin işlendiğini işaretliyoruz, hata durumunda geri dönmek için
+                            isProcessed[indexProcess++] = true;
+                        }
+                    }
+
+                    //endregion
+
+                    if (errorCount == 0) {
+                        //Hata olmadan tüm veriler aktarıldı demek
+
+                        //region region Keyler Ayarlanıyor
+
+                        //Set edilecek dataların yedeği
+
+                        String _privateKey = Helpers.config.getString(ConfigKeys.PRIVATE_KEY);
+                        String _publicKey = Helpers.config.getString(ConfigKeys.PUBLIC_KEY);
+                        String _confirmPassword = Helpers.config.getString(ConfigKeys.CONFIRM_TEXT);
+
+                        //Yeni şifre ayarlara geçiliyor
+                        boolean setPrivateKey = Helpers.config.setString(ConfigKeys.PRIVATE_KEY, encryptedPrivateKey);
+                        boolean setPublicKey = Helpers.config.setString(ConfigKeys.PUBLIC_KEY, encryptedPublicKey);
+
+                        //Şifre onaylama metni ayarlara geçiliyor
+                        boolean setConfirmPassword = Helpers.config.setString(ConfigKeys.CONFIRM_TEXT,
+                                aesHelper.encrypt(
+                                        _cryptHelper.quickEncrypt(
+                                                _cryptHelper.generateValidationText()
+                                        ),
+                                        password).getDataAsString()
+                        );
+
+                        if (!setPrivateKey || !setPublicKey || !setConfirmPassword) {
+                            //Yeni şifreler set edilirken sorun oluştu
+
+                            //Tekrar deneniyor
+                            setPrivateKey = Helpers.config.setString(ConfigKeys.PRIVATE_KEY, encryptedPrivateKey);
+                            setPublicKey = Helpers.config.setString(ConfigKeys.PUBLIC_KEY, encryptedPublicKey);
+                            setConfirmPassword = Helpers.config.setString(ConfigKeys.CONFIRM_TEXT,
+                                    aesHelper.encrypt(
+                                            _cryptHelper.quickEncrypt(
+                                                    _cryptHelper.generateValidationText()
+                                            ),
+                                            password).getDataAsString()
+                            );
+
+                            if (!setPrivateKey || !setPublicKey || !setConfirmPassword) {
+                                //Tekrar patladı
+
+                                Helpers.config.setString(ConfigKeys.PRIVATE_KEY, _privateKey);
+                                Helpers.config.setString(ConfigKeys.PUBLIC_KEY, _publicKey);
+                                Helpers.config.setString(ConfigKeys.CONFIRM_TEXT, _confirmPassword);
+
+                                new AlertDialogComponent()
+                                        .setTitle(R.string.title_failure_change_password)
+                                        .setMessage(R.string.message_failure_change_password_set_data)
+                                        .show();
+
+                                Helpers.loading.hide();
+
+                                return;
+                            }
+                        }
+
+                        //endregion
+
+                        //region Yeniden Başlatmaya İhtiyaç Duymamak İçin Değişkenler Güncelleniyor
+
+                        //Global yeni şifre geçiliyor
+                        Global.PASSWORD = password;
+
+                        //Global çözücü değiştiriliyor
+                        Helpers.crypt = _cryptHelper;
+
+                        PasswordModel passwordModel = new PasswordModel();
+
+                        //Yeni veriler veritabanından çekiliyor
+                        List<PasswordModel> list = passwordModel.selectActive();
+
+                        //Listeler temizlenip yeni veriler çekiliyor
+                        Global.LIST_PASSWORDS.clear();
+                        Global.LIST_PASSWORDS.addAll(list);
+                        Global.LIST_PASSWORDS_SOLID.clear();
+                        Global.LIST_PASSWORDS_SOLID.addAll(list);
+
+                        //Adaptör uyarılıyor
+                        Global.PASSWORD_ADAPTER.notifyDataSetChanged();
+
+                        //Filtre yeniden yükleniyor
+                        Global.PAGE_HOME.filter("");
+
+                        //endregion
+
+                        new AlertDialogComponent()
+                                .setTitle(R.string.title_success_change_password)
+                                .setMessage(R.string.message_success_change_password)
+                                .show();
+                    } else {
+                        //Hata alındı, dataların silinmesi gerekiyor
+
+                        //region Geri Dönme Deneniyor
+
+                        //Geri dönmedeki hata sayısı
+                        int _errorCount = 0;
+
+                        for (int i = 0; i < indexProcess; i++) {
+                            //Veriler şifreleniyor
+                            _passwordModels.get(i).encrypt();
+
+                            //Update işlemi yapılıyor
+                            ResultObject resultRevertPassword = _passwordModels.get(i).update();
+
+                            //Hata kontrolü yapılıyor
+                            if (resultRevertPassword.isFailure()) {
+                                _errorCount++;
+                            }
+                        }
+
+                        if (_errorCount == 0) {
+                            //Hata ile karşılaşıldı ve başarıyla geri dönüldü
+
+                            new AlertDialogComponent()
+                                    .setTitle(R.string.title_failure_change_password)
+                                    .setMessage(R.string.message_failure_change_password_and_revert)
+                                    .show();
+
+                        } else {
+                            //Hata ile karşılaşıldı ve dönüştede hata oluştu
+
+                            new AlertDialogComponent()
+                                    .setTitle(R.string.title_failure_change_password)
+                                    .setMessage(R.string.message_failure_change_password_and_failure_revert)
+                                    .show();
+                        }
+
+                        //endregion
+                    }
+                }
+
+                Helpers.loading.hide();
+            } catch (Exception e) {
+                Helpers.loading.hide();
+                Helpers.logger.error(ErrorCodeConstants.SETTINGS_CHANGE_PASSWORD_ON_THREAD, e);
+            }
+        }).start();
     }
 
     //endregion
