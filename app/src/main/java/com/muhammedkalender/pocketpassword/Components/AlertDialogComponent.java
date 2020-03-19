@@ -1,9 +1,7 @@
 package com.muhammedkalender.pocketpassword.Components;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
-import android.view.View;
 
 import com.muhammedkalender.pocketpassword.Global;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;

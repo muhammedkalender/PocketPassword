@@ -1,24 +1,14 @@
 package com.muhammedkalender.pocketpassword.Components;
 
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.Looper;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.muhammedkalender.pocketpassword.Constants.ErrorCodeConstants;
-import com.muhammedkalender.pocketpassword.Global;
 import com.muhammedkalender.pocketpassword.Globals.Config;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
 import com.muhammedkalender.pocketpassword.R;
-
-import java.util.concurrent.CompletableFuture;
 
 //https://stackoverflow.com/a/22879207
 public class LoadingComponent {

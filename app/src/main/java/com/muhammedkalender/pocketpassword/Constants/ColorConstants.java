@@ -1,7 +1,5 @@
 package com.muhammedkalender.pocketpassword.Constants;
 
-import android.graphics.Color;
-
 import com.muhammedkalender.pocketpassword.Objects.ColorObject;
 
 public class ColorConstants {

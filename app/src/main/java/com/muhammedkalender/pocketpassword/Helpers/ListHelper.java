@@ -4,8 +4,6 @@ import com.muhammedkalender.pocketpassword.Global;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
 import com.muhammedkalender.pocketpassword.Models.PasswordModel;
 
-import java.security.PublicKey;
-
 public class ListHelper {
     public void findAndUpdate(PasswordModel findPasswordModel) {
         for (int i = 0; i < Global.LIST_PASSWORDS_SOLID.size(); i++) {

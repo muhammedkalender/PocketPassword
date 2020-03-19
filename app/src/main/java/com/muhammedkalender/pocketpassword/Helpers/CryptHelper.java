@@ -1,7 +1,6 @@
 package com.muhammedkalender.pocketpassword.Helpers;
 
 import android.util.Base64;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -10,23 +9,17 @@ import com.muhammedkalender.pocketpassword.Constants.ErrorCodeConstants;
 import com.muhammedkalender.pocketpassword.Global;
 import com.muhammedkalender.pocketpassword.Globals.Config;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
-import com.muhammedkalender.pocketpassword.MainActivity;
 import com.muhammedkalender.pocketpassword.Objects.ResultObject;
 
-import java.security.Key;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
-import java.security.MessageDigest;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.Arrays;
 
 import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
-import javax.xml.transform.Result;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 

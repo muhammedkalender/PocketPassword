@@ -1,14 +1,12 @@
 package com.muhammedkalender.pocketpassword.Pages.Password;
 
 import android.app.AlertDialog;
-import android.graphics.Color;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.HorizontalScrollView;
 import android.widget.ScrollView;
 
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.muhammedkalender.pocketpassword.Abstracts.PageAbstract;
@@ -19,16 +17,13 @@ import com.muhammedkalender.pocketpassword.Constants.ErrorCodeConstants;
 import com.muhammedkalender.pocketpassword.Global;
 import com.muhammedkalender.pocketpassword.Globals.Config;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
-import com.muhammedkalender.pocketpassword.Helpers.CryptHelper;
 import com.muhammedkalender.pocketpassword.Interfaces.PageInterface;
 import com.muhammedkalender.pocketpassword.Models.CategoryModel;
 import com.muhammedkalender.pocketpassword.Models.PasswordModel;
 import com.muhammedkalender.pocketpassword.Objects.ResultObject;
 import com.muhammedkalender.pocketpassword.R;
 
-import java.lang.reflect.Array;
 import java.util.List;
-import java.util.logging.Logger;
 
 public class NewPasswordPage extends PageAbstract implements PageInterface {
     //region Variables
@@ -237,7 +232,7 @@ public class NewPasswordPage extends PageAbstract implements PageInterface {
                 Helpers.loading.hide();
 
                 return;
-            } else if (passwordModel.checkDuplicate(name)) {
+            } else if (passwordModel.checkActiveDuplicate(name)) {
                 tilName.setError(Helpers.resource.getString(R.string.already_used, "", name));
 
                 Helpers.loading.hide();

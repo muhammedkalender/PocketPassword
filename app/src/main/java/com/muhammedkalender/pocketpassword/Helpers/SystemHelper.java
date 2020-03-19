@@ -1,8 +1,6 @@
 package com.muhammedkalender.pocketpassword.Helpers;
 
-import android.app.Activity;
 import android.content.Context;
-import android.inputmethodservice.InputMethodService;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 

@@ -1,12 +1,8 @@
 package com.muhammedkalender.pocketpassword.ui.main;
 
 import android.content.Context;
-import android.view.View;
-import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -15,7 +11,6 @@ import com.muhammedkalender.pocketpassword.Globals.Helpers;
 import com.muhammedkalender.pocketpassword.R;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
     private static final ArrayList<String> TAB_TITLES = new ArrayList();

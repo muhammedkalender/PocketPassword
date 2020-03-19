@@ -1,6 +1,5 @@
 package com.muhammedkalender.pocketpassword.Helpers;
 
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 
 import com.muhammedkalender.pocketpassword.Constants.ErrorCodeConstants;

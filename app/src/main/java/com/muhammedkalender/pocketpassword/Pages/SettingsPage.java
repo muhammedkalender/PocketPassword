@@ -1,33 +1,19 @@
 package com.muhammedkalender.pocketpassword.Pages;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.DialogFragment;
 
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.hypertrack.hyperlog.HLCallback;
 import com.hypertrack.hyperlog.HyperLog;
 import com.muhammedkalender.pocketpassword.Abstracts.PageAbstract;
 import com.muhammedkalender.pocketpassword.Components.AlertDialogComponent;
-import com.muhammedkalender.pocketpassword.Components.SnackbarComponent;
-import com.muhammedkalender.pocketpassword.Constants.ColorConstants;
 import com.muhammedkalender.pocketpassword.Constants.ConfigKeys;
 import com.muhammedkalender.pocketpassword.Constants.ErrorCodeConstants;
 import com.muhammedkalender.pocketpassword.Constants.RequestCodeConstants;
@@ -38,12 +24,9 @@ import com.muhammedkalender.pocketpassword.Helpers.AESHelper;
 import com.muhammedkalender.pocketpassword.Helpers.CryptHelper;
 import com.muhammedkalender.pocketpassword.Helpers.ValidationHelper;
 import com.muhammedkalender.pocketpassword.Interfaces.PageInterface;
-import com.muhammedkalender.pocketpassword.MainActivity;
 import com.muhammedkalender.pocketpassword.Models.PasswordModel;
-import com.muhammedkalender.pocketpassword.Objects.ColorObject;
 import com.muhammedkalender.pocketpassword.Objects.ResultObject;
 import com.muhammedkalender.pocketpassword.R;
-import com.muhammedkalender.pocketpassword.ui.main.SectionsPagerAdapter;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -53,8 +36,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
-import javax.crypto.spec.SecretKeySpec;
 
 public class SettingsPage extends PageAbstract implements PageInterface {
     //region UI Components
@@ -499,7 +480,7 @@ public class SettingsPage extends PageAbstract implements PageInterface {
                                 PasswordModel passwordModel = new PasswordModel();
 
                                 //Yeni veriler veritabanından çekiliyor
-                                List<PasswordModel> list = passwordModel.select();
+                                List<PasswordModel> list = passwordModel.selectActive();
 
                                 //Listeler temizlenip yeni veriler çekiliyor
                                 Global.LIST_PASSWORDS.clear();
