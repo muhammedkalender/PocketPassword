@@ -721,10 +721,8 @@ public class MainActivity extends AppCompatActivity {
     28 - Renk seçildiğinde inputların kenarlarının rengini dğeişmesi ?
     29 - Kayıt yazım yanlışı ( şfr gibi bişey yazıyor )
     30 - Giriş footer tarzı contact us - site linki vs..
-    31 - Alışveriş kategorisi
     33 - Toastlarda kopyalama işlemlerinde vs.. daha b elirgin yap, ismin ilk 16 karakteri vs...
-    34 - Lisanslar vs.. tazı kategoride olabilir :) pratik olur öyle
-    36 - Şifre değiştirmede uyaruı ( veriler gidebilir diye )
     40 - Şifre düzenleme hatalar şifre değiştirincede duruyoır ( sıfırlaması lazım ) ? İnput Hataları
+    41 - Onaylarda \n karakterleri felan kaldı hep onlara ayar çek
 
  */

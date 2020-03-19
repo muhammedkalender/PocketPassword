@@ -163,5 +163,7 @@
 
     <string name="confirm_import_backup">Dikkat !!!\nYedek yüklenirken mevcut verilerinizi kaybedebilirsiniz.\nLütfen yedek aldıktan sonra yedek yükleyin.</string>
     <string name="confirm_import_backup_title">Dikkat !!!</string>
+    <string name="dialog_change_password_title">Dikkat !!!</string>
+    <string name="dialog_change_password">Şifre değiştirirken verileri kaybedebilirsiniz.\\nLütfen değişmeden önce yedek alınız.\\nDevam etmek istiyormusunuz ?</string>
 
 </resources>
