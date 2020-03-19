@@ -68,6 +68,13 @@ public class AlertDialogComponent {
         return setDialogNegative(strCustomNegative, listenerCancel);
     }
 
+    public AlertDialogComponent setDialogNegative(int resCustomNegative, DialogInterface.OnClickListener listenerNegative) {
+        this.strDialogNegative = Helpers.resource.getString(resCustomNegative);
+        this.listenerCancel = listenerNegative;
+
+        return this;
+    }
+
     public AlertDialogComponent setDialogNegative(String strCustomNegative, DialogInterface.OnClickListener listenerNegative) {
         this.strDialogNegative = strCustomNegative;
         this.listenerCancel = listenerNegative;
@@ -77,6 +84,13 @@ public class AlertDialogComponent {
 
     public AlertDialogComponent setDialogPositive(String strCustomPositive) {
         return setDialogPositive(strCustomPositive, this.listenerConfirm);
+    }
+
+    public AlertDialogComponent setDialogPositive(int resCustomPositive, DialogInterface.OnClickListener listenerPositive) {
+        this.strDialogPositive = Helpers.resource.getString(resCustomPositive);
+        this.listenerConfirm = listenerPositive;
+
+        return this;
     }
 
     public AlertDialogComponent setDialogPositive(String strCustomPositive, DialogInterface.OnClickListener listenerPositive) {

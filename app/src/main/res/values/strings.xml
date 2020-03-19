@@ -158,4 +158,7 @@
     <string name="success_export_backup">Başarıyla yedek alındı</string>
     <string name="failure_export_null">Hiç şifreniz yok veya bir sorun oluştu</string>
 
+    <string name="confirm_import_backup">Dikkat !!!\nYedek yüklenirken mevcut verilerinizi kaybedebilirsiniz.\nLütfen yedek aldıktan sonra yedek yükleyin.</string>
+    <string name="confirm_import_backup_title">Dikkat !!!</string>
+
 </resources>

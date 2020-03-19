@@ -1,6 +1,7 @@
 package com.muhammedkalender.pocketpassword.Pages;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.view.View;
@@ -610,15 +611,18 @@ public class SettingsPage extends PageAbstract implements PageInterface {
         //region Import Backup
 
         this.viewRoot.findViewById(R.id.btnImportData).setOnClickListener(v -> {
-                    try {
-                        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                        intent.addCategory(Intent.CATEGORY_OPENABLE);
-                        intent.setType("*/*");
-                        ((Activity) Global.CONTEXT).startActivityForResult(intent, RequestCodeConstants.IMPORT_BACKUP_SELECTED_FILE);
-                    } catch (Exception e) {
-                        Helpers.logger.error(ErrorCodeConstants.BACKUP_IMPORT, e);
-                        //todo
-                    }
+                    AlertDialog.Builder alert = new AlertDialog.Builder(Global.CONTEXT);
+                    alert.setTitle(R.string.confirm_import_backup_title);
+                    alert.setMessage(R.string.confirm_import_backup);
+                    alert.setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
+                        importBackup();
+
+                        dialog.dismiss();
+                    });
+
+                    alert.setNeutralButton(R.string.dialog_cancel, (dialog, which) -> dialog.dismiss());
+
+                    alert.show();
                 }
         );
 
@@ -627,69 +631,7 @@ public class SettingsPage extends PageAbstract implements PageInterface {
         //region Export Backup
 
         this.viewRoot.findViewById(R.id.btnExportData).setOnClickListener(v -> {
-                    try {
-                        String fileName = new SimpleDateFormat("yyyyMMdd", Locale.getDefault()).format(new Date()) + ".pocketpassword";
-
-                        StringBuilder jsonFile = new StringBuilder();
-
-                        jsonFile.append("{");
-
-                        jsonFile.append(String.format("\"public_key\":\"%1$s\",",
-                                Helpers.config.getString(ConfigKeys.PUBLIC_KEY)));
-
-                        jsonFile.append(String.format("\"confirm_password\":\"%1$s\",",
-                                Helpers.aes.encrypt(Config.EXPORT_CONFIRM_TEXT, Global.PASSWORD).getDataAsString()));
-
-                        Helpers.logger.var("Export Şifre", Global.PASSWORD);
-
-                        jsonFile.append("\"passwords\":[");
-
-                        PasswordModel model = new PasswordModel();
-                        int sizeActive = model.selectActive().size();
-
-                        if(sizeActive == 0){
-                            Toast.makeText(Global.CONTEXT, R.string.failure_export_null, Toast.LENGTH_LONG).show();
-
-                            Helpers.loading.hide();
-
-                            return;
-                        }
-
-                        List<PasswordModel> passwordModels = model.select();
-
-                        for (PasswordModel passwordModel : passwordModels) {
-                            passwordModel.encrypt();
-
-                            jsonFile.append(String.format("{\"name\":\"%1$s\", \"account\":\"%2$s\", \"password\":\"%3$s\", \"category\"=\"%4$s\", \"color\":\"%5$s\", \"tint\":\"%6$s\", \"active\":\"%7$s\"},",
-                                    passwordModel.getName(),
-                                    passwordModel.getAccount(),
-                                    passwordModel.getPassword(),
-                                    passwordModel.getCategoryID(),
-                                    passwordModel.getColor(),
-                                    passwordModel.getTintColor(),
-                                    passwordModel.isActive() ? '1' : '0')
-                            );
-                        }
-
-                        jsonFile.append("]");
-
-                        jsonFile.append("}");
-
-                        Helpers.logger.info(jsonFile.toString());
-
-                        Global.EXPORT_DATA = jsonFile.toString();
-
-                        Intent intentExport = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-                        intentExport.addCategory(Intent.CATEGORY_OPENABLE);
-                        intentExport.setType("*/*");
-                        intentExport.putExtra(Intent.EXTRA_TITLE, fileName);
-
-                        ((Activity) Global.CONTEXT).startActivityForResult(intentExport, RequestCodeConstants.EXPORT_BACKUP_SELECTED_FILE);
-                    } catch (Exception e) {
-                        Global.EXPORT_DATA = "";
-                        Helpers.logger.error(ErrorCodeConstants.BACKUP_EXPORT, e);
-                        Toast.makeText(Global.CONTEXT, R.string.failure_export_data, Toast.LENGTH_SHORT).show();
-                    }
+                    exportBackup();
                 }
         );
 
@@ -706,6 +648,92 @@ public class SettingsPage extends PageAbstract implements PageInterface {
     @Override
     public View getView() {
         return viewRoot;
+    }
+
+    //endregion
+
+    //endregion
+
+    //region Primary Functions
+
+    //region Backup
+
+    public void exportBackup() {
+        try {
+            String fileName = new SimpleDateFormat("yyyyMMdd", Locale.getDefault()).format(new Date()) + ".pocketpassword";
+
+            StringBuilder jsonFile = new StringBuilder();
+
+            jsonFile.append("{");
+
+            jsonFile.append(String.format("\"public_key\":\"%1$s\",",
+                    Helpers.config.getString(ConfigKeys.PUBLIC_KEY)));
+
+            jsonFile.append(String.format("\"confirm_password\":\"%1$s\",",
+                    Helpers.aes.encrypt(Config.EXPORT_CONFIRM_TEXT, Global.PASSWORD).getDataAsString()));
+
+            Helpers.logger.var("Export Şifre", Global.PASSWORD);
+
+            jsonFile.append("\"passwords\":[");
+
+            PasswordModel model = new PasswordModel();
+            int sizeActive = model.selectActive().size();
+
+            if (sizeActive == 0) {
+                Toast.makeText(Global.CONTEXT, R.string.failure_export_null, Toast.LENGTH_LONG).show();
+
+                Helpers.loading.hide();
+
+                return;
+            }
+
+            List<PasswordModel> passwordModels = model.select();
+
+            for (PasswordModel passwordModel : passwordModels) {
+                passwordModel.encrypt();
+
+                jsonFile.append(String.format("{\"name\":\"%1$s\", \"account\":\"%2$s\", \"password\":\"%3$s\", \"category\"=\"%4$s\", \"color\":\"%5$s\", \"tint\":\"%6$s\", \"active\":\"%7$s\"},",
+                        passwordModel.getName(),
+                        passwordModel.getAccount(),
+                        passwordModel.getPassword(),
+                        passwordModel.getCategoryID(),
+                        passwordModel.getColor(),
+                        passwordModel.getTintColor(),
+                        passwordModel.isActive() ? '1' : '0')
+                );
+            }
+
+            jsonFile.append("]");
+
+            jsonFile.append("}");
+
+            Helpers.logger.info(jsonFile.toString());
+
+            Global.EXPORT_DATA = jsonFile.toString();
+
+            Intent intentExport = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+            intentExport.addCategory(Intent.CATEGORY_OPENABLE);
+            intentExport.setType("*/*");
+            intentExport.putExtra(Intent.EXTRA_TITLE, fileName);
+
+            ((Activity) Global.CONTEXT).startActivityForResult(intentExport, RequestCodeConstants.EXPORT_BACKUP_SELECTED_FILE);
+        } catch (Exception e) {
+            Global.EXPORT_DATA = "";
+            Helpers.logger.error(ErrorCodeConstants.BACKUP_EXPORT, e);
+            Toast.makeText(Global.CONTEXT, R.string.failure_export_data, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void importBackup() {
+        try {
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("*/*");
+            ((Activity) Global.CONTEXT).startActivityForResult(intent, RequestCodeConstants.IMPORT_BACKUP_SELECTED_FILE);
+        } catch (Exception e) {
+            Helpers.logger.error(ErrorCodeConstants.BACKUP_IMPORT, e);
+            //todo
+        }
     }
 
     //endregion
