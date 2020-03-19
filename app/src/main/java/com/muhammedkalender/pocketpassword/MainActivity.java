@@ -726,4 +726,6 @@ public class MainActivity extends AppCompatActivity {
     37 - İmprotta uyarı veriler gidebilir diye
     38 - Exportta uyarı veriler gidebilir diye
     39 - Yükleme aktifken tabı disable et ( sayfa değişiyor problem olabilir )
+    40 - Şifre düzenleme hatalar şifre değiştirincede duruyoır ( sıfırlaması lazım ) ?
+
  */

@@ -233,12 +233,6 @@ public class PasswordPage extends PageAbstract implements PageInterface {
 
             int category = listCategory.get(selectedCategoryIndex).getId();
 
-            passwordModel.setName(name);
-            passwordModel.setAccount(account);
-            passwordModel.setPassword(password);
-            passwordModel.setColor(-1);
-            passwordModel.setCategoryID(category);
-
             if (etName.getText().toString() == null || etName.getText().toString().length() == 0) {
                 tilName.setError(Helpers.resource.getString(R.string.not_null, "", Helpers.resource.getString(R.string.input_name)));
 

@@ -449,7 +449,7 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
         }
     }
 
-    public boolean checkActiveDuplicate(String nmae){
+    public boolean checkActiveDuplicate(String name){
         return checkActiveDuplicate(name, true);
     }
 
