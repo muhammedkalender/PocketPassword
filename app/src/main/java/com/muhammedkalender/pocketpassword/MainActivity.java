@@ -273,10 +273,12 @@ public class MainActivity extends AppCompatActivity {
                             } else {
                                 _passwordModel.setId((int) resultInsert.getData());
 
-                                _passwordModel.decrypt();
+                                if(_passwordModel.isActive()){
+                                    _passwordModel.decrypt();
 
-                                Global.LIST_PASSWORDS.add(_passwordModel);
-                                Global.LIST_PASSWORDS_SOLID.add(_passwordModel);
+                                    Global.LIST_PASSWORDS.add(_passwordModel);
+                                    Global.LIST_PASSWORDS_SOLID.add(_passwordModel);
+                                }
                             }
                         }
 
