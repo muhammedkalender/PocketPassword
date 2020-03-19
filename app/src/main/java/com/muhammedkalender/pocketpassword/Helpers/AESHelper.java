@@ -6,7 +6,6 @@ import com.muhammedkalender.pocketpassword.Constants.ErrorCodeConstants;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
 import com.muhammedkalender.pocketpassword.Objects.ResultObject;
 
-import java.security.Key;
 import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.Random;

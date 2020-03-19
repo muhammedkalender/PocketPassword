@@ -5,20 +5,19 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-
-import com.google.android.material.button.MaterialButton;
-
 import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -51,23 +50,12 @@ import com.muhammedkalender.pocketpassword.Objects.ColorObject;
 import com.muhammedkalender.pocketpassword.Objects.ResultObject;
 import com.muhammedkalender.pocketpassword.ui.main.SectionsPagerAdapter;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.view.Menu;
-import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.widget.Toast;
-
-import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.security.KeyPair;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -79,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
     public TextInputEditText etMainPassword, etMainPasswordRepeat;
 
     //endregion
+
+    //region Override Functions
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +89,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -155,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
                         .setPositiveButton("OK", null)
                         .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-
+//todo
                             }
                         })
                         .show();
@@ -326,21 +315,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_controller_view_tag);
-        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
-                || super.onSupportNavigateUp();
-
-    }
-
-    @Override
     public void onBackPressed() {
         if(Helpers.loading.isShowing){
             return;
@@ -353,6 +327,10 @@ public class MainActivity extends AppCompatActivity {
             Global.TAB_LAYOUT.getTabAt(Config.TAB_HOME_INDEX).select();
         }
     }
+
+    //endregion
+
+    //region Declare Global Helpers
 
     public boolean buildHelpers() throws IOException {
         Global.CONTEXT = this;
@@ -372,6 +350,10 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    //endregion
+
+    //region Declare UI Compoenents
+
     public boolean loadComponents() {
         tilMainPassword = findViewById(R.id.tilMainPassword);
         etMainPassword = findViewById(R.id.etMainPassword);
@@ -380,6 +362,8 @@ public class MainActivity extends AppCompatActivity {
 
         return true;
     }
+
+    //endregion
 
     //region Initializer
 
@@ -739,4 +723,9 @@ public class MainActivity extends AppCompatActivity {
     32 - İsim daha uzun olsa iyi olur
     33 - Toastlarda kopyalama işlemlerinde vs.. daha b elirgin yap, ismin ilk 16 karakteri vs...
     34 - Lisanslar vs.. tazı kategoride olabilir :) pratik olur öyle
+    35 - Şifre değiştirme vs.. için pasifleride listeye ekliyormu ?
+    36 - Şifre değiştirmede uyaruı ( veriler gidebilir diye )
+    37 - İmprotta uyarı veriler gidebilir diye
+    38 - Exportta uyarı veriler gidebilir diye
+    39 - Yükleme aktifken tabı disable et ( sayfa değişiyor problem olabilir )
  */

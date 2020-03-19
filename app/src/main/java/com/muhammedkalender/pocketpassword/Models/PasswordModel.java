@@ -449,6 +449,20 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
         }
     }
 
+    public boolean checkActiveDuplicate(String nmae){
+        return checkActiveDuplicate(name, true);
+    }
+
+    public boolean checkActiveDuplicate (String name, boolean ignoreCamelCase) {
+        ResultObject check = Helpers.database.isAvailable("SELECT * FROM passwords WHERE password_active = 1 AND password_name = '" + name + "'", "password_id", ignoreCamelCase);
+
+        if (check.isSuccess()) {
+            return (Boolean) check.getData();
+        } else {
+            return false;
+        }
+    }
+
     //endregion
 
     //region Quick Encrypt & Decrypt

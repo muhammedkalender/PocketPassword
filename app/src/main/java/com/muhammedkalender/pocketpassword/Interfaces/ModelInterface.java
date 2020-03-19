@@ -1,12 +1,7 @@
 package com.muhammedkalender.pocketpassword.Interfaces;
 
-import android.database.Cursor;
-
-import com.muhammedkalender.pocketpassword.Models.PasswordModel;
-import com.muhammedkalender.pocketpassword.Objects.ColumnObject;
 import com.muhammedkalender.pocketpassword.Objects.ResultObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface ModelInterface<T> {

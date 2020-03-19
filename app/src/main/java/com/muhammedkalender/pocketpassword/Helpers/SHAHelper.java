@@ -1,13 +1,9 @@
 package com.muhammedkalender.pocketpassword.Helpers;
 
-import android.util.Base64;
-
 import com.muhammedkalender.pocketpassword.Constants.ErrorCodeConstants;
 import com.muhammedkalender.pocketpassword.Objects.ResultObject;
 
 import java.security.MessageDigest;
-
-import javax.crypto.Cipher;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 

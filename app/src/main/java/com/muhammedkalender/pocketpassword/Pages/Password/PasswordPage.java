@@ -4,10 +4,6 @@ import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.location.Address;
-import android.text.InputType;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.HorizontalScrollView;
@@ -16,7 +12,6 @@ import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.muhammedkalender.pocketpassword.Abstracts.PageAbstract;
@@ -27,9 +22,7 @@ import com.muhammedkalender.pocketpassword.Constants.InfoCodeConstants;
 import com.muhammedkalender.pocketpassword.Global;
 import com.muhammedkalender.pocketpassword.Globals.Config;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
-import com.muhammedkalender.pocketpassword.Helpers.CryptHelper;
 import com.muhammedkalender.pocketpassword.Interfaces.PageInterface;
-import com.muhammedkalender.pocketpassword.MainActivity;
 import com.muhammedkalender.pocketpassword.Models.CategoryModel;
 import com.muhammedkalender.pocketpassword.Models.PasswordModel;
 import com.muhammedkalender.pocketpassword.Objects.ResultObject;
@@ -262,7 +255,7 @@ public class PasswordPage extends PageAbstract implements PageInterface {
 
                     Helpers.loading.hide();
                     return;
-                } else if (!oldName.equals(name) && passwordModel.checkDuplicate(name)) {
+                } else if (!oldName.equals(name) && passwordModel.checkActiveDuplicate(name)) {
                     tilName.setError(Helpers.resource.getString(R.string.already_used, "", name));
 
                     Helpers.loading.hide();

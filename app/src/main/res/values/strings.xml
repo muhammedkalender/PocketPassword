@@ -1,24 +1,11 @@
 <resources>
     <string name="app_name">Pocket Password</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
-
-    <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
-    <string name="menu_tools">Tools</string>
-    <string name="menu_share">Share</string>
-    <string name="menu_send">Send</string>
 
     <string name="hint_name">Hesap Adı</string>
     <string name="input_name">Eklemek istediğiniz hesabın adı</string>
-    <string name="hint_name_example">Banka, Mail, Sunucu</string>
+    <string name="hint_name_example">İş Mail, Gizli Soru, Bilgisayar Şifresi vs...</string>
 
-    <string name="already_used">%1$s zaten kullanılıyor</string>
+    <string name="already_used">%1$s isimli bir kayıt zaten var</string>
 
     <string name="input_password">Eklemek istediğiniz hesabın şifresi</string>
     <string name="hint_password">Hesap Şifresi</string>
@@ -47,45 +34,59 @@
     <string name="title_activity_login">Sign in</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="welcome">"Welcome !"</string>
-    <string name="invalid_username">Not a valid username</string>
-    <string name="invalid_password">Password must be >5 characters</string>
-    <string name="login_failed">"Login failed"</string>
+
     <string name="input_password_repeat_edit">Şifrenizi onaylamak için tekrar girin</string>
 
-    <string name="hint_password_repeat_edit">Hesap Şifresi Onayı</string>
+    <string name="hint_password_repeat_edit">Hesap Şifresi Tekrarı</string>
 
     <string name="button_login">Giriş Yap</string>
 
     <string name="button_confirm">Onayla</string>
 
-    <string name="hint_password_register_edit">Hssap Şifresi</string>
-    <string name="input_password_register_edit">Unutmanız durumunda şifrelere erişemeyebilirsiniz</string>
+    <string name="hint_password_register_edit">Uygulama Şifresi</string>
+
+    <string name="input_password_register_edit">DİKKAT! UNUTMANIZ DURUMUNDA VERİLERİNİZE ERİŞEMEZSİNİZ</string>
+
     <string name="password">Şifre</string>
+
     <string name="password_must_strong"><![CDATA[Şifrenizde büyük - küçük harf, sayı ve bir özel işaret olmalı. ($-_+=)]]></string>
-    <string name="password_not_match">Şifreler Uyuşmuyor</string>
-    <string name="input_login_password">İlk açılıştaki şifreniz</string>
+
+    <string name="password_not_match">Şifreler Aynı Değil</string>
+
+    <string name="input_login_password">Uygulamaya giriş şifresi</string>
+
     <string name="password_wrong">Lütfen şifrenizi kontrol edin,</string>
+
     <string name="example_name">Örnek Hesap</string>
     <string name="example_password">Ornek_Sifre</string>
+
     <string name="failure_update_password">Şifre güncellenirken sorun oluştu</string>
+
     <string name="success_update_password">Şifre başarıyla güncellendi</string>
+
     <string name="first_open_error">Uygulama ayarları yapılamadı. Lütfen kaldırıp tekrar deneyin.</string>
-    <string name="register_failure">Şifreler kaydedilemedi</string>
-    <string name="register_failure_1">Kayıt şifresi kaydedilemedi.</string>
-    <string name="register_failure_2">Şifreler kaydedilirken sorun oluştu.</string>
-    <string name="register_failure_3">Kayıt esnasında problem oluştu.</string>
-    <string name="password_wrong_1">Şifrenizde bir yanlışlık olabilir</string>
+
+    <string name="register_failure">Kayıt sırasında sorun oluştu. HK : 1</string>
+    <string name="register_failure_1">Kayıt sırasında sorun oluştu. HK : 2</string>
+    <string name="register_failure_2">Kayıt sırasında sorun oluştu. HK : 3</string>
+    <string name="register_failure_3">Kayıt sırasında sorun oluştu. HK : 4</string>
+
+    <string name="password_wrong_1">Şifrenizi doğru yazdığınıza emin olun</string>
+
     <string name="view_null">Sayfa yüklenirken sorun oluştu</string>
+
     <string name="failure_password_clipboard">Şifre kopyalanamadı</string>
+
     <string name="failure_load_list">Liste yüklenirken sorun oluştu</string>
+
     <string name="switch_disable_error_log">Hata loglarını aktif et</string>
     <string name="switch_disable_info_log">Bilgilendirme loglarını aktif et</string>
+
     <string name="example_account">ornek_hesap@mail.com</string>
+
     <string name="input_account">Hesap</string>
     <string name="account_name">Hesap</string>
+
     <string name="hint_account_edit">Giriş yapmak için kullanacağınız hesap</string>
     <string name="input_account_edit">Hesap</string>
     <string name="button_copy_account">HESABI KOPYALA</string>

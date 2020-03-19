@@ -1,6 +1,5 @@
 package com.muhammedkalender.pocketpassword.Components;
 
-import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
@@ -9,9 +8,7 @@ import android.widget.RelativeLayout;
 
 import com.google.android.material.button.MaterialButton;
 import com.muhammedkalender.pocketpassword.Constants.ColorConstants;
-import com.muhammedkalender.pocketpassword.Global;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
-import com.muhammedkalender.pocketpassword.Objects.ColorObject;
 import com.muhammedkalender.pocketpassword.R;
 
 public class ColorPickerComponent {

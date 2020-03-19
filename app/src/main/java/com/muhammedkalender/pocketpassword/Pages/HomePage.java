@@ -2,9 +2,6 @@ package com.muhammedkalender.pocketpassword.Pages;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.media.Image;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -24,14 +21,12 @@ import com.muhammedkalender.pocketpassword.Constants.ErrorCodeConstants;
 import com.muhammedkalender.pocketpassword.Global;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
 import com.muhammedkalender.pocketpassword.Interfaces.PageInterface;
-import com.muhammedkalender.pocketpassword.MainActivity;
 import com.muhammedkalender.pocketpassword.Models.CategoryModel;
 import com.muhammedkalender.pocketpassword.Models.PasswordModel;
 import com.muhammedkalender.pocketpassword.R;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 public class HomePage extends PageAbstract implements PageInterface {
     //region Variables
