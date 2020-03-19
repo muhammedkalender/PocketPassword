@@ -720,10 +720,8 @@ public class MainActivity extends AppCompatActivity {
     29 - Kayıt yazım yanlışı ( şfr gibi bişey yazıyor )
     30 - Giriş footer tarzı contact us - site linki vs..
     31 - Alışveriş kategorisi
-    32 - İsim daha uzun olsa iyi olur
     33 - Toastlarda kopyalama işlemlerinde vs.. daha b elirgin yap, ismin ilk 16 karakteri vs...
     34 - Lisanslar vs.. tazı kategoride olabilir :) pratik olur öyle
-    35 - Şifre değiştirme vs.. için pasifleride listeye ekliyormu ?
     36 - Şifre değiştirmede uyaruı ( veriler gidebilir diye )
     37 - İmprotta uyarı veriler gidebilir diye
     38 - Exportta uyarı veriler gidebilir diye
