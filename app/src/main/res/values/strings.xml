@@ -1,16 +1,169 @@
 <resources>
     <string name="app_name">Pocket Password</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
 
-    <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
-    <string name="menu_tools">Tools</string>
-    <string name="menu_share">Share</string>
-    <string name="menu_send">Send</string>
+    <string name="hint_name">Hesap Adı</string>
+    <string name="input_name">Eklemek istediğiniz hesabın adı</string>
+    <string name="hint_name_example">İş Mail, Gizli Soru, Bilgisayar Şifresi vs...</string>
+
+    <string name="already_used">%1$s isimli bir kayıt zaten var</string>
+
+    <string name="input_password">Eklemek istediğiniz hesabın şifresi</string>
+    <string name="hint_password">Hesap Şifresi</string>
+
+    <string name="button_add">Şifreyi Ekle</string>
+    <string name="button_save">Şifreyi Güncelle</string>
+
+    <string name="input_password_edit">Düzenlemek istediğiniz hesabın adı</string>
+    <string name="hint_password_edit">Hesap Şifresi</string>
+    <string name="hint_name_edit">Hesap Adı</string>
+    <string name="input_name_edit">Düzenlemek istediğiniz hesabın adı</string>
+
+    <string name="tab_add_password">EKLE</string>
+    <string name="tab_list_password">ŞİFRELER</string>
+    <string name="tab_settings">AYARLAR</string>
+    <string name="loading">İşlem Yapılıyor</string>
+    <string name="clipboard_title">Şifre</string>
+    <string name="password_clipboard">Şifre Kopyalanmıştır</string>
+    <string name="button_copy">Şifreyi Kopyala</string>
+    <string name="hint_text">TODO</string>
+    <string name="hint_search">Filtrelemek için yazın</string>
+    <string name="success_add_password">Yeni şifre başarıyla kayıt edildi</string>
+    <string name="action_ok">OK</string>
+    <string name="switch_remember">Sadece Girişte Şifre Sor</string>
+    <string name="switch_hide_view">Şifreyi doğrudan görüntülemeyi engelle</string>
+    <string name="title_activity_login">Sign in</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+
+    <string name="input_password_repeat_edit">Şifrenizi onaylamak için tekrar girin</string>
+
+    <string name="hint_password_repeat_edit">Hesap Şifresi Tekrarı</string>
+
+    <string name="button_login">Giriş Yap</string>
+
+    <string name="button_confirm">Onayla</string>
+
+    <string name="hint_password_register_edit">Uygulama Şifresi</string>
+
+    <string name="input_password_register_edit">DİKKAT! UNUTMANIZ DURUMUNDA VERİLERİNİZE ERİŞEMEZSİNİZ</string>
+
+    <string name="password">Şifre</string>
+
+    <string name="password_must_strong"><![CDATA[Şifrenizde büyük - küçük harf, sayı ve bir özel işaret olmalı. ($-_+=)]]></string>
+
+    <string name="password_not_match">Şifreler Aynı Değil</string>
+
+    <string name="input_login_password">Uygulamaya giriş şifresi</string>
+
+    <string name="password_wrong">Lütfen şifrenizi kontrol edin,</string>
+
+    <string name="example_name">Örnek Hesap</string>
+    <string name="example_password">Ornek_Sifre</string>
+
+    <string name="failure_update_password">Şifre güncellenirken sorun oluştu</string>
+
+    <string name="success_update_password">Şifre başarıyla güncellendi</string>
+
+    <string name="first_open_error">Uygulama ayarları yapılamadı. Lütfen kaldırıp tekrar deneyin.</string>
+
+    <string name="register_failure">Kayıt sırasında sorun oluştu. HK : 1</string>
+    <string name="register_failure_1">Kayıt sırasında sorun oluştu. HK : 2</string>
+    <string name="register_failure_2">Kayıt sırasında sorun oluştu. HK : 3</string>
+    <string name="register_failure_3">Kayıt sırasında sorun oluştu. HK : 4</string>
+
+    <string name="password_wrong_1">Şifrenizi doğru yazdığınıza emin olun</string>
+
+    <string name="view_null">Sayfa yüklenirken sorun oluştu</string>
+
+    <string name="failure_password_clipboard">Şifre kopyalanamadı</string>
+
+    <string name="failure_load_list">Liste yüklenirken sorun oluştu</string>
+
+    <string name="switch_disable_error_log">Hata loglarını aktif et</string>
+    <string name="switch_disable_info_log">Bilgilendirme loglarını aktif et</string>
+
+    <string name="example_account">ornek_hesap@mail.com</string>
+
+    <string name="input_account">Hesap</string>
+    <string name="account_name">Hesap</string>
+
+    <string name="hint_account_edit">Giriş yapmak için kullanacağınız hesap</string>
+    <string name="input_account_edit">Hesap</string>
+    <string name="button_copy_account">HESABI KOPYALA</string>
+    <string name="failure_account_clipboard">Hesap kopyalanırken sorun oluştu</string>
+    <string name="account_clipboard">Hesap Kopyalanmıştır</string>
+    <string name="button_enter">Ayarları Görüntüle</string>
+    <string name="input_password_settings_edit">Ayarları görüntülüyebilmeniz için önce şifrenizi girmelisiniz</string>
+    <string name="button_contact_us">Bize Yazın</string>
+
+    <string name="mail_subject">Bize Yazın - Pocket Password</string>
+    <string name="mail_chooser">Bir Mail Uygulaması Seçin :</string>
+    <string name="button_send_error_log">Hata Raporlarını Gönder</string>
+    <string name="failure_load_category_list">Kategoriler yüklenemedi, uygulamayı yeniden açmayı deneyin</string>
+    <string name="category_social_media">Sosyal Medya</string>
+    <string name="category_bank">Banka</string>
+    <string name="category_mail">E - Posta</string>
+    <string name="category_server">Sunucu</string>
+    <string name="category_app">Uygulama</string>
+    <string name="category_computer">Bilgisayar</string>
+    <string name="category_service">Servisler</string>
+    <string name="category_other">Diğerleri</string>
+    <string name="category_e_commerce">E - Ticaret</string>
+    <string name="category_governor">Resmi</string>
+    <string name="category_licence">Lisans</string>
+    <string name="select_category">Bir kategori seçiniz</string>
+
+    <string name="select_category_cancel">Vazgeç</string>
+
+    <string name="category_all">Hepsi</string>
+
+    <string name="hint_category">Kategori</string>
+    <string name="input_category">Şifrenin dahil olacağı kategori</string>
+    <string name="button_delete_password">Şifreyi Sil</string>
+    <string name="dialog_confirm">Onayla</string>
+    <string name="dialog_delete_password">Şifreyi silmek istediğinize eminmisiniz ?</string>
+    <string name="dialog_delete_password_title">Şifre Silme</string>
+    <string name="dialog_cancel">İptal</string>
+    <string name="success_delete_password">Şifre başarıyla silindi</string>
+    <string name="button_change_password">ŞİFREYİ GÜNCELLE</string>
+    <string name="hint_password_change_edit">Yeni Şifreniz</string>
+    <string name="input_password_rchange_edit">Bundan sonra kullanmak istediğiniz şifreniz</string>
+    <string name="hint_password_change_repeat_edit">Yeni şifrenizin tekrarı</string>
+    <string name="dialog_negative">İptal</string>
+    <string name="dialog_positive">Onayla</string>
+    <string name="title_success_change_password">Şifre Değiştirildi</string>
+    <string name="message_success_change_password">Şifreniz başarıyla değiştirildi.\nŞart olmasada uygulamayı yeniden başlatmanızı tavsiye ederiz.</string>
+    <string name="title_failure_change_password">Şifre değiştirilemedi</string>
+    <string name="message_failure_change_password_and_revert">Şifre değiştirilemedi.\\nFakat veriler başarıyla geri döndürüldü.</string>
+    <string name="message_failure_change_password_and_failure_revert"><![CDATA[Şifre değiştirilemedi.\\nAyrıca veriler düzğün şekilde geri yüklenemedi.\\n<b>Veri kaybı gerçekleşmiş olabilir.</b>]]></string>
+    <string name="message_failure_change_password_set_data"><![CDATA[Şifre değiştirildi fakat yeni şifre aktarılamadı.\\n<b>Veri kaybı olmuş olabilir.</b>]]></string>
+
+    <string name="email_log_error">error@test.com</string>
+    <string name="email_log_info">info@test.com</string>
+    <string name="email_contact">contact@test.com</string>
+    <string name="email_log_error_subject">Hata Logları</string>
+
+    <string name="message_failure_change_password__pre_error"><![CDATA[Şifre değiştirilirken sorunla karşılaşıldı.\\nDaha sonra tekrar deneyin.\\n<b>Eğet sorun devam ediyorsa bize logları atabilir veya doğrudan yazabilirsiniz</b>]]></string>
+
+    <string name="button_export_backup">Yedek Al</string>
+    <string name="button_import_backup">Yedeği Yükle</string>
+
+    <string name="failure_export_data">Yedek alınırken sorun oluştu lütfen tekrar deneyin.</string>
+    <string name="failure_export_backup_oar">Yedek alma sırasında sorun oluştu</string>
+
+    <string name="action_confirm">Onayla</string>
+
+    <string name="success_insert_backup">Sorunsuz bir şekilde yedek içeri aktarıldı</string>
+    <string name="failure_insert_backup">Şifreler içeri aktarılırken sorun oluştu.\\nToplam %1$s şifre aktarılamadı.</string>
+
+    <string name="hint_password_import">Yedeğin Şifresi</string>
+    <string name="input_password_import">Yedek oluşturulduğu zaman kullandığınız şifreyi giriniz</string>
+    <string name="success_export_backup">Başarıyla yedek alındı</string>
+    <string name="failure_export_null">Hiç şifreniz yok veya bir sorun oluştu</string>
+
+    <string name="confirm_import_backup">Dikkat !!!\nYedek yüklenirken mevcut verilerinizi kaybedebilirsiniz.\nLütfen yedek aldıktan sonra yedek yükleyin.</string>
+    <string name="confirm_import_backup_title">Dikkat !!!</string>
+    <string name="dialog_change_password_title">Dikkat !!!</string>
+    <string name="dialog_change_password">Şifre değiştirirken verileri kaybedebilirsiniz.\\nLütfen değişmeden önce yedek alınız.\\nDevam etmek istiyormusunuz ?</string>
+
 </resources>

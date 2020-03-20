@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.main.PlaceholderFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/rlSearchBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilSearch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/hint_search"
+                app:startIconDrawable="@drawable/ic_search_24dp"
+                app:startIconTint="@color/colorPrimary">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etSearch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionDone"
+                    android:maxLength="64"
+                    android:maxLines="1" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <LinearLayout
+                android:id="@+id/llCategory"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:orientation="horizontal"
+                android:focusable="true">
+
+                <TextView
+                    android:id="@+id/tvCategory"
+                    android:layout_width="120dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:ellipsize="end"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:paddingRight="@dimen/activity_horizontal_margin"
+                    android:stateListAnimator="@anim/animation_ripple"
+                    android:focusable="true" />
+
+                <ImageView
+                    android:id="@+id/ivCategory"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:clickable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:src="@drawable/ic_arrow_drop_down_24dp"
+                    android:stateListAnimator="@anim/animation_ripple"
+                    android:tint="#FFF"
+                    android:focusable="true" />
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvPasswordList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/rlSearchBar"
+            android:scrollbars="vertical" />
+    </RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

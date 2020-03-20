@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="not_null">%1$s boş bırakılmamalıdır</string>
+    <string name="min_length">%1$s en az %2$d karakter olmalıdır</string>
+    <string name="max_length">%1$s en fazla %2$s karakter olabilir</string>
+    
+    <integer name="name_min_length">1</integer>
+    <integer name="name_max_length">32</integer>
+
+    <integer name="password_min_length">1</integer>
+    <integer name="password_max_length">256</integer>
+</resources>

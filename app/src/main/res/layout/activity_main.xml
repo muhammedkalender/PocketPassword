@@ -1,25 +1,126 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
+    android:background="#000"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:openDrawer="start">
+    tools:context=".MainActivity">
 
-    <include
-        layout="@layout/app_bar_main"
+    <RelativeLayout
+        android:id="@+id/appBar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"
+        android:visibility="invisible">
 
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/nav_view"
-        android:layout_width="wrap_content"
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:theme="@style/TabWithHeader"
+            android:visibility="visible"
+            app:tabSelectedTextColor="#fff"
+            app:tabTextColor="#B3E5FC" />
+    </RelativeLayout>
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:fitsSystemWindows="true"
-        app:headerLayout="@layout/nav_header_main"
-        app:menu="@menu/activity_main_drawer" />
+        android:layout_below="@id/appBar"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-</androidx.drawerlayout.widget.DrawerLayout>
+    <LinearLayout
+        android:id="@+id/llMainPassword"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:background="?attr/panelBackground"
+        android:backgroundTint="@color/design_default_color_on_secondary"
+        android:clickable="true"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilMainPassword"
+            style="@style/FormInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_password_register_edit"
+            app:helperText="@string/input_password_register_edit"
+            app:helperTextEnabled="true"
+            app:passwordToggleDrawable="@drawable/ic_remove_red_eye_white_24dp"
+            app:passwordToggleEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etMainPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionDone"
+                android:inputType="textPassword"
+                android:maxLength="@integer/password_max_length"
+                android:maxLines="1" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilMainPasswordRepeat"
+            style="@style/FormInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_password_repeat_edit"
+            app:helperText="@string/input_password_repeat_edit"
+            app:helperTextEnabled="true"
+            app:passwordToggleDrawable="@drawable/ic_remove_red_eye_white_24dp"
+            app:passwordToggleEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etMainPasswordRepeat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:maxLength="@integer/password_max_length"
+                android:maxLines="1" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnLogin"
+            style="@style/FormButton"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:text="@string/button_confirm"
+            android:background="@color/lightBlue"
+            android:textColor="@color/tintLightBlue"
+            app:icon="@drawable/ic_check_circle_24dp" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlLoading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:drawable/screen_background_dark_transparent"
+        android:clickable="true"
+        android:gravity="center"
+        android:visibility="gone"
+        android:focusable="true">
+
+        <ProgressBar
+            android:id="@+id/pbLoading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+
+        <TextView
+            android:id="@+id/tvLoading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/pbLoading"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:text="@string/loading"
+            android:textStyle="bold" />
+    </RelativeLayout>
+</RelativeLayout>
