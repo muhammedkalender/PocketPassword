@@ -724,5 +724,10 @@ public class MainActivity extends AppCompatActivity {
     33 - Toastlarda kopyalama işlemlerinde vs.. daha b elirgin yap, ismin ilk 16 karakteri vs...
     40 - Şifre düzenleme hatalar şifre değiştirincede duruyoır ( sıfırlaması lazım ) ? İnput Hataları
     41 - Onaylarda \n karakterleri felan kaldı hep onlara ayar çek
-
+    42 - Anasayfaya logo konacak
+    43 - İmport ederken klavye niye açıkta kaldı ?
+    44 - İnsert hesap adı uzunluğu ( Rowun adı, login değil )
+    45 - Şifre yüklendiğinde input gizlenmiyor kalıyor açık
+    46 - Kredi Kartı Kategorisi
+    47 - SS DE var,i ayarlar tabın altına kaçtı ( margib koydu topa ona bak ) [ Şifre girme ]
  */
