@@ -115,7 +115,7 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordListHolder> {
                         clipboard.setPrimaryClip(clip);
 
                         ((Activity)Global.CONTEXT).runOnUiThread(() -> {
-                            Toast.makeText(Global.CONTEXT,R.string.password_clipboard, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Global.CONTEXT, Helpers.resource.getString(R.string.password_clipboard, "", passwordModel.getShortName()), Toast.LENGTH_SHORT).show();
                         });
                     }).start();
                 }catch (Exception e){
@@ -152,7 +152,7 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordListHolder> {
                     clipboard.setPrimaryClip(clip);
 
                     ((Activity)Global.CONTEXT).runOnUiThread(() -> {
-                        Toast.makeText(Global.CONTEXT,R.string.account_clipboard, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Global.CONTEXT, Helpers.resource.getString(R.string.account_clipboard, "", passwordModel.getShortName()), Toast.LENGTH_SHORT).show();
                     });
                 }).start();
             }catch (Exception e){

@@ -369,7 +369,11 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
     }
 
     public String getShortName(){
-        return name.substring(0, Config.SHORT_NAME_LENGTH);
+        if(name.length() > Config.SHORT_NAME_LENGTH){
+            return name.substring(0, Config.SHORT_NAME_LENGTH) + '…';
+        }else{
+            return name;
+        }
     }
 
     public String getAccount() {

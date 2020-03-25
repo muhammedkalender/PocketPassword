@@ -295,8 +295,6 @@ public class NewPasswordPage extends PageAbstract implements PageInterface {
         ResultObject insert = passwordModel1.insert();
 
         if (insert.isSuccess()) {
-            Helpers.logger.info(String.format("%1$d ID ile kayıt girildi", (int) insert.getData()));
-
             Global.TAB_LAYOUT.getTabAt(Config.TAB_HOME_INDEX).select();
             PasswordModel addedPasswordModel = new PasswordModel((int) insert.getData(), name, account, password, color, tintColor, category);
             addedPasswordModel.setDecrypted(true);

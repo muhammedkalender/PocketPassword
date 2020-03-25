@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">Pocket Password</string>
 
+    <string name="app_short_name">Pocket Password</string>
+    <string name="slogan">“Sadelik ve Güvenlik”</string>
+
     <string name="first_open_error">Uygulama ayarları yapılamadı. Lütfen uygulamayı kaldırıp tekrar deneyin.</string>
 
     <string name="account_name">Hesap</string>
@@ -9,6 +12,12 @@
     <string name="example_name">Örnek Hesap</string>
     <string name="example_account">ornek_hesap@mail.com</string>
     <string name="example_password">Ornek_Sifre</string>
+
+    <string name="forgot_password">Şifrenizi Unutursanız Ne Olur ?</string>
+    <string name="forgot_password_title">Şifrenizi Unutursanız Ne Olur ?</string>
+    <string name="forgot_password_message">Şifreler sizin şifreniz ile şifrelenir. Herhangi bir master key, geri dönüş yoktur. Basitçe şifrenizi unutursanız verilerinizi kaybedersiniz.</string>
+
+    <string name="contact_us">İletişim için tıklayın</string>
 
     <string name="already_used">%1$s isimli bir kayıt zaten var</string>
     <string name="password_must_strong"><![CDATA[Şifrenizde büyük - küçük harf, sayı ve bir özel işaret olmalı. ($-_+=)]]></string>
@@ -37,7 +46,7 @@
     <string name="input_category">Düzenlemek istediğiniz hesabın kategorisi</string>
     <string name="input_password_repeat_edit">Uygulama şifresinin tekrarı</string>
     <string name="input_password_register_edit">Uygulama şifreniz\nDİKKAT! UNUTMANIZ DURUMUNDA VERİLERİNİZE ERİŞEMEZSİNİZ</string>
-    <string name="input_login_password">Uygulamaya giriş yapmak için kullandığınız şifreniz</string>
+    <string name="input_login_password">Uygulamayı ilk açtığınızda belirlediğiniz şifre</string>
     <string name="input_password_import">Yedeği oluşturulduğuz zaman kullandığınız şifreyi giriniz</string>
     <string name="input_password_settings_edit">Ayarları görüntülüyebilmeniz için önce uygulama şifrenizi girmelisiniz</string>
     <string name="input_password_rchange_edit">Bundan sonra kullanmak istediğiniz uygulama şifreniz</string>
@@ -59,11 +68,11 @@
     <string name="tab_add_password">EKLE</string>
     <string name="tab_list_password">ŞİFRELER</string>
     <string name="tab_settings">AYARLAR</string>
-    <string name="loading">İşlem Yapılıyor</string>
+    <string name="loading">İşlem Yapılıyor. Lütfen bekleyin…</string>
     <string name="clipboard_title">Şifre</string>
 
-    <string name="account_clipboard">%1$s Hesabı başarıyla kopyalanmıştır</string>
-    <string name="password_clipboard">%1$s Şifresi başarıyla kopyalanmıştır</string>
+    <string name="account_clipboard">%1$s Kaydının hesabı başarıyla kopyalanmıştır</string>
+    <string name="password_clipboard">%1$s Kaydının şifresi başarıyla kopyalanmıştır</string>
 
     <string name="register_failure">Kayıt sırasında sorun oluştu. HK : 1</string>
     <string name="register_failure_1">Kayıt sırasında sorun oluştu. HK : 2</string>
@@ -81,7 +90,7 @@
     <string name="failure_account_clipboard">Hesap kopyalanırken sorun oluştu</string>
     <string name="failure_load_category_list">Kategoriler yüklenemedi, lütfen uygulamayı yeniden başlatmayı deneyin</string>
 
-    <string name="success_add_password">Şifreniz başarıyla değiştirildi. Artık yeni şifrenizi kullanabilirsiniz.</string>
+    <string name="success_add_password">Şifre kaydınız başarıyla oluşturuldu.</string>
     <string name="success_update_password">Şifre kaydı başarıyla güncellendi</string>
     <string name="success_update_record">Kayıt başarıyla güncellendi</string>
     <string name="success_export_backup">Kayıtlarınız başarıyla yedeklendi</string>
