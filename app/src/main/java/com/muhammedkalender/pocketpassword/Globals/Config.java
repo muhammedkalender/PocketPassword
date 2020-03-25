@@ -6,6 +6,8 @@ public class Config {
     public static final int TAB_HOME_INDEX = 2;
     public static final int TAB_PASSWORD_INDEX = 3;
 
+    public static final int SHORT_NAME_LENGTH = 16;
+
     public static final boolean LOG_SQL_EXECUTE = true;
 
     public static final int DEFAULT_INTEGER = 0;

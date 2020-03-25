@@ -4,6 +4,8 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
 
+    <color name="colorText">#FFF</color>
+
     <color name="teal">#00796B</color>
     <color name="purple">#7B1FA2</color>
     <color name="red">#D32F2F</color>

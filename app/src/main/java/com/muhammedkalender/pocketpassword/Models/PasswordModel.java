@@ -7,6 +7,7 @@ import com.muhammedkalender.pocketpassword.Abstracts.ModelAbstract;
 import com.muhammedkalender.pocketpassword.Constants.ErrorCodeConstants;
 import com.muhammedkalender.pocketpassword.Constants.SQLConstants;
 import com.muhammedkalender.pocketpassword.Global;
+import com.muhammedkalender.pocketpassword.Globals.Config;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
 import com.muhammedkalender.pocketpassword.Helpers.CryptHelper;
 import com.muhammedkalender.pocketpassword.Interfaces.ModelInterface;
@@ -365,6 +366,10 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
 
     public String getName() {
         return name;
+    }
+
+    public String getShortName(){
+        return name.substring(0, Config.SHORT_NAME_LENGTH);
     }
 
     public String getAccount() {

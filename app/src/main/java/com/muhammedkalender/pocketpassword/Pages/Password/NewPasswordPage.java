@@ -87,7 +87,7 @@ public class NewPasswordPage extends PageAbstract implements PageInterface {
         //region Load Categories
 
         CategoryModel categoryModel = new CategoryModel();
-        listCategory = categoryModel.selectActive();
+        listCategory = categoryModel.selectActive(false);
         arrayAdapter = new ArrayAdapter<>(Global.CONTEXT, android.R.layout.select_dialog_singlechoice);
 
         listCategory.remove(0); //Remove All Of Them

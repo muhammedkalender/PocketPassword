@@ -151,6 +151,10 @@ public class CategoryModel extends ModelAbstract implements ModelInterface {
 
     @Override
     public List selectActive() {
+        return selectActive(true);
+    }
+
+    public List selectActive(boolean addAllOfThem) {
         ResultObject select = Helpers.database.cursor("SELECT * FROM " + table + " WHERE " + prefix + "_active = 1 ORDER BY " + prefix + "_name");
 
         if (select.isSuccess()) {

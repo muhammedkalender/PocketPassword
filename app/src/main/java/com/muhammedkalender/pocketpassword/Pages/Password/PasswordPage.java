@@ -105,7 +105,7 @@ public class PasswordPage extends PageAbstract implements PageInterface {
         colorPickerComponent.fillLayout(viewRoot.findViewById(R.id.llColors));
 
         CategoryModel categoryModel = new CategoryModel();
-        listCategory = categoryModel.selectActive();
+        listCategory = categoryModel.selectActive(false);
         arrayAdapter = new ArrayAdapter<>(Global.CONTEXT, android.R.layout.select_dialog_singlechoice);
 
         for (int i = 0; i < listCategory.size(); i++) {
@@ -234,7 +234,7 @@ public class PasswordPage extends PageAbstract implements PageInterface {
             int category = listCategory.get(selectedCategoryIndex).getId();
 
             if (etName.getText().toString() == null || etName.getText().toString().length() == 0) {
-                tilName.setError(Helpers.resource.getString(R.string.not_null, "", Helpers.resource.getString(R.string.input_name)));
+                tilName.setError(Helpers.resource.getString(R.string.not_null, "", Helpers.resource.getString(R.string.input_name_edit)));
 
                 Helpers.loading.hide();
                 return;
@@ -260,7 +260,7 @@ public class PasswordPage extends PageAbstract implements PageInterface {
             }
 
             if (etAccount.getText().toString() == null || etAccount.getText().toString().length() == 0) {
-                tilAccount.setError(Helpers.resource.getString(R.string.not_null, "", Helpers.resource.getString(R.string.input_account)));
+                tilAccount.setError(Helpers.resource.getString(R.string.not_null, "", Helpers.resource.getString(R.string.input_account_edit)));
 
                 Helpers.loading.hide();
                 return;
@@ -321,7 +321,7 @@ public class PasswordPage extends PageAbstract implements PageInterface {
                 Global.TAB_LAYOUT.getTabAt(Config.TAB_PASSWORD_INDEX).setText(passwordModel.getName());
                 Global.TAB_LAYOUT.getTabAt(Config.TAB_PASSWORD_INDEX).setContentDescription(passwordModel.getName());
 
-                SnackbarComponent snackbarComponent = new SnackbarComponent(viewRoot, R.string.success_update_password, R.string.action_ok);
+                SnackbarComponent snackbarComponent = new SnackbarComponent(viewRoot, R.string.success_update_record, R.string.action_ok);
                 snackbarComponent.show();
 
                 Global.PAGE_HOME.filter("");
@@ -342,7 +342,7 @@ public class PasswordPage extends PageAbstract implements PageInterface {
                     ClipData clip = ClipData.newPlainText(Helpers.resource.getString(R.string.clipboard_title), passwordModel.getDecryptedPassword());
                     clipboard.setPrimaryClip(clip);
 
-                    SnackbarComponent.direct(viewRoot, R.string.password_clipboard);
+                    SnackbarComponent.direct(viewRoot, Helpers.resource.getString(R.string.password_clipboard, "", passwordModel.getShortName()));
                 }).start();
             } catch (Exception e) {
                 Helpers.logger.error(ErrorCodeConstants.CLIPBOARD_PASSWORD, e);
@@ -358,7 +358,7 @@ public class PasswordPage extends PageAbstract implements PageInterface {
                     ClipData clipData = ClipData.newPlainText(Helpers.resource.getString(R.string.account_name), passwordModel.getDecryptedAccount());
                     clipboardManager.setPrimaryClip(clipData);
 
-                    SnackbarComponent.direct(viewRoot, R.string.account_clipboard);
+                    SnackbarComponent.direct(viewRoot, Helpers.resource.getString(R.string.account_clipboard, "", passwordModel.getShortName()));
                 }).start();
             } catch (Exception e) {
                 Helpers.logger.error(ErrorCodeConstants.CLIPBOARD_ACCOUNT, e);

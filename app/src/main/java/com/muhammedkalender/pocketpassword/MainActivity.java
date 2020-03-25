@@ -441,13 +441,12 @@ public class MainActivity extends AppCompatActivity {
 
             etMainPassword.setImeOptions(EditorInfo.IME_ACTION_DONE);
             tilMainPasswordRepeat.setVisibility(View.GONE);
-            tilMainPassword.setPasswordVisibilityToggleEnabled(false);
 
             ((MaterialButton) findViewById(R.id.btnLogin)).setText(R.string.button_login);
             ((MaterialButton) findViewById(R.id.btnLogin)).setIcon(Helpers.resource.getDrawable(R.drawable.ic_person_24dp));
 
             tilMainPassword.setHelperText(Helpers.resource.getString(R.string.input_login_password));
-            tilMainPassword.setHint(Helpers.resource.getString(R.string.hint_password_edit));
+            tilMainPassword.setHint(Helpers.resource.getString(R.string.hint_password));
 
             findViewById(R.id.btnLogin).setOnClickListener(v -> {
                 updateAfterRegisterAndBeforeLogin();
@@ -707,33 +706,3 @@ public class MainActivity extends AppCompatActivity {
         new CategoryModel(Helpers.resource.getString(R.string.category_card), Helpers.resource.getColor(R.color.lime), Helpers.resource.getColor(R.color.tintLime), true).insertWithCheckDuplicate();
     }
 }
-
-/*
-    TODO
-    9 - Model üzerinden validation ? mesajı felan outpu verebilir direkt
-    15 - Parmak İzi
-    16 - Şifre uygulaması ( siteye girdiğinde buraya soracak felan )
-    19 - Hata mesajları - kontrolleri
-    20 - Ayarlar Hakkında Info ?
-    21 - Dilleri kontrol et
-    23 - Modellerdede insert vs.. çok sağlıklı değil kafada çizip gir
-    24 - Boş uyarısı ( Eventi olamyan iemle öğre yok felan tarzı boş item ekleme )
-    25 - Dialogları güncelle tasarımı tuhaf şuan -- https://developer.android.com/guide/topics/ui/dialogs
-    26 - İnputlarda hata olunca refresh gibi flash çakıyor
-    27 - Dialog butonlarının tasarımı değişekcek ( mavi - siyah pek şı kdeğil )
-    27 - Onayladna sonra ana sayfaua at ( import - snackbar onay )
-    28 - Renk seçildiğinde inputların kenarlarının rengini dğeişmesi ?
-    29 - Kayıt yazım yanlışı ( şfr gibi bişey yazıyor )
-    30 - Giriş footer tarzı contact us - site linki vs..
-    33 - Toastlarda kopyalama işlemlerinde vs.. daha b elirgin yap, ismin ilk 16 karakteri vs...
-    40 - Şifre düzenleme hatalar şifre değiştirincede duruyoır ( sıfırlaması lazım ) ? İnput Hataları
-    41 - Onaylarda \n karakterleri felan kaldı hep onlara ayar çek
-    42 - Anasayfaya logo konacak
-    43 - İmport ederken klavye niye açıkta kaldı ?
-    44 - İnsert hesap adı uzunluğu ( Rowun adı, login değil )
-    45 - Şifre yüklendiğinde input gizlenmiyor kalıyor açık
-    47 - SS DE var,i ayarlar tabın altına kaçtı ( margib koydu topa ona bak ) [ Şifre girme ]
-    48 - Ayarlar direk şifre sormasın - şifre değiştirme şifre sorsun felan
-    49 - Timeotut ? ( İşlem yapamzsa loginden düşssün, güvenlik için )
-    50 - Rastgele renk seçsin eklemede
- */
