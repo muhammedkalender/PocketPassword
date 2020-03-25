@@ -209,6 +209,16 @@ public class PasswordModel extends ModelAbstract implements ModelInterface {
         return null;
     }
 
+    @Override
+    public Object insertWithCheckDuplicate() {
+        return null; //todo
+    }
+
+    @Override
+    public Object insertWithCheckDuplicate(Object model) {
+        return null; //todo
+    }
+
     public ResultObject insert() {
         try {
             return Helpers.database.insert("INSERT INTO passwords (password_name, password_account, password_password, password_color, password_tint_color, password_category) VALUES ('" + name + "', '" + Helpers.crypt.quickEncrypt(account) + "', '" + Helpers.crypt.quickEncrypt(password) + "', '" + this.color + "', '" + this.tintColor + "', '" + this.categoryID + "')");

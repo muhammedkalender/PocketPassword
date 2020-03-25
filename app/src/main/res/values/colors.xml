@@ -17,6 +17,9 @@
     <color name="brown">#795548</color>
     <color name="cyan">#00BCD4</color>
     <color name="grey">#757575</color>
+    <color name="lime">#CCDB39</color>
+    <color name="orange">#FE9800</color>
+    <color name="lightGreen">#8BC24A</color>
 
     <color name="tintPink">#FFF</color>
     <color name="tintLightBlue">#FFF</color>
@@ -30,6 +33,9 @@
     <color name="tintGrey">#FFF</color>
     <color name="tintIndigo">#FFF</color>
     <color name="tintTeal">#FFF</color>
+    <color name="tintLime">#FFF</color>
+    <color name="tintOrange">#FFF</color>
+    <color name="tintLightGreen">#FFF</color>
 
     <color name="snackbarBackground">#000</color>
     <color name="snackbarText">#FFF</color>

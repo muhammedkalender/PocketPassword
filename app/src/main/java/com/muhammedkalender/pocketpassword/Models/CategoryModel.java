@@ -117,6 +117,29 @@ public class CategoryModel extends ModelAbstract implements ModelInterface {
     }
 
     @Override
+    public ResultObject insertWithCheckDuplicate() {
+        return this.insertWithCheckDuplicate(this);
+    }
+
+    @Override
+    public ResultObject insertWithCheckDuplicate(Object model) {
+        CategoryModel obj = (CategoryModel) model;
+
+        ResultObject resultCheckDuplicate = Helpers.database.isAvailable(String.format(
+                "SELECT %2$s_id FROM %1$s WHERE %2$s_name = '%3$s'",
+                obj.table,
+                obj.prefix,
+                obj.name
+        ), obj.prefix + "_id", true);
+
+        if (resultCheckDuplicate.isFailure() || resultCheckDuplicate.getDataAsBoolean()) {
+            return null;
+        }
+
+        return this.insert();
+    }
+
+    @Override
     public Object get(int id) {
         return null;
     }
@@ -128,7 +151,7 @@ public class CategoryModel extends ModelAbstract implements ModelInterface {
 
     @Override
     public List selectActive() {
-        ResultObject select = Helpers.database.cursor("SELECT * FROM " + table + " WHERE " + prefix + "_active = 1");
+        ResultObject select = Helpers.database.cursor("SELECT * FROM " + table + " WHERE " + prefix + "_active = 1 ORDER BY " + prefix + "_name");
 
         if (select.isSuccess()) {
             Cursor cursor = (Cursor) select.getData();
@@ -137,7 +160,7 @@ public class CategoryModel extends ModelAbstract implements ModelInterface {
 
             List<CategoryModel> categories = new ArrayList<>();
 
-            categories.add(new CategoryModel(0, Helpers.resource.getString(R.string.category_all),-1,-1, true));
+            categories.add(new CategoryModel(0, Helpers.resource.getString(R.string.category_all), -1, -1, true));
 
             while (cursor.moveToNext()) {
                 categories.add(new CategoryModel(

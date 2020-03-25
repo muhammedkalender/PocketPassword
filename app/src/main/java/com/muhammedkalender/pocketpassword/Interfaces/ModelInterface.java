@@ -12,6 +12,8 @@ public interface ModelInterface<T> {
     public T insert(String query);
     public T insert();
     public T get(int id);
+    public T insertWithCheckDuplicate();
+    public T insertWithCheckDuplicate(T model);
     public List<T> select();
     public List<T> selectActive();
     public ResultObject delete(int id);

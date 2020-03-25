@@ -449,11 +449,10 @@ public class MainActivity extends AppCompatActivity {
             tilMainPassword.setHelperText(Helpers.resource.getString(R.string.input_login_password));
             tilMainPassword.setHint(Helpers.resource.getString(R.string.hint_password_edit));
 
-            findViewById(R.id.btnLogin).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    login();
-                }
+            findViewById(R.id.btnLogin).setOnClickListener(v -> {
+                updateAfterRegisterAndBeforeLogin();
+
+                login();
             });
 
             //endregion
@@ -466,139 +465,137 @@ public class MainActivity extends AppCompatActivity {
             tilMainPassword.setHelperText(Helpers.resource.getString(R.string.input_password_register_edit));
             tilMainPassword.setHint(Helpers.resource.getString(R.string.hint_password_register_edit));
 
-            findViewById(R.id.btnLogin).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (etMainPassword.getText() == null || etMainPassword.getText().toString().equals("")) {
-                        tilMainPassword.setError(Helpers.resource.getString(R.string.not_null, "", Helpers.resource.getString(R.string.password)));
+            findViewById(R.id.btnLogin).setOnClickListener(v -> {
+                if (etMainPassword.getText() == null || etMainPassword.getText().toString().equals("")) {
+                    tilMainPassword.setError(Helpers.resource.getString(R.string.not_null, "", Helpers.resource.getString(R.string.password)));
+
+                    return;
+                }
+
+                String password = etMainPassword.getText().toString();
+
+                if (password.length() < 8) {
+                    tilMainPassword.setError(Helpers.resource.getString(R.string.min_length, "", Helpers.resource.getString(R.string.password), 8));
+
+                    return;
+                } else if (password.length() > 32) {
+                    tilMainPassword.setError(Helpers.resource.getString(R.string.max_length, "", Helpers.resource.getString(R.string.password), 32));
+
+                    return;
+                } else if (!Helpers.validation.checkPassword(password, ValidationHelper.PASSWORD_STRONG)) {
+                    tilMainPassword.setError(Helpers.resource.getString(R.string.password_must_strong));
+
+                    return;
+                } else {
+                    tilMainPassword.setErrorEnabled(false);
+
+                    if (etMainPasswordRepeat.getText() == null || etMainPasswordRepeat.getText().toString().equals("")) {
+                        tilMainPasswordRepeat.setError(Helpers.resource.getString(R.string.not_null, "", Helpers.resource.getString(R.string.password)));
 
                         return;
                     }
 
-                    String password = etMainPassword.getText().toString();
+                    String passwordRepeat = etMainPasswordRepeat.getText().toString();
 
-                    if (password.length() < 8) {
-                        tilMainPassword.setError(Helpers.resource.getString(R.string.min_length, "", Helpers.resource.getString(R.string.password), 8));
-
-                        return;
-                    } else if (password.length() > 32) {
-                        tilMainPassword.setError(Helpers.resource.getString(R.string.max_length, "", Helpers.resource.getString(R.string.password), 32));
-
-                        return;
-                    } else if (!Helpers.validation.checkPassword(password, ValidationHelper.PASSWORD_STRONG)) {
-                        tilMainPassword.setError(Helpers.resource.getString(R.string.password_must_strong));
-
-                        return;
+                    if (password.equals(passwordRepeat)) {
+                        tilMainPasswordRepeat.setErrorEnabled(false);
                     } else {
-                        tilMainPassword.setErrorEnabled(false);
+                        tilMainPasswordRepeat.setError(Helpers.resource.getString(R.string.password_not_match));
 
-                        if (etMainPasswordRepeat.getText() == null || etMainPasswordRepeat.getText().toString().equals("")) {
-                            tilMainPasswordRepeat.setError(Helpers.resource.getString(R.string.not_null, "", Helpers.resource.getString(R.string.password)));
+                        return;
+                    }
+                }
 
-                            return;
-                        }
 
-                        String passwordRepeat = etMainPasswordRepeat.getText().toString();
+                if (Helpers.config.getBoolean(ConfigKeys.FIRST_OPEN)) {
+                    //todo
+                } else {
+                    Global.PASSWORD = etMainPassword.getText().toString();
 
-                        if (password.equals(passwordRepeat)) {
-                            tilMainPasswordRepeat.setErrorEnabled(false);
-                        } else {
-                            tilMainPasswordRepeat.setError(Helpers.resource.getString(R.string.password_not_match));
+                    String base64PrivateKey = Helpers.config.getString(ConfigKeys.PRIVATE_KEY);
+                    String base64PublicKey = Helpers.config.getString(ConfigKeys.PUBLIC_KEY);
 
-                            return;
-                        }
+                    Helpers.logger.info(base64PrivateKey);
+
+                    ResultObject resultEncryptBase64PrivateKey = Helpers.aes.encrypt(base64PrivateKey, Global.PASSWORD);
+                    ResultObject resultEncryptBase64PublicKey = Helpers.aes.encrypt(base64PublicKey, Global.PASSWORD);
+
+                    if (resultEncryptBase64PrivateKey.isFailure() || resultEncryptBase64PublicKey.isFailure()) {
+                        SnackbarComponent snackbarComponent = new SnackbarComponent(getWindow().getDecorView().getRootView(), R.string.register_failure_3, R.string.action_ok);
+                        snackbarComponent.show();
+
+                        return;
                     }
 
+                    String encryptedBase64PrivateKey = String.valueOf(resultEncryptBase64PrivateKey.getData());
+                    String encryptedBase64PublicKey = String.valueOf(resultEncryptBase64PublicKey.getData());
 
-                    if (Helpers.config.getBoolean(ConfigKeys.FIRST_OPEN)) {
-                        //todo
+                    boolean setBase64PrivateKey = Helpers.config.setString(ConfigKeys.PRIVATE_KEY, encryptedBase64PrivateKey);
+                    boolean setBase64PublicKey = Helpers.config.setString(ConfigKeys.PUBLIC_KEY, encryptedBase64PublicKey);
+
+                    if (setBase64PrivateKey && setBase64PublicKey) {
+                        CryptHelper cryptHelper = new CryptHelper();
+                        cryptHelper.setPrivateKey((String) Helpers.aes.decrypt(encryptedBase64PrivateKey, Global.PASSWORD).getData());
+                        cryptHelper.setPublicKey((String) Helpers.aes.decrypt(encryptedBase64PublicKey, Global.PASSWORD).getData());
+
+                        String confirmText = cryptHelper.generateValidationText();
+
+                        ResultObject resultRSAEncrypt = cryptHelper.encrypt(confirmText, cryptHelper.getPrivateKey());
+
+                        if (resultRSAEncrypt.isFailure()) {
+                            Helpers.logger.error(ErrorCodeConstants.REGISTER_RESULT_RSA, "HATA RSA");
+
+                            SnackbarComponent snackbarComponent = new SnackbarComponent(getWindow().getDecorView().getRootView(), R.string.register_failure, R.string.action_ok);
+                            snackbarComponent.show();
+                        }
+
+                        ResultObject resultAESEncrypt = Helpers.aes.encrypt((String) resultRSAEncrypt.getData(), Global.PASSWORD);
+
+                        if (resultAESEncrypt.isFailure()) {
+                            Helpers.logger.error(ErrorCodeConstants.REGISTER_RESULT_AES, "HATA AES");
+
+                            SnackbarComponent snackbarComponent = new SnackbarComponent(getWindow().getDecorView().getRootView(), R.string.register_failure_1, R.string.action_ok);
+                            snackbarComponent.show();
+                        }
+
+                        Helpers.config.setString(ConfigKeys.CONFIRM_TEXT, (String) resultAESEncrypt.getData());
+                        Helpers.config.setBoolean(ConfigKeys.REGISTER, true);
+
+                        Helpers.crypt = cryptHelper;
+
+                        int color = Helpers.resource.getColor(R.color.lightBlue);
+                        int tintColor = Helpers.resource.getColor(R.color.tintLightBlue);
+
+                        CategoryModel[] categoryModels = new CategoryModel[]{
+                                new CategoryModel(Helpers.resource.getString(R.string.category_other), Helpers.resource.getColor(R.color.grey), Helpers.resource.getColor(R.color.tintGrey), true),
+                                new CategoryModel(Helpers.resource.getString(R.string.category_social_media), Helpers.resource.getColor(R.color.pink), Helpers.resource.getColor(R.color.tintPink), true),
+                                new CategoryModel(Helpers.resource.getString(R.string.category_bank), Helpers.resource.getColor(R.color.lightBlue), Helpers.resource.getColor(R.color.tintLightBlue), true),
+                                new CategoryModel(Helpers.resource.getString(R.string.category_card), Helpers.resource.getColor(R.color.lime), Helpers.resource.getColor(R.color.tintLime), true),
+                                new CategoryModel(Helpers.resource.getString(R.string.category_mail), Helpers.resource.getColor(R.color.amber), Helpers.resource.getColor(R.color.tintAmber), true),
+                                new CategoryModel(Helpers.resource.getString(R.string.category_server), Helpers.resource.getColor(R.color.indigo), Helpers.resource.getColor(R.color.tintIndigo), true),
+                                new CategoryModel(Helpers.resource.getString(R.string.category_app), Helpers.resource.getColor(R.color.red), Helpers.resource.getColor(R.color.tintRed), true),
+                                new CategoryModel(Helpers.resource.getString(R.string.category_computer), Helpers.resource.getColor(R.color.green), Helpers.resource.getColor(R.color.tintGreen), true),
+                                new CategoryModel(Helpers.resource.getString(R.string.category_service), Helpers.resource.getColor(R.color.deepOrange), Helpers.resource.getColor(R.color.tintDeepOrange), true),
+                                new CategoryModel(Helpers.resource.getString(R.string.category_e_commerce), Helpers.resource.getColor(R.color.teal), Helpers.resource.getColor(R.color.tintTeal), true),
+                                new CategoryModel(Helpers.resource.getString(R.string.category_governor), Helpers.resource.getColor(R.color.purple), Helpers.resource.getColor(R.color.tintPurple), true),
+                                new CategoryModel(Helpers.resource.getString(R.string.category_licence), Helpers.resource.getColor(R.color.brown), Helpers.resource.getColor(R.color.tintBrown), true)
+                        };
+
+                        for (int i = 0; i < categoryModels.length; i++) {
+                            categoryModels[i].insert();
+                        }
+
+                        PasswordModel passwordModel = new PasswordModel(Helpers.resource.getString(R.string.example_name, "Example Account"), Helpers.resource.getString(R.string.example_account, "example_account"), Helpers.resource.getString(R.string.example_password, "Example_Password"), color, tintColor, 1);
+                        ResultObject resultInsert = passwordModel.insert();
+
+                        if (resultInsert.isSuccess()) {
+                            Helpers.config.setBoolean(ConfigKeys.FIRST_OPEN, false);
+                        }
+
+                        registered();
                     } else {
-                        Global.PASSWORD = etMainPassword.getText().toString();
-
-                        String base64PrivateKey = Helpers.config.getString(ConfigKeys.PRIVATE_KEY);
-                        String base64PublicKey = Helpers.config.getString(ConfigKeys.PUBLIC_KEY);
-
-                        Helpers.logger.info(base64PrivateKey);
-
-                        ResultObject resultEncryptBase64PrivateKey = Helpers.aes.encrypt(base64PrivateKey, Global.PASSWORD);
-                        ResultObject resultEncryptBase64PublicKey = Helpers.aes.encrypt(base64PublicKey, Global.PASSWORD);
-
-                        if (resultEncryptBase64PrivateKey.isFailure() || resultEncryptBase64PublicKey.isFailure()) {
-                            SnackbarComponent snackbarComponent = new SnackbarComponent(getWindow().getDecorView().getRootView(), R.string.register_failure_3, R.string.action_ok);
-                            snackbarComponent.show();
-
-                            return;
-                        }
-
-                        String encryptedBase64PrivateKey = String.valueOf(resultEncryptBase64PrivateKey.getData());
-                        String encryptedBase64PublicKey = String.valueOf(resultEncryptBase64PublicKey.getData());
-
-                        boolean setBase64PrivateKey = Helpers.config.setString(ConfigKeys.PRIVATE_KEY, encryptedBase64PrivateKey);
-                        boolean setBase64PublicKey = Helpers.config.setString(ConfigKeys.PUBLIC_KEY, encryptedBase64PublicKey);
-
-                        if (setBase64PrivateKey && setBase64PublicKey) {
-                            CryptHelper cryptHelper = new CryptHelper();
-                            cryptHelper.setPrivateKey((String) Helpers.aes.decrypt(encryptedBase64PrivateKey, Global.PASSWORD).getData());
-                            cryptHelper.setPublicKey((String) Helpers.aes.decrypt(encryptedBase64PublicKey, Global.PASSWORD).getData());
-
-                            String confirmText = cryptHelper.generateValidationText();
-
-                            ResultObject resultRSAEncrypt = cryptHelper.encrypt(confirmText, cryptHelper.getPrivateKey());
-
-                            if (resultRSAEncrypt.isFailure()) {
-                                Helpers.logger.error(ErrorCodeConstants.REGISTER_RESULT_RSA, "HATA RSA");
-
-                                SnackbarComponent snackbarComponent = new SnackbarComponent(getWindow().getDecorView().getRootView(), R.string.register_failure, R.string.action_ok);
-                                snackbarComponent.show();
-                            }
-
-                            ResultObject resultAESEncrypt = Helpers.aes.encrypt((String) resultRSAEncrypt.getData(), Global.PASSWORD);
-
-                            if (resultAESEncrypt.isFailure()) {
-                                Helpers.logger.error(ErrorCodeConstants.REGISTER_RESULT_AES, "HATA AES");
-
-                                SnackbarComponent snackbarComponent = new SnackbarComponent(getWindow().getDecorView().getRootView(), R.string.register_failure_1, R.string.action_ok);
-                                snackbarComponent.show();
-                            }
-
-                            Helpers.config.setString(ConfigKeys.CONFIRM_TEXT, (String) resultAESEncrypt.getData());
-                            Helpers.config.setBoolean(ConfigKeys.REGISTER, true);
-
-                            Helpers.crypt = cryptHelper;
-
-                            int color = Helpers.resource.getColor(R.color.lightBlue);
-                            int tintColor = Helpers.resource.getColor(R.color.tintLightBlue);
-
-                            CategoryModel[] categoryModels = new CategoryModel[]{
-                                    new CategoryModel(Helpers.resource.getString(R.string.category_other), Helpers.resource.getColor(R.color.grey), Helpers.resource.getColor(R.color.tintGrey), true),
-                                    new CategoryModel(Helpers.resource.getString(R.string.category_social_media), Helpers.resource.getColor(R.color.pink), Helpers.resource.getColor(R.color.tintPink), true),
-                                    new CategoryModel(Helpers.resource.getString(R.string.category_bank), Helpers.resource.getColor(R.color.lightBlue), Helpers.resource.getColor(R.color.tintLightBlue), true),
-                                    new CategoryModel(Helpers.resource.getString(R.string.category_mail), Helpers.resource.getColor(R.color.amber), Helpers.resource.getColor(R.color.tintAmber), true),
-                                    new CategoryModel(Helpers.resource.getString(R.string.category_server), Helpers.resource.getColor(R.color.indigo), Helpers.resource.getColor(R.color.tintIndigo), true),
-                                    new CategoryModel(Helpers.resource.getString(R.string.category_app), Helpers.resource.getColor(R.color.red), Helpers.resource.getColor(R.color.tintRed), true),
-                                    new CategoryModel(Helpers.resource.getString(R.string.category_computer), Helpers.resource.getColor(R.color.green), Helpers.resource.getColor(R.color.tintGreen), true),
-                                    new CategoryModel(Helpers.resource.getString(R.string.category_service), Helpers.resource.getColor(R.color.deepOrange), Helpers.resource.getColor(R.color.tintDeepOrange), true),
-                                    new CategoryModel(Helpers.resource.getString(R.string.category_e_commerce), Helpers.resource.getColor(R.color.teal), Helpers.resource.getColor(R.color.tintTeal), true),
-                                    new CategoryModel(Helpers.resource.getString(R.string.category_governor), Helpers.resource.getColor(R.color.purple), Helpers.resource.getColor(R.color.tintPurple), true),
-                                    new CategoryModel(Helpers.resource.getString(R.string.category_licence), Helpers.resource.getColor(R.color.brown), Helpers.resource.getColor(R.color.tintBrown), true)
-                            };
-
-                            for (int i = 0; i < categoryModels.length; i++) {
-                                categoryModels[i].insert();
-                            }
-
-                            PasswordModel passwordModel = new PasswordModel(Helpers.resource.getString(R.string.example_name, "Example Account"), Helpers.resource.getString(R.string.example_account, "example_account"), Helpers.resource.getString(R.string.example_password, "Example_Password"), color, tintColor, 1);
-                            ResultObject resultInsert = passwordModel.insert();
-
-                            if (resultInsert.isSuccess()) {
-                                Helpers.config.setBoolean(ConfigKeys.FIRST_OPEN, false);
-                            }
-
-                            registered();
-                        } else {
-                            SnackbarComponent snackbarComponent = new SnackbarComponent(getWindow().getDecorView().getRootView(), R.string.register_failure_2, R.string.action_ok);
-                            snackbarComponent.show();
-                        }
+                        SnackbarComponent snackbarComponent = new SnackbarComponent(getWindow().getDecorView().getRootView(), R.string.register_failure_2, R.string.action_ok);
+                        snackbarComponent.show();
                     }
                 }
             });
@@ -640,8 +637,11 @@ public class MainActivity extends AppCompatActivity {
                     new ColorObject(Helpers.resource.getColor(R.color.red), Helpers.resource.getColor(R.color.tintRed)),
                     new ColorObject(Helpers.resource.getColor(R.color.indigo), Helpers.resource.getColor(R.color.tintIndigo)),
                     new ColorObject(Helpers.resource.getColor(R.color.purple), Helpers.resource.getColor(R.color.tintPurple)),
+                    new ColorObject(Helpers.resource.getColor(R.color.lightGreen), Helpers.resource.getColor(R.color.tintLightGreen)),
                     new ColorObject(Helpers.resource.getColor(R.color.deepOrange), Helpers.resource.getColor(R.color.tintDeepOrange)),
                     new ColorObject(Helpers.resource.getColor(R.color.brown), Helpers.resource.getColor(R.color.tintBrown)),
+                    new ColorObject(Helpers.resource.getColor(R.color.lime), Helpers.resource.getColor(R.color.tintLime)),
+                    new ColorObject(Helpers.resource.getColor(R.color.orange), Helpers.resource.getColor(R.color.tintOrange)),
             };
 
             //region Declare UI Components
@@ -702,6 +702,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //endregion
+
+    public void updateAfterRegisterAndBeforeLogin(){
+        new CategoryModel(Helpers.resource.getString(R.string.category_card), Helpers.resource.getColor(R.color.lime), Helpers.resource.getColor(R.color.tintLime), true).insertWithCheckDuplicate();
+    }
 }
 
 /*
@@ -728,6 +732,8 @@ public class MainActivity extends AppCompatActivity {
     43 - İmport ederken klavye niye açıkta kaldı ?
     44 - İnsert hesap adı uzunluğu ( Rowun adı, login değil )
     45 - Şifre yüklendiğinde input gizlenmiyor kalıyor açık
-    46 - Kredi Kartı Kategorisi
     47 - SS DE var,i ayarlar tabın altına kaçtı ( margib koydu topa ona bak ) [ Şifre girme ]
+    48 - Ayarlar direk şifre sormasın - şifre değiştirme şifre sorsun felan
+    49 - Timeotut ? ( İşlem yapamzsa loginden düşssün, güvenlik için )
+    50 - Rastgele renk seçsin eklemede
  */

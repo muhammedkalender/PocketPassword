@@ -110,6 +110,8 @@ public class NewPasswordPage extends PageAbstract implements PageInterface {
 
         colorPickerComponent.fillLayout(viewRoot.findViewById(R.id.llColors));
 
+        colorPickerComponent.refresh(colorPickerComponent.getRandomColor());
+
         //endregion
 
         //region Reset Views
@@ -312,7 +314,7 @@ public class NewPasswordPage extends PageAbstract implements PageInterface {
             selectedCategoryIndex = 0;
             selectedCategoryId = 0;
             etCategory.setText(listCategory.get(selectedCategoryIndex).getName());
-            colorPickerComponent.refresh(ColorConstants.colorItem[0].getColor());
+            colorPickerComponent.refresh(colorPickerComponent.getRandomColor());
 
             Global.PAGE_HOME.filter("");
         } else {

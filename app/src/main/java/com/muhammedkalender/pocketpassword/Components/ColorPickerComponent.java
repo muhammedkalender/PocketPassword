@@ -8,8 +8,11 @@ import android.widget.RelativeLayout;
 
 import com.google.android.material.button.MaterialButton;
 import com.muhammedkalender.pocketpassword.Constants.ColorConstants;
+import com.muhammedkalender.pocketpassword.Constants.ErrorCodeConstants;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
 import com.muhammedkalender.pocketpassword.R;
+
+import java.util.Random;
 
 public class ColorPickerComponent {
     //region Variables
@@ -140,6 +143,21 @@ public class ColorPickerComponent {
     }
 
     //endregion
+
+    //endregion
+
+    //region Secondary Functions
+
+    public int getRandomColor(){
+        try{
+            Random random = new Random();
+            return ColorConstants.colorItem[random.nextInt(ColorConstants.colorItem.length)].getColor();
+        }catch (Exception e){
+            Helpers.logger.error(ErrorCodeConstants.COLOR_PICKED_RANDOM_COLOR, e);
+
+            return -1;
+        }
+    }
 
     //endregion
 }

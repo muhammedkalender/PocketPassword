@@ -134,5 +134,19 @@ public class ResultObject {
         }
     }
 
+    public boolean getDataAsBoolean(){
+        return getDataAsBoolean(Config.DEFAULT_BOOLEAN);
+    }
+
+    public boolean getDataAsBoolean(boolean def){
+        try{
+            return (boolean) getData();
+        }catch (Exception e){
+            Helpers.logger.error(ErrorCodeConstants.RESULT_AS_BOOLEAN, e);
+
+            return def;
+        }
+    }
+
     //endregion
 }

@@ -148,7 +148,8 @@ public class ErrorCodeConstants {
 
     public static final int
             RESULT_AS_STRING = 7000,
-            RESULT_AS_INTEGER = 7001;
+            RESULT_AS_INTEGER = 7001,
+            RESULT_AS_BOOLEAN = 7002;
 
     //endregion
 
@@ -159,6 +160,12 @@ public class ErrorCodeConstants {
             BACKUP_IMPORT = 8100,
             IMPORT_BACKUP_OAR = 8101,
             EXPORT_BACKUP_OAR = 8102;
+
+    //endregion
+
+    //region Color Picker Component
+
+    public static final int COLOR_PICKED_RANDOM_COLOR = 8300;
 
     //endregion
 }
