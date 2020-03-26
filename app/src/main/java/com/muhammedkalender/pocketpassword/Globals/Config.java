@@ -1,10 +1,11 @@
 package com.muhammedkalender.pocketpassword.Globals;
 
 public class Config {
-    public static final int TAB_SETTINGS_INDEX = 0;
-    public static final int TAB_ADD_INDEX = 1;
-    public static final int TAB_HOME_INDEX = 2;
-    public static final int TAB_PASSWORD_INDEX = 3;
+    public static final int TAB_COMPANY = 0;
+    public static final int TAB_SETTINGS_INDEX = 1;
+    public static final int TAB_ADD_INDEX = 2;
+    public static final int TAB_HOME_INDEX = 3;
+    public static final int TAB_PASSWORD_INDEX = 4;
 
     public static final int SHORT_NAME_LENGTH = 16;
 

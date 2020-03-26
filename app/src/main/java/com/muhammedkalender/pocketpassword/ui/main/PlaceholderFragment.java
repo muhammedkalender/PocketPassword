@@ -14,6 +14,7 @@ import com.muhammedkalender.pocketpassword.Constants.InfoCodeConstants;
 import com.muhammedkalender.pocketpassword.Global;
 import com.muhammedkalender.pocketpassword.Globals.Config;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
+import com.muhammedkalender.pocketpassword.Pages.CompanyPage;
 import com.muhammedkalender.pocketpassword.Pages.HomePage;
 import com.muhammedkalender.pocketpassword.Pages.Password.NewPasswordPage;
 import com.muhammedkalender.pocketpassword.Pages.Password.PasswordPage;
@@ -63,10 +64,10 @@ public class PlaceholderFragment extends Fragment {
         } else if (pageViewModel.getIndex() == Config.TAB_ADD_INDEX + 1) {
             root = inflater.inflate(R.layout.fragment_new_password, container, false);
 
-            NewPasswordPage newPasswordPage = new NewPasswordPage();
-            newPasswordPage.initialize(root);
+            Global.PAGE_NEW_PASSWORD = new NewPasswordPage();
+            Global.PAGE_NEW_PASSWORD.initialize(root);
 
-            return newPasswordPage.getView();
+            return Global.PAGE_NEW_PASSWORD.getView();
         } else if (pageViewModel.getIndex() == Config.TAB_HOME_INDEX + 1) {
             //Home Page
             root = inflater.inflate(R.layout.fragment_main, container, false);
@@ -87,6 +88,13 @@ public class PlaceholderFragment extends Fragment {
             Helpers.logger.info(InfoCodeConstants.PAGE_CHANGE, "Password");
 
             return passwordPage.getView();
+        }else if(pageViewModel.getIndex() == Config.TAB_COMPANY + 1){
+            root = inflater.inflate(R.layout.fragment_company, container, false);
+
+            Global.PAGE_COMPANY = new CompanyPage();
+            Global.PAGE_COMPANY.initialize(root);
+
+            return Global.PAGE_COMPANY.getView();
         } else {
             Toast.makeText(Global.CONTEXT, R.string.view_null, Toast.LENGTH_SHORT).show();
 

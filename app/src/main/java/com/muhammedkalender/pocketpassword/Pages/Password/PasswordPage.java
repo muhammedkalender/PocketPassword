@@ -1,5 +1,6 @@
 package com.muhammedkalender.pocketpassword.Pages.Password;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -176,6 +177,15 @@ public class PasswordPage extends PageAbstract implements PageInterface {
         load(passwordModel);
     }
 
+    @Override
+    public void refresh() {
+        this.tilCategory.setErrorEnabled(false);
+        this.tilName.setErrorEnabled(false);
+        this.tilAccount.setErrorEnabled(false);
+        this.tilPassword.setErrorEnabled(false);
+        this.viewRoot.findViewById(R.id.svPassword).post(() -> this.viewRoot.findViewById(R.id.svPassword).setScrollY(0));
+    }
+
     //endregion
 
     //region Getters & Setters
@@ -194,7 +204,6 @@ public class PasswordPage extends PageAbstract implements PageInterface {
     //region Loaders
 
     public void load(PasswordModel passwordModel) {
-
         passwordModel.decrypt();
 
         this.hsvColors.post(() -> {
@@ -223,8 +232,6 @@ public class PasswordPage extends PageAbstract implements PageInterface {
         }
 
         this.btnSave.setOnClickListener(v -> {
-            Helpers.loading.show();
-
             String name = etName.getText().toString();
             String account = etAccount.getText().toString();
             String password = etPassword.getText().toString();
@@ -301,38 +308,45 @@ public class PasswordPage extends PageAbstract implements PageInterface {
                 }
             }
 
-            passwordModel.setName(name);
-            passwordModel.setAccount(account);
-            passwordModel.setPassword(password);
-            passwordModel.setColor(colorPickerComponent.getColor());
-            passwordModel.setTintColor(colorPickerComponent.getTintColor());
-            passwordModel.setCategoryID(category);
-            passwordModel.encrypt();
+            Helpers.loading.showDelayed();
 
-            ResultObject update = passwordModel.update();
+            new Thread(() -> {
+                passwordModel.setName(name);
+                passwordModel.setAccount(account);
+                passwordModel.setPassword(password);
+                passwordModel.setColor(colorPickerComponent.getColor());
+                passwordModel.setTintColor(colorPickerComponent.getTintColor());
+                passwordModel.setCategoryID(category);
+                passwordModel.encrypt();
 
-            passwordModel.decrypt();
+                ResultObject update = passwordModel.update();
 
-            if (update.isSuccess()) {
-                Global.LIST_PASSWORDS.set(Global.CURRENT_PASSWORD_MODEL_INDEX, passwordModel);
-                Helpers.list.findAndUpdate(passwordModel);
-                Global.LIST_PASSWORDS_SOLID.set(Helpers.list.findIndexFromSolid(passwordModel), passwordModel);
-                Global.PASSWORD_ADAPTER.notifyDataSetChanged();
-                Global.TAB_LAYOUT.getTabAt(Config.TAB_PASSWORD_INDEX).setText(passwordModel.getName());
-                Global.TAB_LAYOUT.getTabAt(Config.TAB_PASSWORD_INDEX).setContentDescription(passwordModel.getName());
+                passwordModel.decrypt();
 
-                SnackbarComponent snackbarComponent = new SnackbarComponent(viewRoot, R.string.success_update_record, R.string.action_ok);
-                snackbarComponent.show();
+                if (update.isSuccess()) {
+                    Global.LIST_PASSWORDS.set(Global.CURRENT_PASSWORD_MODEL_INDEX, passwordModel);
+                    Helpers.list.findAndUpdate(passwordModel);
+                    Global.LIST_PASSWORDS_SOLID.set(Helpers.list.findIndexFromSolid(passwordModel), passwordModel);
 
-                Global.PAGE_HOME.filter("");
-            } else {
-                SnackbarComponent snackbarComponent = new SnackbarComponent(viewRoot, R.string.failure_update_password, R.string.action_ok);
-                snackbarComponent.show();
-            }
+                    ((Activity) Global.CONTEXT).runOnUiThread(() -> {
+                        Global.PASSWORD_ADAPTER.notifyDataSetChanged();
+                        Global.TAB_LAYOUT.getTabAt(Config.TAB_PASSWORD_INDEX).setText(passwordModel.getName());
+                        Global.TAB_LAYOUT.getTabAt(Config.TAB_PASSWORD_INDEX).setContentDescription(passwordModel.getName());
 
-            Helpers.system.hideSoftKeyboard();
+                        SnackbarComponent snackbarComponent = new SnackbarComponent(viewRoot, R.string.success_update_record, R.string.action_ok);
+                        snackbarComponent.show();
 
-            Helpers.loading.hide();
+                        Global.PAGE_HOME.filter("");
+                    });
+                } else {
+                    SnackbarComponent snackbarComponent = new SnackbarComponent(viewRoot, R.string.failure_update_password, R.string.action_ok);
+                    snackbarComponent.show();
+                }
+
+                Helpers.system.hideSoftKeyboard();
+
+                Helpers.loading.hide();
+            }).start();
         });
 
         btnClipboard.setOnClickListener(v -> {

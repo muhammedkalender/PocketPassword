@@ -154,6 +154,19 @@ public class NewPasswordPage extends PageAbstract implements PageInterface {
 
     }
 
+    @Override
+    public void refresh() {
+        //todo
+        tilCategory.setErrorEnabled(false);
+        tilName.setErrorEnabled(false);
+        tilAccount.setErrorEnabled(false);
+        tilPassword.setErrorEnabled(false);
+
+        this.viewRoot.findViewById(R.id.svNewPassword).post(() -> {
+            this.viewRoot.findViewById(R.id.svNewPassword).setScrollY(0);
+        });
+    }
+
     //endregion
 
     //region Getters & Setters
@@ -197,7 +210,7 @@ public class NewPasswordPage extends PageAbstract implements PageInterface {
     //region Password
 
     private void newPassword(PasswordModel passwordModel){
-        Helpers.loading.show();
+        Helpers.loading.showDelayed();
 
         String name = etName.getText().toString();
         String account = etAccount.getText().toString();

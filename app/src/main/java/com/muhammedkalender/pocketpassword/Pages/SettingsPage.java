@@ -3,7 +3,6 @@ package com.muhammedkalender.pocketpassword.Pages;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.net.Uri;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -12,7 +11,6 @@ import android.widget.Toast;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.hypertrack.hyperlog.HyperLog;
 import com.muhammedkalender.pocketpassword.Abstracts.PageAbstract;
 import com.muhammedkalender.pocketpassword.Components.AlertDialogComponent;
 import com.muhammedkalender.pocketpassword.Constants.ConfigKeys;
@@ -29,9 +27,6 @@ import com.muhammedkalender.pocketpassword.Models.PasswordModel;
 import com.muhammedkalender.pocketpassword.Objects.ResultObject;
 import com.muhammedkalender.pocketpassword.R;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -125,29 +120,8 @@ public class SettingsPage extends PageAbstract implements PageInterface {
 
         //endregion
 
-        //region Contact Us
-
-        this.viewRoot.findViewById(R.id.btnContactUS).setOnClickListener(v -> {
-            Helpers.loading.show();
-
-            //https://stackoverflow.com/questions/8701634/send-email-intent
-            Uri uri = Uri.parse("mailto:")
-                    .buildUpon()
-                    .appendQueryParameter("subject", Helpers.resource.getString(R.string.mail_subject))
-                    .build();
-
-            Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
-            //https://stackoverflow.com/a/9097251
-            intent.putExtra(Intent.EXTRA_EMAIL, new String[]{Helpers.resource.getString(R.string.email_contact)});
-            Global.CONTEXT.startActivity(Intent.createChooser(intent, Helpers.resource.getString(R.string.mail_chooser)));
-
-            Helpers.loading.hide();
-        });
-
         ((TextInputEditText) this.viewRoot.findViewById(R.id.etPassword)).setText("");
         ((TextInputLayout) this.viewRoot.findViewById(R.id.tilPassword)).setErrorEnabled(false);
-
-        //endregion
 
         //region Reset Page
 
@@ -155,48 +129,6 @@ public class SettingsPage extends PageAbstract implements PageInterface {
 
         svSettings.post(() -> {
             svSettings.setScrollX(0);
-        });
-
-        //endregion
-
-        //region Send Error Log
-
-        this.viewRoot.findViewById(R.id.btnSendErrorLog).setOnClickListener(v -> {
-            try {
-                Helpers.loading.show();
-
-                File file = HyperLog.getDeviceLogsInFile(Global.CONTEXT);
-
-                StringBuilder stringBuilder = new StringBuilder();
-
-                BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
-
-                String line;
-
-                while ((line = bufferedReader.readLine()) != null) {
-                    stringBuilder.append(line);
-                }
-
-                bufferedReader.close();
-
-                //https://stackoverflow.com/questions/8701634/send-email-intent
-                Uri uri = Uri.parse("mailto:")
-                        .buildUpon()
-                        .appendQueryParameter("subject", Helpers.resource.getString(R.string.email_log_error_subject))
-                        .appendQueryParameter("body", stringBuilder.toString())
-                        .build();
-
-                Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
-
-                //https://stackoverflow.com/a/9097251
-                intent.putExtra(Intent.EXTRA_EMAIL, new String[]{Helpers.resource.getString(R.string.email_log_error)});
-                intent.setData(uri);
-                Global.CONTEXT.startActivity(Intent.createChooser(intent, Helpers.resource.getString(R.string.mail_chooser)));
-
-                Helpers.loading.hide();
-            } catch (Exception e) {
-                Helpers.logger.error(ErrorCodeConstants.SETTINGS_SEND_ERROR_LOG, e);
-            }
         });
 
         //endregion
@@ -317,6 +249,9 @@ public class SettingsPage extends PageAbstract implements PageInterface {
                         return;
                     }
 
+                    this.viewRoot.findViewById(R.id.svSettings).post(() -> this.viewRoot.findViewById(R.id.svSettings).setScrollY(0));
+
+                    this.viewRoot.findViewById(R.id.svSettings).setVisibility(View.VISIBLE);
                     viewRoot.findViewById(R.id.llPassword).setVisibility(View.INVISIBLE);
 
                     Helpers.system.hideSoftKeyboard();
@@ -350,13 +285,24 @@ public class SettingsPage extends PageAbstract implements PageInterface {
 
         //region Export Backup
 
-        this.viewRoot.findViewById(R.id.btnExportData).setOnClickListener(v -> {
-                    exportBackup();
-                }
-        );
+        this.viewRoot.findViewById(R.id.btnExportData).setOnClickListener(v -> exportBackup());
 
         //endregion
 
+    }
+
+    @Override
+    public void refresh() {
+        //todo
+
+        this.viewRoot.findViewById(R.id.svSettings).setVisibility(View.GONE);
+        this.viewRoot.findViewById(R.id.llPassword).setVisibility(View.VISIBLE);
+
+        ((TextInputEditText)this.viewRoot.findViewById(R.id.etPassword)).setText("");
+
+        this.viewRoot.findViewById(R.id.svSettings).post(() -> {
+            this.viewRoot.findViewById(R.id.svSettings).setScrollY(0);
+        });
     }
 
     //endregion

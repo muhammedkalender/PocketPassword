@@ -26,6 +26,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.hypertrack.hyperlog.HyperLog;
+import com.muhammedkalender.pocketpassword.Components.AlertDialogComponent;
 import com.muhammedkalender.pocketpassword.Components.CustomLogMessageFormat;
 import com.muhammedkalender.pocketpassword.Components.LoadingComponent;
 import com.muhammedkalender.pocketpassword.Components.SnackbarComponent;
@@ -66,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
     public TextInputLayout tilMainPassword, tilMainPasswordRepeat;
     public TextInputEditText etMainPassword, etMainPasswordRepeat;
 
+    public MaterialButton btnAction;
+
     //endregion
 
     //region Override Functions
@@ -87,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
 
         firstOpen();
 
-
+        initSecondaryComponents();
     }
 
     @Override
@@ -262,7 +265,7 @@ public class MainActivity extends AppCompatActivity {
                             } else {
                                 _passwordModel.setId((int) resultInsert.getData());
 
-                                if(_passwordModel.isActive()){
+                                if (_passwordModel.isActive()) {
                                     _passwordModel.decrypt();
 
                                     Global.LIST_PASSWORDS.add(_passwordModel);
@@ -316,7 +319,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(Helpers.loading.isShowing){
+        if (Helpers.loading.isShowing) {
             return;
         }
 
@@ -359,6 +362,8 @@ public class MainActivity extends AppCompatActivity {
         etMainPassword = findViewById(R.id.etMainPassword);
         tilMainPasswordRepeat = findViewById(R.id.tilMainPasswordRepeat);
         etMainPasswordRepeat = findViewById(R.id.etMainPasswordRepeat);
+
+        btnAction = findViewById(R.id.btnLogin);
 
         return true;
     }
@@ -436,19 +441,28 @@ public class MainActivity extends AppCompatActivity {
         etMainPassword.setText("");
         tilMainPassword.setErrorEnabled(false);
 
+        this.findViewById(R.id.svLLMainPassword).post(() -> {
+           this.findViewById(R.id.svLLMainPassword).setScrollY(0);
+        });
+
         if (Helpers.config.getBoolean(ConfigKeys.REGISTER, false)) {
             //region Is Registered
 
             etMainPassword.setImeOptions(EditorInfo.IME_ACTION_DONE);
             tilMainPasswordRepeat.setVisibility(View.GONE);
 
-            ((MaterialButton) findViewById(R.id.btnLogin)).setText(R.string.button_login);
-            ((MaterialButton) findViewById(R.id.btnLogin)).setIcon(Helpers.resource.getDrawable(R.drawable.ic_person_24dp));
+            findViewById(R.id.tvForgotPassword).setVisibility(View.VISIBLE);
+            findViewById(R.id.tvContactUs).setVisibility(View.VISIBLE);
+            findViewById(R.id.tvEULA).setVisibility(View.VISIBLE);
+
+            btnAction.setText(R.string.button_login);
+            btnAction.setIcon(Helpers.resource.getDrawable(R.drawable.ic_person_24dp));
+            btnAction.setBackgroundColor(Helpers.resource.getColor(R.color.lightBlue));
 
             tilMainPassword.setHelperText(Helpers.resource.getString(R.string.input_login_password));
             tilMainPassword.setHint(Helpers.resource.getString(R.string.hint_password));
 
-            findViewById(R.id.btnLogin).setOnClickListener(v -> {
+            btnAction.setOnClickListener(v -> {
                 updateAfterRegisterAndBeforeLogin();
 
                 login();
@@ -458,13 +472,19 @@ public class MainActivity extends AppCompatActivity {
         } else {
             //region Is First Login
 
-            ((MaterialButton) findViewById(R.id.btnLogin)).setText(R.string.button_confirm);
+            findViewById(R.id.tvForgotPassword).setVisibility(View.GONE);
+            findViewById(R.id.tvContactUs).setVisibility(View.GONE);
+            findViewById(R.id.tvEULA).setVisibility(View.GONE);
+
+            btnAction.setText(R.string.button_register);
+            btnAction.setBackgroundColor(Helpers.resource.getColor(R.color.green));
+            btnAction.clearFocus();
 
             etMainPassword.setImeOptions(EditorInfo.IME_ACTION_NEXT);
             tilMainPassword.setHelperText(Helpers.resource.getString(R.string.input_password_register_edit));
             tilMainPassword.setHint(Helpers.resource.getString(R.string.hint_password_register_edit));
 
-            findViewById(R.id.btnLogin).setOnClickListener(v -> {
+            btnAction.setOnClickListener(v -> {
                 if (etMainPassword.getText() == null || etMainPassword.getText().toString().equals("")) {
                     tilMainPassword.setError(Helpers.resource.getString(R.string.not_null, "", Helpers.resource.getString(R.string.password)));
 
@@ -489,7 +509,7 @@ public class MainActivity extends AppCompatActivity {
                     tilMainPassword.setErrorEnabled(false);
 
                     if (etMainPasswordRepeat.getText() == null || etMainPasswordRepeat.getText().toString().equals("")) {
-                        tilMainPasswordRepeat.setError(Helpers.resource.getString(R.string.not_null, "", Helpers.resource.getString(R.string.password)));
+                        tilMainPasswordRepeat.setError(Helpers.resource.getString(R.string.not_null, "", Helpers.resource.getString(R.string.password_repeat)));
 
                         return;
                     }
@@ -591,6 +611,9 @@ public class MainActivity extends AppCompatActivity {
                             Helpers.config.setBoolean(ConfigKeys.FIRST_OPEN, false);
                         }
 
+                        tilMainPassword.requestFocus();
+                        Helpers.system.hideSoftKeyboard();
+
                         registered();
                     } else {
                         SnackbarComponent snackbarComponent = new SnackbarComponent(getWindow().getDecorView().getRootView(), R.string.register_failure_2, R.string.action_ok);
@@ -604,7 +627,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void login() {
-        Helpers.loading.show();
+        if (etMainPassword.getText() == null || etMainPassword.getText().toString().equals("")) {
+            etMainPassword.setText(null);
+            tilMainPassword.setError(Helpers.resource.getString(R.string.password_required));
+
+            return;
+        }
+
+        Helpers.loading.showDelayed();
 
         new Thread(() -> {
             Global.PASSWORD = etMainPassword.getText().toString();
@@ -656,7 +686,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 findViewById(R.id.appBar).setVisibility(View.VISIBLE);
-                findViewById(R.id.llMainPassword).setVisibility(View.INVISIBLE);
+                findViewById(R.id.svLLMainPassword).setVisibility(View.INVISIBLE);
 
                 Global.VIEW_PAGER = findViewById(R.id.view_pager);
                 Global.TAB_LAYOUT = findViewById(R.id.tabs);
@@ -676,9 +706,22 @@ public class MainActivity extends AppCompatActivity {
                 Global.TAB_LAYOUT.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
                     @Override
                     public void onTabSelected(TabLayout.Tab tab) {
-                        if (tab.getPosition() == Config.TAB_SETTINGS_INDEX) {
-                            Helpers.logger.info(tab.getPosition() + " Settingse girdimi");
-                            Global.PAGE_SETTINGS.initialize(Global.PAGE_SETTINGS.getView());
+                        switch (tab.getPosition()) {
+                            case Config.TAB_SETTINGS_INDEX:
+                                Global.PAGE_SETTINGS.refresh();
+                                break;
+                            case Config.TAB_PASSWORD_INDEX:
+                                Global.PAGE_PASSWORD.refresh();
+                                break;
+                            case Config.TAB_ADD_INDEX:
+                                Global.PAGE_NEW_PASSWORD.refresh();
+                                break;
+                            case Config.TAB_HOME_INDEX:
+                                Global.PAGE_HOME.refresh();
+                                break;
+                            case Config.TAB_COMPANY:
+                                Global.PAGE_COMPANY.refresh();
+                                break;
                         }
                     }
 
@@ -693,6 +736,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
+                ((ViewGroup) Global.TAB_LAYOUT.getChildAt(Config.TAB_COMPANY)).getChildAt(0).setVisibility(View.GONE);
+
                 Helpers.loading.hide();
             });
 
@@ -700,9 +745,66 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
 
+    private void initSecondaryComponents() {
+        try {
+            findViewById(R.id.tvContactUs).setOnClickListener(v -> {
+                try {
+                    Helpers.loading.show();
+
+                    //https://stackoverflow.com/questions/8701634/send-email-intent
+                    Uri uri = Uri.parse("mailto:")
+                            .buildUpon()
+                            .appendQueryParameter("subject", Helpers.resource.getString(R.string.mail_subject))
+                            .build();
+
+                    Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
+                    //https://stackoverflow.com/a/9097251
+                    intent.putExtra(Intent.EXTRA_EMAIL, new String[]{Helpers.resource.getString(R.string.email_contact)});
+                    Global.CONTEXT.startActivity(Intent.createChooser(intent, Helpers.resource.getString(R.string.mail_chooser)));
+
+                    Helpers.loading.hide();
+                } catch (Exception e) {
+                    Helpers.logger.error(ErrorCodeConstants.HOME_PAGE_LISTENER_CONTACT_US, e);
+                }
+            });
+
+            findViewById(R.id.tvForgotPassword).setOnClickListener(v -> {
+                try {
+                    new AlertDialogComponent()
+                            .setTitle(R.string.forgot_password_title)
+                            .setMessage(R.string.forgot_password_message)
+                            .show();
+                } catch (Exception e) {
+                    Helpers.logger.error(ErrorCodeConstants.HOME_PAGE_LISTENER_FORGOT_PASSWORD, e);
+                }
+            });
+
+            findViewById(R.id.tvEULA).setOnClickListener(v -> {
+                try {
+                    new AlertDialogComponent()
+                            .setTitle(R.string.terms_title)
+                            .setMessage(R.string.terms_content)
+                            .show();
+                } catch (Exception e) {
+                    Helpers.logger.error(ErrorCodeConstants.HOME_PAGE_LISTENER_EULA, e);
+                }
+            });
+
+            findViewById(R.id.ivLogo).setOnClickListener(v -> {
+                try{
+                    Global.TAB_LAYOUT.getTabAt(Config.TAB_COMPANY).select();
+                }catch (Exception e){
+                    Helpers.logger.error(ErrorCodeConstants.COMPANY_PAGE_LISTENER, e);
+                }
+            });
+        } catch (Exception e) {
+            Helpers.logger.error(ErrorCodeConstants.INIT_SECONDARY_COMPONENTS, e);
+        }
+    }
+
     //endregion
 
-    public void updateAfterRegisterAndBeforeLogin(){
+    public void updateAfterRegisterAndBeforeLogin() {
         new CategoryModel(Helpers.resource.getString(R.string.category_card), Helpers.resource.getColor(R.color.lime), Helpers.resource.getColor(R.color.tintLime), true).insertWithCheckDuplicate();
     }
 }

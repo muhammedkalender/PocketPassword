@@ -59,26 +59,6 @@
                 android:text="@string/switch_disable_info_log" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnContactUS"
-                style="@style/FormButton"
-                android:layout_width="match_parent"
-                android:layout_height="64dp"
-                android:backgroundTint="@color/green"
-                android:textColor="@color/tintLightBlue"
-                android:text="@string/button_contact_us"
-                app:icon="@drawable/ic_email_24dp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnSendErrorLog"
-                style="@style/FormButton"
-                android:layout_width="match_parent"
-                android:layout_height="64dp"
-                android:backgroundTint="@color/red"
-                android:textColor="@color/tintRed"
-                android:text="@string/button_send_error_log"
-                app:icon="@drawable/ic_bug_report_24dp" />
-
-            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnExportData"
                 style="@style/FormButton"
                 android:layout_width="match_parent"
@@ -187,7 +167,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/hint_password_register_edit"
-            app:helperText="@string/input_password_register_edit"
+            app:helperText="@string/input_password_settings"
             app:helperTextEnabled="true"
             app:passwordToggleDrawable="@drawable/ic_remove_red_eye_white_24dp"
             app:passwordToggleEnabled="true">

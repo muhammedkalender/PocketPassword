@@ -13,7 +13,9 @@ import com.google.android.material.tabs.TabLayout;
 import com.muhammedkalender.pocketpassword.Adapters.PasswordAdapter;
 import com.muhammedkalender.pocketpassword.Models.CategoryModel;
 import com.muhammedkalender.pocketpassword.Models.PasswordModel;
+import com.muhammedkalender.pocketpassword.Pages.CompanyPage;
 import com.muhammedkalender.pocketpassword.Pages.HomePage;
+import com.muhammedkalender.pocketpassword.Pages.Password.NewPasswordPage;
 import com.muhammedkalender.pocketpassword.Pages.Password.PasswordPage;
 import com.muhammedkalender.pocketpassword.Pages.SettingsPage;
 import com.muhammedkalender.pocketpassword.ui.main.SectionsPagerAdapter;
@@ -63,6 +65,12 @@ public class Global {
 
     //endregion
 
+    //region New Password
+
+    public static NewPasswordPage PAGE_NEW_PASSWORD = null;
+
+    //endregion
+
     //region Settings
 
     public static SettingsPage PAGE_SETTINGS = null;
@@ -93,6 +101,12 @@ public class Global {
             return null;
         }
     }
+
+    //endregion
+
+    //region Company
+
+    public static CompanyPage PAGE_COMPANY = null;
 
     //endregion
 

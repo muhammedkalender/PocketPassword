@@ -145,6 +145,11 @@ public class HomePage extends PageAbstract implements PageInterface {
         }
     }
 
+    @Override
+    public void refresh() {
+        //todo
+    }
+
     //endregion
 
     //region Secondary Methods

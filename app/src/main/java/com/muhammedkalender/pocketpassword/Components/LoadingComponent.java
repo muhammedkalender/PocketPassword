@@ -83,8 +83,12 @@ public class LoadingComponent {
 
         isShowing = true;
 
+        tvLoading.post(() -> {
+            tvLoading.setText(message);
+        });
+
         try {
-            if(showDirect){
+            if (showDirect) {
                 rlLoading.post(() -> {
                     if (rlLoading.getVisibility() != View.VISIBLE) {
                         rlLoading.setVisibility(View.VISIBLE);
@@ -94,10 +98,10 @@ public class LoadingComponent {
                         }
                     }
                 });
-            }else{
+            } else {
                 rlLoading.postDelayed(() -> {
                     if (rlLoading.getVisibility() != View.VISIBLE) {
-                        if(isShowing){
+                        if (isShowing) {
                             rlLoading.setVisibility(View.VISIBLE);
                         }
 
@@ -112,8 +116,12 @@ public class LoadingComponent {
         }
     }
 
+    public void showDelayed() {
+        show(defaultMessage, true, false);
+    }
+
     public void hide() {
-        if(!isShowing){
+        if (!isShowing) {
             return;
         }
 

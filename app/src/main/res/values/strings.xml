@@ -19,6 +19,12 @@
 
     <string name="contact_us">İletişim için tıklayın</string>
 
+    <string name="terms">Kullanım Koşulları</string>
+    <string name="terms_content">TODO</string>
+<!--    TODO-->
+    <string name="terms_title">Kullanım Koşulları</string>
+
+
     <string name="already_used">%1$s isimli bir kayıt zaten var</string>
     <string name="password_must_strong"><![CDATA[Şifrenizde büyük - küçük harf, sayı ve bir özel işaret olmalı. ($-_+=)]]></string>
     <string name="password_not_match">Şifreler birbiriyle eşleşmiyor</string>
@@ -35,7 +41,8 @@
     <string name="button_contact_us">Bize Yazın</string>
     <string name="button_send_error_log">Hata Raporlarını Gönder</string>
     <string name="button_delete_password">Şifre Kaydını Sil</string>
-    <string name="button_change_password">Hesap Şifresini Güncelle</string>
+    <string name="button_change_password">Uygulama Şifresini Güncelle</string>
+    <string name="button_register">Kayıtı Tamamla</string>
 
     <string name="input_name">Eklemek istediğiniz hesabın kayıt adı</string>
     <string name="input_name_edit">Düzenlemek istediğiniz hesabın kayıt adı</string>
@@ -50,20 +57,21 @@
     <string name="input_password_import">Yedeği oluşturulduğuz zaman kullandığınız şifreyi giriniz</string>
     <string name="input_password_settings_edit">Ayarları görüntülüyebilmeniz için önce uygulama şifrenizi girmelisiniz</string>
     <string name="input_password_rchange_edit">Bundan sonra kullanmak istediğiniz uygulama şifreniz</string>
+    <string name="input_password_settings">Ayarları güncellemek için uygulama şifrenizi girmelisiniz</string>
 
     <string name="hint_name">Kayıt Adı</string>
     <string name="hint_password">Hesap Şifresi</string>
     <string name="hint_name_edit">Kayıt Adı</string>
     <string name="hint_password_edit">Hesap Şifresi</string>
     <string name="hint_category">Kategori</string>
-    <string name="hint_password_repeat_edit">Yeni Uygulama Şifresinin Tekrarı</string>
+    <string name="hint_password_repeat_edit">Uygulama Şifresinin Tekrarı</string>
     <string name="hint_name_example">İş Mail, Gizli Soru, Bilgisayar Şifresi vs…</string>
     <string name="hint_password_register_edit">Uygulama Şifresi</string>
     <string name="hint_search">Aramaya yapmak için basın</string>
     <string name="hint_password_import">Yüklemek istediğiniz yedeğin Şifresi</string>
     <string name="hint_account_edit">Kullanıcı Adı</string>
-    <string name="hint_password_change_edit">Yeni Hesap Şifreniz</string>
-    <string name="hint_password_change_repeat_edit">Yeni hesap şifrenizin tekrarı</string>
+    <string name="hint_password_change_edit">Yeni Uygulama Şifreniz</string>
+    <string name="hint_password_change_repeat_edit">Yeni uygulama şifrenizin tekrarı</string>
 
     <string name="tab_add_password">EKLE</string>
     <string name="tab_list_password">ŞİFRELER</string>
@@ -79,6 +87,8 @@
     <string name="register_failure_2">Kayıt sırasında sorun oluştu. HK : 3</string>
     <string name="register_failure_3">Kayıt sırasında sorun oluştu. HK : 4</string>
     <string name="password_wrong_1">Şifreniz yalnış, lütfen tekrar kontrol edin</string>
+    <string name="password_required">Giriş yapmak için şifrenizi girmelisiniz</string>
+    <string name="password_repeat">Şifre tekrarı</string>
 
     <string name="failure_update_password">Şifre güncellenirken sorun oluştu</string>
     <string name="failure_password_clipboard">Şifre kopyalanamadı</string>
@@ -136,9 +146,9 @@
 
     <string name="mail_subject">Bize Yazın - Pocket Password</string>
     <string name="mail_chooser">Bir Mail Uygulaması Seçin :</string>
-    <string name="email_log_error">error@test.com</string>
-    <string name="email_log_info">info@test.com</string>
-    <string name="email_contact">contact@test.com</string>
+    <string name="email_log_error">kalender.contact@gmail.com</string>
+    <string name="email_log_info">kalender.contact@gmail.com</string>
+    <string name="email_contact">kalender.contact@gmail.com</string>
     <string name="email_log_error_subject">Hata Logları</string>
 
     <string name="message_failure_change_password__pre_error"><![CDATA[Şifre değiştirilirken sorunla karşılaşıldı.\\nDaha sonra tekrar deneyin.\\n<b>Eğet sorun devam ediyorsa bize logları atabilir veya doğrudan yazabilirsiniz</b>]]></string>

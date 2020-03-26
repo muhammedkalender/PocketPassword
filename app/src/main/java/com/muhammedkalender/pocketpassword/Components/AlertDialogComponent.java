@@ -40,6 +40,8 @@ public class AlertDialogComponent {
 
     //region Setters
 
+    //region Title
+
     public AlertDialogComponent setTitle(String title) {
         this.title = title;
 
@@ -51,6 +53,10 @@ public class AlertDialogComponent {
 
         return this;
     }
+
+    //endregion
+
+    //region Message
 
     public AlertDialogComponent setMessage(String message) {
         this.message = message;
@@ -64,8 +70,16 @@ public class AlertDialogComponent {
         return this;
     }
 
+    //endregion
+
+    //region Dialog Negative
+
     public AlertDialogComponent setDialogNegative(String strCustomNegative) {
         return setDialogNegative(strCustomNegative, listenerCancel);
+    }
+
+    public AlertDialogComponent setDialogNegative(int resCustomNegative) {
+        return setDialogNegative(Helpers.resource.getString(resCustomNegative), listenerCancel);
     }
 
     public AlertDialogComponent setDialogNegative(int resCustomNegative, DialogInterface.OnClickListener listenerNegative) {
@@ -81,6 +95,10 @@ public class AlertDialogComponent {
 
         return this;
     }
+
+    //endregion
+
+    //region Dialog Positive
 
     public AlertDialogComponent setDialogPositive(String strCustomPositive) {
         return setDialogPositive(strCustomPositive, this.listenerConfirm);
@@ -104,10 +122,12 @@ public class AlertDialogComponent {
 
     //endregion
 
+    //endregion
+
     //region Primary Methods
 
     public void show() {
-        dialogBuilder = new AlertDialog.Builder(Global.CONTEXT, R.style.ThemeOverlay_MaterialComponents_Dark);
+        dialogBuilder = new AlertDialog.Builder(Global.CONTEXT); //, R.style.ThemeOverlay_MaterialComponents_Dark
         dialogBuilder.setTitle(title);
         dialogBuilder.setMessage(message);
 

@@ -23,6 +23,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         //Onbackle geri gelirse sekmeler sapıtabiliyor
         TAB_TITLES.clear();
 
+        TAB_TITLES.add("");
         TAB_TITLES.add(Helpers.resource.getString(R.string.tab_settings));
         TAB_TITLES.add(Helpers.resource.getString(R.string.tab_add_password));
         TAB_TITLES.add(Helpers.resource.getString(R.string.tab_list_password));

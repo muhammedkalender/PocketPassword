@@ -21,6 +21,15 @@ public class ErrorCodeConstants {
 
     //endregion
 
+    //region Home Page
+
+    public static final int
+            HOME_PAGE_LISTENER_EULA = 8700,
+            HOME_PAGE_LISTENER_FORGOT_PASSWORD = 8701,
+            HOME_PAGE_LISTENER_CONTACT_US = 6702;
+
+    //endregion
+
     //region Resource
 
     public static final int
@@ -166,6 +175,19 @@ public class ErrorCodeConstants {
     //region Color Picker Component
 
     public static final int COLOR_PICKED_RANDOM_COLOR = 8300;
+
+    //endregion
+
+    //region Initialize Secondary Components
+
+    public static final int INIT_SECONDARY_COMPONENTS = 8500;
+
+    //endregion
+
+
+    //region Company Page
+
+    public static final int COMPANY_PAGE_LISTENER = 8700;
 
     //endregion
 }
