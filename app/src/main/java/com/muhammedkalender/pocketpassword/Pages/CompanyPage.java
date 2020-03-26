@@ -3,6 +3,7 @@ package com.muhammedkalender.pocketpassword.Pages;
 import android.content.Intent;
 import android.net.Uri;
 import android.view.View;
+import android.widget.Toast;
 
 import com.hypertrack.hyperlog.HyperLog;
 import com.muhammedkalender.pocketpassword.Abstracts.PageAbstract;
@@ -65,6 +66,10 @@ public class CompanyPage extends PageAbstract implements PageInterface {
 
                 bufferedReader.close();
 
+                if(stringBuilder.toString().equals("")){
+                    stringBuilder.append("-");
+                }
+
                 //https://stackoverflow.com/questions/8701634/send-email-intent
                 Uri uri = Uri.parse("mailto:")
                         .buildUpon()
@@ -82,6 +87,10 @@ public class CompanyPage extends PageAbstract implements PageInterface {
                 Helpers.loading.hide();
             } catch (Exception e) {
                 Helpers.logger.error(ErrorCodeConstants.SETTINGS_SEND_ERROR_LOG, e);
+
+                Toast.makeText(Global.CONTEXT, R.string.failure_send_error_log, Toast.LENGTH_SHORT).show();
+
+                Helpers.loading.hide();
             }
         });
 

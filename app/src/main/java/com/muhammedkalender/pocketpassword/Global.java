@@ -123,4 +123,6 @@ public class Global {
     public static int SELECTED_PASSWORD_ID = -1;
 
     public static String EXPORT_DATA = "";
+
+    public static Long lastOperationTime = null;
 }

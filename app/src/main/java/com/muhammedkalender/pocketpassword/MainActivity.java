@@ -49,6 +49,7 @@ import com.muhammedkalender.pocketpassword.Models.CategoryModel;
 import com.muhammedkalender.pocketpassword.Models.PasswordModel;
 import com.muhammedkalender.pocketpassword.Objects.ColorObject;
 import com.muhammedkalender.pocketpassword.Objects.ResultObject;
+import com.muhammedkalender.pocketpassword.Workers.TimeOutWorker;
 import com.muhammedkalender.pocketpassword.ui.main.SectionsPagerAdapter;
 
 import java.io.BufferedReader;
@@ -91,6 +92,11 @@ public class MainActivity extends AppCompatActivity {
         firstOpen();
 
         initSecondaryComponents();
+
+       TimeOutWorker timeOutWorker = new TimeOutWorker();
+       timeOutWorker.timer(5000);
+       timeOutWorker.start();
+
     }
 
     @Override
@@ -737,6 +743,8 @@ public class MainActivity extends AppCompatActivity {
                 });
 
                 ((ViewGroup) Global.TAB_LAYOUT.getChildAt(Config.TAB_COMPANY)).getChildAt(0).setVisibility(View.GONE);
+
+                Global.lastOperationTime = System.currentTimeMillis();
 
                 Helpers.loading.hide();
             });

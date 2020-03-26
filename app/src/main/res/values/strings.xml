@@ -99,6 +99,7 @@
     <string name="failure_insert_backup">Kayıtlar içeri aktarılırken sorun oluştu.\nToplam %1$s kayıt aktarılamadı.</string>
     <string name="failure_account_clipboard">Hesap kopyalanırken sorun oluştu</string>
     <string name="failure_load_category_list">Kategoriler yüklenemedi, lütfen uygulamayı yeniden başlatmayı deneyin</string>
+    <string name="failure_send_error_log">Hata raporları gönderilirken sorun oluştu. Lütfen tekrar deneyin.</string>
 
     <string name="success_add_password">Şifre kaydınız başarıyla oluşturuldu.</string>
     <string name="success_update_password">Şifre kaydı başarıyla güncellendi</string>
@@ -106,6 +107,9 @@
     <string name="success_export_backup">Kayıtlarınız başarıyla yedeklendi</string>
     <string name="success_insert_backup">Kayıtlarınız sorunsuz bir şekilde yedekten içeri aktarıldı</string>
     <string name="success_delete_password">Şifre kayıtı başarıyla silindi</string>
+
+<!--    TODO-->
+    <string name="company">TODO</string>
 
     <string name="action_ok">OK</string>
 

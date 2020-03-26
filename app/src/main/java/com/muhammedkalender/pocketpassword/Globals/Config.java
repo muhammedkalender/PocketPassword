@@ -31,6 +31,8 @@ public class Config {
 
     public static int LOADING_SHOW_DELAY = 300;
 
+    public static int TIMEOUT_MINUTE = 1; //TODO
+
     public static void initConfig(){
         CONFIG_ONLY_LOGIN = Helpers.config.getBoolean("only_login", CONFIG_ONLY_LOGIN);
         CONFIG_HIDE_VIEW = Helpers.config.getBoolean("hide_view", CONFIG_HIDE_VIEW);
