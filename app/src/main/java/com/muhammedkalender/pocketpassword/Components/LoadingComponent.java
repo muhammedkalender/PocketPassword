@@ -121,6 +121,8 @@ public class LoadingComponent {
     }
 
     public void hide() {
+        Helpers.updateLastOperationTime();
+
         if (!isShowing) {
             return;
         }

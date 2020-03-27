@@ -149,9 +149,6 @@ public class NewPasswordPage extends PageAbstract implements PageInterface {
         });
 
         //endregion
-
-        Helpers.logger.info("Listener Atandı");
-
     }
 
     @Override
@@ -326,6 +323,7 @@ public class NewPasswordPage extends PageAbstract implements PageInterface {
             selectedCategoryId = 0;
             etCategory.setText(listCategory.get(selectedCategoryIndex).getName());
             colorPickerComponent.refresh(colorPickerComponent.getRandomColor());
+            tilPassword.setPasswordVisibilityToggleEnabled(false);
 
             Global.PAGE_HOME.filter("");
         } else {

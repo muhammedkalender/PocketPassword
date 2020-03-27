@@ -85,7 +85,7 @@
     <string name="register_failure">Kayıt sırasında sorun oluştu. HK : 1</string>
     <string name="register_failure_1">Kayıt sırasında sorun oluştu. HK : 2</string>
     <string name="register_failure_2">Kayıt sırasında sorun oluştu. HK : 3</string>
-    <string name="register_failure_3">Kayıt sırasında sorun oluştu. HK : 4</string>
+    <string name="register_failure_3">Kayıt sırasında sor       HK : 4</string>
     <string name="password_wrong_1">Şifreniz yalnış, lütfen tekrar kontrol edin</string>
     <string name="password_required">Giriş yapmak için şifrenizi girmelisiniz</string>
     <string name="password_repeat">Şifre tekrarı</string>

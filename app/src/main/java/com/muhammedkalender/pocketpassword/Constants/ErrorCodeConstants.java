@@ -190,4 +190,10 @@ public class ErrorCodeConstants {
     public static final int COMPANY_PAGE_LISTENER = 8700;
 
     //endregion
+
+    //region Worker
+
+    public static final int WORKER_TIME_OUT_ACTION = 7000;
+
+    //endregion
 }

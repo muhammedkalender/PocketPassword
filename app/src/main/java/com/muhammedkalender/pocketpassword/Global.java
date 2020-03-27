@@ -124,5 +124,5 @@ public class Global {
 
     public static String EXPORT_DATA = "";
 
-    public static Long lastOperationTime = null;
+    public static Long LAST_OPERATION_TIME = null;
 }

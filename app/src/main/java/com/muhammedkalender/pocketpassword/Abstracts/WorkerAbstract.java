@@ -1,78 +1,36 @@
 package com.muhammedkalender.pocketpassword.Abstracts;
 
-import com.muhammedkalender.pocketpassword.Interfaces.WorkerInterface;
+import com.muhammedkalender.pocketpassword.Constants.ErrorCodeConstants;
+import com.muhammedkalender.pocketpassword.Globals.Config;
+import com.muhammedkalender.pocketpassword.Globals.Helpers;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
+public abstract class WorkerAbstract {
+    protected boolean active = true;
+    protected Runnable runnable;
 
-public abstract class WorkerAbstract implements WorkerInterface {
-    protected boolean active = false;
-    protected boolean started = false;
+    public void setRunnable(Runnable runnable){
+        this.runnable = runnable;
+    }
 
-    public abstract void action();
+    protected Thread thread;
 
-    private CountDownLatch countDownLatch;
+    public void start(){
+        this.thread = new Thread(() -> {
+            while (active){
+                try {
+                    Thread.sleep(Config.DELAY_TIME_OUT * 1000);
 
-    @Override
-    public void timer(int milliSeconds) {
-        setStarted(true);
-        setActive(true);
-
-        while (isActive()){
-            countDownLatch = new CountDownLatch(1);
-
-            action();
-
-            try {
-                countDownLatch.await(milliSeconds, TimeUnit.MILLISECONDS);
-            } catch (InterruptedException e) {
-                //TODO Helpers.logger.error();
+                    this.runnable.run();
+                } catch (Exception e) {
+                    Helpers.logger.error(ErrorCodeConstants.WORKER_TIME_OUT_ACTION, e);
+                }
             }
-        }
+        });
 
-        setStarted(false);
+        thread.start();
     }
 
-    public void timerWithMinute(int minute){
-        this.timer(minute * 1000);
-    }
-
-    @Override
-    public void stop() {
-        setStarted(false);
-        setActive(false);
-    }
-
-    @Override
-    public void start() {
-      setActive(true);
-
-        if(!isStarted()){
-            action();
-        }
-    }
-
-    @Override
-    public void pause() {
-        if(isStarted()){
-            setActive(false);
-        }
-    }
-
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public boolean isStarted() {
-        return started;
-    }
-
-    public void setStarted(boolean started) {
-        this.started = started;
+    public void stop(){
+        this.active = false;
     }
 }

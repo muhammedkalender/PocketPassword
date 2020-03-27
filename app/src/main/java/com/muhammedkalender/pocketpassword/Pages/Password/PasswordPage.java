@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.text.InputType;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.HorizontalScrollView;
@@ -120,8 +121,6 @@ public class PasswordPage extends PageAbstract implements PageInterface {
         }
 
         this.tilCategory.setOnClickListener(v -> {
-            Helpers.logger.info("Girdi");
-
             AlertDialog.Builder builderSingle = new AlertDialog.Builder(Global.CONTEXT);
             builderSingle.setIcon(R.drawable.ic_format_list_bulleted_24dp);
             builderSingle.setTitle(R.string.select_category);
@@ -219,7 +218,7 @@ public class PasswordPage extends PageAbstract implements PageInterface {
         this.etName.setText(passwordModel.getName());
         this.etAccount.setText(passwordModel.getAccount());
         this.etPassword.setText(passwordModel.getPassword());
-        this.tilPassword.setPasswordVisibilityToggleEnabled(!Config.CONFIG_HIDE_VIEW);
+        this.etPassword.setInputType(InputType.TYPE_CLASS_TEXT| InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
         this.colorPickerComponent.refresh(passwordModel.getColor());
 

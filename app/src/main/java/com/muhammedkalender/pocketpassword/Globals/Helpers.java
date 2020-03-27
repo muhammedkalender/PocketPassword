@@ -1,6 +1,7 @@
 package com.muhammedkalender.pocketpassword.Globals;
 
 import com.muhammedkalender.pocketpassword.Components.LoadingComponent;
+import com.muhammedkalender.pocketpassword.Global;
 import com.muhammedkalender.pocketpassword.Helpers.AESHelper;
 import com.muhammedkalender.pocketpassword.Helpers.CryptHelper;
 import com.muhammedkalender.pocketpassword.Helpers.DatabaseHelper;
@@ -22,4 +23,8 @@ public class Helpers {
     public static AESHelper aes;
     public static CryptHelper crypt;
     public static SystemHelper system;
+
+    public static void updateLastOperationTime(){
+        Global.LAST_OPERATION_TIME = System.currentTimeMillis();
+    }
 }

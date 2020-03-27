@@ -44,15 +44,18 @@
         android:id="@+id/svLLMainPassword"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:layout_margin="-32dp"
+        android:background="#000"
+
+        android:fillViewport="true"
+        android:padding="0dp">
 
         <LinearLayout
             android:id="@+id/llMainPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:background="?attr/panelBackground"
-            android:backgroundTint="@color/design_default_color_on_secondary"
+
             android:clickable="true"
             android:gravity="center"
             android:orientation="vertical">
@@ -103,7 +106,8 @@
                     android:maxLines="1" />
 
             </com.google.android.material.textfield.TextInputLayout>
-650
+            650
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tilMainPasswordRepeat"
                 style="@style/FormInput"
@@ -119,8 +123,8 @@
                     android:id="@+id/etMainPasswordRepeat"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textPassword"
                     android:imeOptions="actionDone"
+                    android:inputType="textPassword"
                     android:maxLength="@integer/password_max_length"
                     android:maxLines="1" />
 

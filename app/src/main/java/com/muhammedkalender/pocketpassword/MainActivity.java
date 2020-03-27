@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
 
     public MaterialButton btnAction;
 
+    public TimeOutWorker timeOutWorker;
+
     //endregion
 
     //region Override Functions
@@ -93,10 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
         initSecondaryComponents();
 
-       TimeOutWorker timeOutWorker = new TimeOutWorker();
-       timeOutWorker.timer(5000);
-       timeOutWorker.start();
-
+        Global.LAST_OPERATION_TIME = System.currentTimeMillis();
     }
 
     @Override
@@ -329,7 +329,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        if (Global.TAB_LAYOUT.getSelectedTabPosition() == Config.TAB_HOME_INDEX) {
+        if (Global.TAB_LAYOUT == null || Global.TAB_LAYOUT.getSelectedTabPosition() == Config.TAB_HOME_INDEX) {
             super.onBackPressed();
         } else {
             Helpers.system.hideSoftKeyboard();
@@ -744,7 +744,8 @@ public class MainActivity extends AppCompatActivity {
 
                 ((ViewGroup) Global.TAB_LAYOUT.getChildAt(Config.TAB_COMPANY)).getChildAt(0).setVisibility(View.GONE);
 
-                Global.lastOperationTime = System.currentTimeMillis();
+                timeOutWorker = new TimeOutWorker();
+                timeOutWorker.start();
 
                 Helpers.loading.hide();
             });
@@ -814,5 +815,30 @@ public class MainActivity extends AppCompatActivity {
 
     public void updateAfterRegisterAndBeforeLogin() {
         new CategoryModel(Helpers.resource.getString(R.string.category_card), Helpers.resource.getColor(R.color.lime), Helpers.resource.getColor(R.color.tintLime), true).insertWithCheckDuplicate();
+    }
+
+    @Override
+    public void onUserInteraction() {
+        super.onUserInteraction();
+        Global.LAST_OPERATION_TIME = System.currentTimeMillis();
+    }
+
+    public void logout(){
+        runOnUiThread(() -> {
+            timeOutWorker.stop();
+
+            findViewById(R.id.appBar).setVisibility(View.INVISIBLE);
+            findViewById(R.id.svLLMainPassword).setVisibility(View.VISIBLE);
+            etMainPassword.setInputType(InputType.TYPE_CLASS_TEXT| InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            etMainPassword.setText("");
+
+            Helpers.system.hideSoftKeyboard();
+
+            btnAction.requestFocus();
+
+            findViewById(R.id.svLLMainPassword).post(() -> {
+                findViewById(R.id.svLLMainPassword).setScrollY(0);
+            });
+        });
     }
 }
