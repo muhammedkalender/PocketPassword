@@ -297,6 +297,8 @@ public class SettingsPage extends PageAbstract implements PageInterface {
                     alert.setTitle(R.string.confirm_import_backup_title);
                     alert.setMessage(R.string.confirm_import_backup);
                     alert.setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
+                        Helpers.system.hideSoftKeyboard();
+
                         importBackup();
 
                         dialog.dismiss();

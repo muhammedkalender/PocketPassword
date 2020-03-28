@@ -3,7 +3,6 @@ package com.muhammedkalender.pocketpassword.Pages.Password;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.text.InputType;
 import android.view.View;
@@ -24,6 +23,7 @@ import com.muhammedkalender.pocketpassword.Constants.InfoCodeConstants;
 import com.muhammedkalender.pocketpassword.Global;
 import com.muhammedkalender.pocketpassword.Globals.Config;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
+import com.muhammedkalender.pocketpassword.Helpers.ClipboardHelper;
 import com.muhammedkalender.pocketpassword.Interfaces.PageInterface;
 import com.muhammedkalender.pocketpassword.Models.CategoryModel;
 import com.muhammedkalender.pocketpassword.Models.PasswordModel;
@@ -218,7 +218,7 @@ public class PasswordPage extends PageAbstract implements PageInterface {
         this.etName.setText(passwordModel.getName());
         this.etAccount.setText(passwordModel.getAccount());
         this.etPassword.setText(passwordModel.getPassword());
-        this.etPassword.setInputType(InputType.TYPE_CLASS_TEXT| InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        this.etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
         this.colorPickerComponent.refresh(passwordModel.getColor());
 
@@ -350,13 +350,16 @@ public class PasswordPage extends PageAbstract implements PageInterface {
 
         btnClipboard.setOnClickListener(v -> {
             try {
-                new Thread(() -> {
-                    ClipboardManager clipboard = (ClipboardManager) Global.CONTEXT.getSystemService(Context.CLIPBOARD_SERVICE);
-                    ClipData clip = ClipData.newPlainText(Helpers.resource.getString(R.string.clipboard_title), passwordModel.getDecryptedPassword());
-                    clipboard.setPrimaryClip(clip);
-
-                    SnackbarComponent.direct(viewRoot, Helpers.resource.getString(R.string.password_clipboard, "", passwordModel.getShortName()));
-                }).start();
+                ClipboardHelper
+                        .build(
+                                R.string.clipboard_title,
+                                passwordModel.getDecryptedPassword()
+                        )
+                        .withMessage(
+                                R.string.password_clipboard,
+                                passwordModel.getShortName()
+                        )
+                        .show();
             } catch (Exception e) {
                 Helpers.logger.error(ErrorCodeConstants.CLIPBOARD_PASSWORD, e);
 
@@ -366,13 +369,15 @@ public class PasswordPage extends PageAbstract implements PageInterface {
 
         btnClipboardAccount.setOnClickListener(v -> {
             try {
-                new Thread(() -> {
-                    ClipboardManager clipboardManager = (ClipboardManager) Global.CONTEXT.getSystemService(Context.CLIPBOARD_SERVICE);
-                    ClipData clipData = ClipData.newPlainText(Helpers.resource.getString(R.string.account_name), passwordModel.getDecryptedAccount());
-                    clipboardManager.setPrimaryClip(clipData);
-
-                    SnackbarComponent.direct(viewRoot, Helpers.resource.getString(R.string.account_clipboard, "", passwordModel.getShortName()));
-                }).start();
+                ClipboardHelper
+                        .build(
+                                R.string.account_name,
+                                passwordModel.getDecryptedAccount()
+                        )
+                        .withMessage(
+                                R.string.account_clipboard,
+                                passwordModel.getShortName()
+                        ).show();
             } catch (Exception e) {
                 Helpers.logger.error(ErrorCodeConstants.CLIPBOARD_ACCOUNT, e);
 

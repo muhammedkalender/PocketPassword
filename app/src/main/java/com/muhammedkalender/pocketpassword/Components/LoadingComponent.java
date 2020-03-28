@@ -34,6 +34,8 @@ public class LoadingComponent {
         this.rlLoading = rlLoading;
         this.tvLoading = rlLoading.findViewById(R.id.tvLoading);
         this.pbLoading = rlLoading.findViewById(R.id.pbLoading);
+
+        this.defaultMessage = Helpers.resource.getString(R.string.loading);
     }
 
     //endregion

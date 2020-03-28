@@ -2,7 +2,6 @@ package com.muhammedkalender.pocketpassword.Adapters;
 
 import android.app.Activity;
 import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +18,7 @@ import com.muhammedkalender.pocketpassword.Constants.InfoCodeConstants;
 import com.muhammedkalender.pocketpassword.Global;
 import com.muhammedkalender.pocketpassword.Globals.Config;
 import com.muhammedkalender.pocketpassword.Globals.Helpers;
+import com.muhammedkalender.pocketpassword.Helpers.ClipboardHelper;
 import com.muhammedkalender.pocketpassword.Helpers.CryptHelper;
 import com.muhammedkalender.pocketpassword.Holders.PasswordListHolder;
 import com.muhammedkalender.pocketpassword.Models.PasswordModel;
@@ -45,7 +45,7 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordListHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull PasswordListHolder holder, int position) {
-        if(defCryptHelper == null){
+        if (defCryptHelper == null) {
             defCryptHelper = CryptHelper.buildDefault();
         }
 
@@ -71,7 +71,7 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordListHolder> {
 
                 Helpers.logger.info(String.format("Şuan %1$d adet sayfa var", Global.SECTION_PAGER_ADAPTER.getCount()));
 
-                if(Global.SECTION_PAGER_ADAPTER.getCount() < Config.TAB_HOME_INDEX + 2) {
+                if (Global.SECTION_PAGER_ADAPTER.getCount() < Config.TAB_HOME_INDEX + 2) {
                     Global.SECTION_PAGER_ADAPTER.add(Helpers.list.findBySelectedId().getName());
                     Global.SECTION_PAGER_ADAPTER.notifyDataSetChanged();
                 }
@@ -102,23 +102,24 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordListHolder> {
         holder.ivClipboard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try{
+                try {
                     new Thread(() -> {
                         String password = passwordModel.getPassword();
 
-                        if(!passwordModel.isDecrypted()){
+                        if (!passwordModel.isDecrypted()) {
                             passwordModel.decrypt();
                         }
 
-                        ClipboardManager clipboard = (ClipboardManager) Global.CONTEXT.getSystemService(Context.CLIPBOARD_SERVICE);
-                        ClipData clip = ClipData.newPlainText(Helpers.resource.getString(R.string.clipboard_title), password);
-                        clipboard.setPrimaryClip(clip);
-
-                        ((Activity)Global.CONTEXT).runOnUiThread(() -> {
-                            Toast.makeText(Global.CONTEXT, Helpers.resource.getString(R.string.password_clipboard, "", passwordModel.getShortName()), Toast.LENGTH_SHORT).show();
-                        });
+                        ClipboardHelper.build(
+                                R.string.clipboard_title,
+                                password
+                        ).withMessage(
+                                R.string.password_clipboard,
+                                passwordModel.getShortName()
+                        )
+                                .show();
                     }).start();
-                }catch (Exception e){
+                } catch (Exception e) {
                     Helpers.logger.error(ErrorCodeConstants.CLIPBOARD_PASSWORD_IN_LIST, e);
                 }
             }
@@ -129,33 +130,36 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordListHolder> {
         holder.ivShow.setTag(false);
 
         holder.ivShow.setOnClickListener(v -> {
-            if((boolean)v.getTag()){
+            if ((boolean) v.getTag()) {
                 holder.tvName.setText(passwordModel.getName());
 
-                ((ImageView)v).setImageResource(R.drawable.ic_remove_red_eye_24dp);
-            }else{
+                ((ImageView) v).setImageResource(R.drawable.ic_remove_red_eye_24dp);
+            } else {
                 holder.tvName.setText(passwordModel.getDecryptedAccount());
 
-                ((ImageView)v).setImageResource(R.drawable.ic_visibility_off_24dp);
+                ((ImageView) v).setImageResource(R.drawable.ic_visibility_off_24dp);
             }
 
-            v.setTag(!(boolean)v.getTag());
+            v.setTag(!(boolean) v.getTag());
         });
 
         holder.ivAccount.setOnClickListener(v -> {
-            try{
+            try {
                 new Thread(() -> {
                     String account = passwordModel.getDecryptedAccount();
 
-                    ClipboardManager clipboard = (ClipboardManager) Global.CONTEXT.getSystemService(Context.CLIPBOARD_SERVICE);
-                    ClipData clip = ClipData.newPlainText(Helpers.resource.getString(R.string.clipboard_title), account);
-                    clipboard.setPrimaryClip(clip);
-
-                    ((Activity)Global.CONTEXT).runOnUiThread(() -> {
-                        Toast.makeText(Global.CONTEXT, Helpers.resource.getString(R.string.account_clipboard, "", passwordModel.getShortName()), Toast.LENGTH_SHORT).show();
-                    });
+                    ClipboardHelper
+                            .build(
+                                    Helpers.resource.getString(R.string.clipboard_title),
+                                    account
+                            )
+                            .withMessage(
+                                    R.string.account_clipboard,
+                                    passwordModel.getShortName()
+                            )
+                            .show();
                 }).start();
-            }catch (Exception e){
+            } catch (Exception e) {
                 Helpers.logger.error(ErrorCodeConstants.CLIPBOARD_ACCOUNT_COPY, e);
             }
         });
