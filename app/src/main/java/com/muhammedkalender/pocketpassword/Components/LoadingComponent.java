@@ -26,6 +26,10 @@ public class LoadingComponent {
 
     //region Constructors
 
+    public LoadingComponent(){
+        this.defaultMessage = Helpers.resource.getString(R.string.loading);
+    }
+
     public LoadingComponent(RelativeLayout rlLoading) {
         this.rlLoading = rlLoading;
         this.tvLoading = rlLoading.findViewById(R.id.tvLoading);

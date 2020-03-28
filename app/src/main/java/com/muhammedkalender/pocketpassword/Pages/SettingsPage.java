@@ -3,6 +3,7 @@ package com.muhammedkalender.pocketpassword.Pages;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.text.InputType;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -50,8 +51,8 @@ public class SettingsPage extends PageAbstract implements PageInterface {
 
     //region Change Password
 
-    private TextInputLayout tilChangePassword, tilChangePasswordRepeat;
-    private TextInputEditText etChangePassword, etChangePasswordRepeat;
+    private TextInputLayout tilChangePassword, tilChangePasswordRepeat, tilPassword;
+    private TextInputEditText etChangePassword, etChangePasswordRepeat, etPassword;
 
     //endregion
 
@@ -141,6 +142,8 @@ public class SettingsPage extends PageAbstract implements PageInterface {
         tilChangePassword = this.viewRoot.findViewById(R.id.tilChangePassword);
         etChangePasswordRepeat = this.viewRoot.findViewById(R.id.etChangePasswordRepeat);
         tilChangePasswordRepeat = this.viewRoot.findViewById(R.id.tilChangePasswordRepeat);
+        etPassword = this.viewRoot.findViewById(R.id.etPassword);
+        tilPassword = this.viewRoot.findViewById(R.id.tilPassword);
 
         //endregion
 
@@ -215,19 +218,43 @@ public class SettingsPage extends PageAbstract implements PageInterface {
         //region Confirm Permission
 
         this.viewRoot.findViewById(R.id.btnLogin).setOnClickListener(v -> {
+            if (etPassword.getText() == null || etPassword.getText().toString().equals("")) {
+                tilPassword.setError(Helpers.resource.getString(R.string.not_null, "", Helpers.resource.getString(R.string.password)));
+
+                return;
+            }
+
+            String password = etPassword.getText().toString();
+
+            if (password.length() < 8) {
+                tilPassword.setError(Helpers.resource.getString(R.string.min_length, "", Helpers.resource.getString(R.string.password), 8));
+
+                return;
+            } else if (password.length() > 32) {
+                tilPassword.setError(Helpers.resource.getString(R.string.max_length, "", Helpers.resource.getString(R.string.password), 32));
+
+                return;
+            } else if (!Helpers.validation.checkPassword(password, ValidationHelper.PASSWORD_STRONG)) {
+                tilPassword.setError(Helpers.resource.getString(R.string.password_must_strong));
+
+                return;
+            } else {
+                tilPassword.setErrorEnabled(false);
+            }
+
             Helpers.loading.show();
 
             new Thread(() -> {
-                Global.PASSWORD = ((TextInputEditText) viewRoot.findViewById(R.id.etPassword)).getText().toString();
+                final String _password = etPassword.getText().toString();
 
                 String confirmString = Helpers.config.getString(ConfigKeys.CONFIRM_TEXT);
 
-                ResultObject resultDecryptConfirmString = Helpers.aes.decrypt(confirmString, Global.PASSWORD);
+                ResultObject resultDecryptConfirmString = Helpers.aes.decrypt(confirmString, _password);
 
                 if (resultDecryptConfirmString.isFailure()) {
                     ((Activity) Global.CONTEXT).runOnUiThread(() -> {
-                        ((TextInputEditText) viewRoot.findViewById(R.id.etPassword)).setText(null);
-                        ((TextInputLayout) viewRoot.findViewById(R.id.tilPassword)).setError(Helpers.resource.getString(R.string.password_wrong_1));
+                        etPassword.setText(null);
+                        tilPassword.setError(Helpers.resource.getString(R.string.password_wrong_1));
 
                         Helpers.loading.hide();
                     });
@@ -241,8 +268,8 @@ public class SettingsPage extends PageAbstract implements PageInterface {
 
                 ((Activity) Global.CONTEXT).runOnUiThread(() -> {
                     if (resultDecryptRSAConfirmString.isFailure()) {
-                        ((TextInputEditText) viewRoot.findViewById(R.id.etPassword)).setText(null);
-                        ((TextInputLayout) viewRoot.findViewById(R.id.tilPassword)).setError(Helpers.resource.getString(R.string.password_wrong));
+                        etPassword.setText(null);
+                        tilPassword.setError(Helpers.resource.getString(R.string.password_wrong));
 
                         Helpers.loading.hide();
 
@@ -297,6 +324,20 @@ public class SettingsPage extends PageAbstract implements PageInterface {
 
         this.viewRoot.findViewById(R.id.svSettings).setVisibility(View.GONE);
         this.viewRoot.findViewById(R.id.llPassword).setVisibility(View.VISIBLE);
+
+        ((TextInputLayout)this.viewRoot.findViewById(R.id.tilPassword)).setErrorEnabled(false);
+
+        ((TextInputEditText)this.viewRoot.findViewById(R.id.etPassword)).setText("");
+        ((TextInputEditText)this.viewRoot.findViewById(R.id.etPassword)).setInputType(InputType.TYPE_CLASS_TEXT| InputType.TYPE_TEXT_VARIATION_PASSWORD);
+
+        tilChangePassword.setErrorEnabled(false);
+
+        etChangePassword.setInputType(InputType.TYPE_CLASS_TEXT| InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        etChangePassword.setText("");
+
+        tilChangePasswordRepeat.setErrorEnabled(false);
+        etChangePasswordRepeat.setInputType(InputType.TYPE_CLASS_TEXT| InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        etChangePasswordRepeat.setText("");
 
         ((TextInputEditText)this.viewRoot.findViewById(R.id.etPassword)).setText("");
 

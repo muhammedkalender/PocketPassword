@@ -72,6 +72,7 @@
     <string name="hint_account_edit">Kullanıcı Adı</string>
     <string name="hint_password_change_edit">Yeni Uygulama Şifreniz</string>
     <string name="hint_password_change_repeat_edit">Yeni uygulama şifrenizin tekrarı</string>
+    <string name="hint_password_app">Uygulama Şifresi</string>
 
     <string name="tab_add_password">EKLE</string>
     <string name="tab_list_password">ŞİFRELER</string>

@@ -150,11 +150,9 @@ public class MainActivity extends AppCompatActivity {
 
                 AlertDialog alertDialog = new AlertDialog.Builder(this)
                         .setView(inflater.inflate(R.layout.custom_import_dialog, null))
-                        .setPositiveButton("OK", null)
-                        .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-//todo
-                            }
+                        .setPositiveButton(R.string.dialog_confirm, null)
+                        .setNegativeButton(R.string.dialog_cancel, (dialog, id) -> {
+                                //todo
                         })
                         .show();
 
@@ -198,12 +196,13 @@ public class MainActivity extends AppCompatActivity {
 
                     //endregion
                     Helpers.logger.var("Import Şifre", password);
-                    Helpers.loading.show();
 
                     Helpers.system.hideSoftKeyboard();
 
                     new Thread(() -> {
                         //region Password Check
+
+                        Helpers.loading.show();
 
                         String publicKey = jsonObject.get("public_key").getAsString();
 
@@ -466,7 +465,7 @@ public class MainActivity extends AppCompatActivity {
             btnAction.setBackgroundColor(Helpers.resource.getColor(R.color.lightBlue));
 
             tilMainPassword.setHelperText(Helpers.resource.getString(R.string.input_login_password));
-            tilMainPassword.setHint(Helpers.resource.getString(R.string.hint_password));
+            tilMainPassword.setHint(Helpers.resource.getString(R.string.hint_password_app));
 
             btnAction.setOnClickListener(v -> {
                 updateAfterRegisterAndBeforeLogin();
