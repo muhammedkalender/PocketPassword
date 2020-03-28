@@ -166,15 +166,28 @@ public class CategoryModel extends ModelAbstract implements ModelInterface {
 
             categories.add(new CategoryModel(0, Helpers.resource.getString(R.string.category_all), -1, -1, true));
 
+            categories.add(null); //Reserve for Others Category
+
+            String resOther = Helpers.resource.getString(R.string.category_other, "Others");
+
             while (cursor.moveToNext()) {
-                categories.add(new CategoryModel(
+                CategoryModel categoryModel = new CategoryModel(
                         cursor.getInt(cursor.getColumnIndex(prefix + "_id")),
                         cursor.getString(cursor.getColumnIndex(prefix + "_name")),
                         Integer.parseInt(cursor.getString(cursor.getColumnIndex(prefix + "_color"))),
                         Integer.parseInt(cursor.getString(cursor.getColumnIndex(prefix + "_tint_color"))),
                         cursor.getInt(cursor.getColumnIndex(prefix + "_active")) == 1
+                );
 
-                ));
+                if(categoryModel.getName().equals(resOther)){
+                    categories.set(1, categoryModel);
+                }else{
+                    categories.add(categoryModel);
+                }
+            }
+
+            if(categories.get(1) == null){
+                categories.remove(1);
             }
 
             return categories;
