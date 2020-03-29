@@ -2,8 +2,6 @@ package com.muhammedkalender.pocketpassword.Pages.Password;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.ClipData;
-import android.content.Context;
 import android.text.InputType;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -141,36 +139,6 @@ public class PasswordPage extends PageAbstract implements PageInterface {
 
         this.etCategory.setOnClickListener(v -> {
             this.tilCategory.callOnClick();
-        });
-
-        this.btnDeletePassword.setOnClickListener(v -> {
-            AlertDialog.Builder alert = new AlertDialog.Builder(Global.CONTEXT);
-            alert.setTitle(R.string.dialog_delete_password_title);
-            alert.setMessage(R.string.dialog_delete_password);
-            alert.setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
-                Helpers.list.findAndDeleteBySelectedId();
-                Helpers.list.findAndDeleteBySelectedIdFromTempList();
-
-                Global.PASSWORD_ADAPTER.notifyDataSetChanged();
-
-                Global.TAB_LAYOUT.removeTabAt(Config.TAB_PASSWORD_INDEX);
-
-                SnackbarComponent snackbarComponent = new SnackbarComponent(viewRoot, R.string.success_delete_password, R.string.action_ok);
-                snackbarComponent.show();
-
-                Global.SECTION_PAGER_ADAPTER.delete(Config.TAB_PASSWORD_INDEX);
-                Global.SECTION_PAGER_ADAPTER.notifyDataSetChanged();
-
-                Global.PAGE_HOME.filter("");
-
-                passwordModel.delete();
-
-                dialog.dismiss();
-            });
-
-            alert.setNeutralButton(R.string.dialog_cancel, (dialog, which) -> dialog.dismiss());
-
-            alert.show();
         });
 
         load(passwordModel);
@@ -348,7 +316,7 @@ public class PasswordPage extends PageAbstract implements PageInterface {
             }).start();
         });
 
-        btnClipboard.setOnClickListener(v -> {
+        this.btnClipboard.setOnClickListener(v -> {
             try {
                 ClipboardHelper
                         .build(
@@ -367,7 +335,7 @@ public class PasswordPage extends PageAbstract implements PageInterface {
             }
         });
 
-        btnClipboardAccount.setOnClickListener(v -> {
+        this.btnClipboardAccount.setOnClickListener(v -> {
             try {
                 ClipboardHelper
                         .build(
@@ -383,6 +351,36 @@ public class PasswordPage extends PageAbstract implements PageInterface {
 
                 Toast.makeText(Global.CONTEXT, R.string.failure_account_clipboard, Toast.LENGTH_SHORT).show();
             }
+        });
+
+        this.btnDeletePassword.setOnClickListener(v -> {
+            AlertDialog.Builder alert = new AlertDialog.Builder(Global.CONTEXT);
+            alert.setTitle(R.string.dialog_delete_password_title);
+            alert.setMessage(R.string.dialog_delete_password);
+            alert.setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
+                Helpers.list.findAndDeleteBySelectedId();
+                Helpers.list.findAndDeleteBySelectedIdFromTempList();
+
+                Global.PASSWORD_ADAPTER.notifyDataSetChanged();
+
+                Global.TAB_LAYOUT.removeTabAt(Config.TAB_PASSWORD_INDEX);
+
+                SnackbarComponent snackbarComponent = new SnackbarComponent(viewRoot, R.string.success_delete_password, R.string.action_ok);
+                snackbarComponent.show();
+
+                Global.SECTION_PAGER_ADAPTER.delete(Config.TAB_PASSWORD_INDEX);
+                Global.SECTION_PAGER_ADAPTER.notifyDataSetChanged();
+
+                Global.PAGE_HOME.filter("");
+
+                passwordModel.delete();
+
+                dialog.dismiss();
+            });
+
+            alert.setNeutralButton(R.string.dialog_cancel, (dialog, which) -> dialog.dismiss());
+
+            alert.show();
         });
     }
 

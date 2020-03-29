@@ -22,8 +22,8 @@ public class Config {
 
     public static final String EXPORT_CONFIRM_TEXT = "kKXBmMyR%>}345gaOP._-8dWN7fX";
 
-    public static boolean CONFIG_ONLY_LOGIN = true;
-    public static boolean CONFIG_HIDE_VIEW = true;
+    public static boolean CONFIG_ONLY_LOGIN = false;
+    public static boolean CONFIG_HIDE_VIEW = false;
 
     public static boolean CONFIG_ENABLE_INFO_LOG= false;
     public static boolean CONFIG_ENABLE_ERROR_LOG = true;
