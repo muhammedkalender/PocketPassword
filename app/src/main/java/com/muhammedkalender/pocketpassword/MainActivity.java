@@ -253,15 +253,9 @@ public class MainActivity extends AppCompatActivity {
                                     _password.get("active").getAsInt() == 1
                             );
 
-                            Helpers.logger.var("Yedek Yükleme Saf Şifre", _passwordModel.getPassword());
-
                             _passwordModel.decrypt(cryptHelper);
 
-                            Helpers.logger.var("Yedek Yükleme Çözülmüş Şifre", _passwordModel.getPassword());
-
                             _passwordModel.encrypt(); //todo var burda bi bokluk
-
-                            Helpers.logger.var("Yedek Yükleme Şifrelenmiş Şifre", _passwordModel.getPassword());
 
                             ResultObject resultInsert = _passwordModel.insert();
 
@@ -539,8 +533,6 @@ public class MainActivity extends AppCompatActivity {
 
                     String base64PrivateKey = Helpers.config.getString(ConfigKeys.PRIVATE_KEY);
                     String base64PublicKey = Helpers.config.getString(ConfigKeys.PUBLIC_KEY);
-
-                    Helpers.logger.info(base64PrivateKey);
 
                     ResultObject resultEncryptBase64PrivateKey = Helpers.aes.encrypt(base64PrivateKey, Global.PASSWORD);
                     ResultObject resultEncryptBase64PublicKey = Helpers.aes.encrypt(base64PublicKey, Global.PASSWORD);
