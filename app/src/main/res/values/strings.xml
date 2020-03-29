@@ -20,7 +20,7 @@
     <string name="contact_us">İletişim için tıklayın</string>
 
     <string name="terms">Kullanım Koşulları</string>
-    <string name="terms_content">TODO</string>
+    <string name="terms_content">Coming Soon…</string>
 <!--    TODO-->
     <string name="terms_title">Kullanım Koşulları</string>
 
@@ -110,7 +110,7 @@
     <string name="success_delete_password">Şifre kayıtı başarıyla silindi</string>
 
 <!--    TODO-->
-    <string name="company">TODO</string>
+    <string name="company">Pocket Password - powered By Kalender Software</string>
 
     <string name="action_ok">OK</string>
 

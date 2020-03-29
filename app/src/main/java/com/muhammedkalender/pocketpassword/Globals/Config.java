@@ -25,9 +25,9 @@ public class Config {
     public static boolean CONFIG_ONLY_LOGIN = true;
     public static boolean CONFIG_HIDE_VIEW = true;
 
-    public static boolean CONFIG_ENABLE_INFO_LOG= true;
+    public static boolean CONFIG_ENABLE_INFO_LOG= false;
     public static boolean CONFIG_ENABLE_ERROR_LOG = true;
-    public static boolean CONFIG_ENABLE_VAR_LOG = true;
+    public static boolean CONFIG_ENABLE_VAR_LOG = false;
 
     public static int LOADING_SHOW_DELAY = 300;
 

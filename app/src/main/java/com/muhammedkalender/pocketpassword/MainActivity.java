@@ -454,6 +454,7 @@ public class MainActivity extends AppCompatActivity {
             //region Is Registered
 
             etMainPassword.setImeOptions(EditorInfo.IME_ACTION_DONE);
+            etMainPassword.setInputType(InputType.TYPE_CLASS_TEXT| InputType.TYPE_TEXT_VARIATION_PASSWORD);
             tilMainPasswordRepeat.setVisibility(View.GONE);
 
             findViewById(R.id.tvForgotPassword).setVisibility(View.VISIBLE);

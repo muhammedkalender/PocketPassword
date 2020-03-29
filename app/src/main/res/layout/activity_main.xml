@@ -61,8 +61,8 @@
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="120dp"
-                android:layout_height="120dp"
+                android:layout_width="@dimen/logo_width"
+                android:layout_height="@dimen/logo_height"
                 android:src="@mipmap/ic_launcher_round">
 
             </ImageView>
@@ -134,7 +134,7 @@
                 android:id="@+id/btnLogin"
                 style="@style/FormButton"
                 android:layout_width="match_parent"
-                android:layout_height="64dp"
+                android:layout_height="@dimen/button_height_normal"
                 android:background="@color/lightBlue"
                 android:text="@string/button_confirm"
                 android:textColor="@color/tintLightBlue"
@@ -142,30 +142,31 @@
 
             <TextView
                 android:id="@+id/tvForgotPassword"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:gravity="center_horizontal"
                 android:text="@string/forgot_password"
                 android:textColor="@color/colorTextFaint"
                 android:textSize="@dimen/text_size_normal" />
 
             <TextView
                 android:id="@+id/tvContactUs"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:gravity="center_horizontal"
                 android:text="@string/contact_us"
                 android:textColor="@color/colorTextFaint"
                 android:textSize="@dimen/text_size_normal" />
 
             <TextView
+                android:visibility="gone"
                 android:id="@+id/tvEULA"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:gravity="center_horizontal"
                 android:text="@string/terms"
                 android:textColor="@color/colorTextFaint"
                 android:textSize="@dimen/text_size_normal" />

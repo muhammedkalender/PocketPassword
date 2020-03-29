@@ -301,7 +301,7 @@ public class SettingsPage extends PageAbstract implements PageInterface {
 
                         importBackup();
 
-                        dialog.dismiss();
+                        dialog.cancel();
                     });
 
                     alert.setNeutralButton(R.string.dialog_cancel, (dialog, which) -> dialog.dismiss());
